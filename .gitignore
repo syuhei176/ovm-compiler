@@ -1,0 +1,11 @@
+.idea
+node_modules
+yarn-error.log
+lerna-debug.log
+coverage
+.env
+CHANGELOG.md
+.nyc_output
+coverage.json
+lcov.info
+dist

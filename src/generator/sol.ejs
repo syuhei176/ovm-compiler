@@ -1,0 +1,226 @@
+pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
+
+import {DataTypes as types} from "../DataTypes.sol";
+import "../UniversalAdjudicationContract.sol";
+import "./AtomicPredicate.sol";
+import "./NotPredicate.sol";
+<%
+function getInputs(item, witnessName, doesWitnessExist) {
+  let str = ""
+  if(item.isCompiled) {
+    str += item.definition.name + ', '
+  }
+  for(var k=0;k < item.inputs.length;k++){
+    if(item.inputs[k] >= 0) {
+      str += "_inputs[" + (item.inputs[k]) + "]"
+    }else{
+      str += witnessName || "challengeInput"
+    }
+    if(k < item.inputs.length - 1) {
+      str += ","
+    }
+  }
+  if(doesWitnessExist) {
+    if (str.length == 0) {
+      str += witnessName
+    } else {
+      str += ', ' + witnessName
+    }
+  }
+  return str
+}
+function isValidChallenge(predicate) {
+  return (
+    predicate == 'ForAllSuchThat' ||
+    predicate == 'Not' ||
+    predicate == 'And'
+  )
+}
+%>
+
+<%
+  for(let c = 0;c < compiledPredicates.length;c++) {
+    const claimDef = compiledPredicates[c]
+%>
+/**
+ * <%= claimDef.name %>(<%= claimDef.inputDefs %>)
+ */
+contract <%= claimDef.name %> {
+  <%
+  for(var i = 0;i < claimDef.contracts.length;i++) {
+    let property = claimDef.contracts[i]
+  %>
+    bytes32 public <%= property.definition.name %>;
+  <%
+  }
+  %>
+    UniversalAdjudicationContract AdjudicationContract;
+    AtomicPredicate SU;
+    AtomicPredicate LessThan;
+    AtomicPredicate eval;
+    AtomicPredicate Bytes;
+    AtomicPredicate SameRange;
+    AtomicPredicate IsValidSignature;
+    NotPredicate Not;
+    constructor(address _adjudicationContractAddress) {
+      AdjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+      <%
+      for(var i = 0;i < claimDef.contracts.length;i++) {
+        let property = claimDef.contracts[i]
+      %>
+      <%= property.definition.name %> = keccak256("<%= property.definition.name %>");
+      <% } %>
+    }
+    /**
+    * @dev Validates a child node of the property in game tree.
+    */
+    function isValidChallenge(
+        bytes[] memory _inputs,
+        bytes memory _challengeInput,
+        types.Property memory _challenge
+    ) public returns (bool) {
+        require(
+          keccak256(abi.encode(getChild(_inputs, _challengeInput))) == keccak256(abi.encode(_challenge)),
+          "_challenge must be valud child of game tree"
+        );
+        return true;
+    }
+
+    function getChild(bytes[] memory inputs, bytes memory challengeInput) private returns (types.Property memory) {
+      bytes32 input0 = bytesToBytes32(inputs[0]);
+      <%
+      for(var i = 0;i < claimDef.contracts.length;i++) {
+        let property = claimDef.contracts[i]
+      %>
+        <% if(isValidChallenge(property.definition.body.predicate)) { %>
+        if(input0 == <%= property.definition.name %>) {
+          return getChild<%= property.definition.name %>(inputs, challengeInput);
+        }<%}%><%}%>
+    }
+
+  /**
+   * @dev check the property is true
+   */
+  function decideTrue(bytes[] memory _inputs, bytes memory _witness) public {
+    bytes32 input0 = bytesToBytes32(_inputs[0]);
+    <%
+    for(var i = 0;i < claimDef.contracts.length;i++) {
+      let property = claimDef.contracts[i]
+    %>
+    if(input0 == <%= property.definition.name %>) {
+      decideTrue<%= property.definition.name %>(_inputs, _witness);
+    }
+    <%
+    }
+    %>
+  }
+
+  <%
+  for(var i = 0;i < claimDef.contracts.length;i++) {
+    let property = claimDef.contracts[i]
+  %>
+  <% if(isValidChallenge(property.definition.body.predicate)) { %>
+    /**
+     * Gets child of <%= property.definition.name %>(<%= property.inputDefs %>).
+     */
+    function getChild<%= property.definition.name %>(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
+      <% if(property.definition.body.predicate == 'And') { %>
+        <%
+          for(var j = 0;j < property.definition.body.inputs.length;j++) {
+            var item = property.definition.body.inputs[j]
+        %>
+        if(challengeInput == <%= j %>) {
+          return type.Property({
+            predicateAddress: Not,
+            inputs: [type.Property({
+              predicateAddress: <%= item.originalPredicateName %>,
+              inputs: [<%=getInputs(item)%>]
+            })]
+          });
+        }
+        <% } %>
+      <% } else if(property.definition.body.predicate == 'ForAllSuchThat') {
+        const quantifier = property.definition.body.inputs[0];
+        const innerProperty = property.definition.body.inputs[2];
+        %>
+      require(<%= quantifier.predicate %>.decide(<%=getInputs(quantifier)%>, challengeInput));
+      return type.Property({
+        predicateAddress: Not,
+        inputs: [type.Property({
+          predicateAddress: <%= innerProperty.isCompiled ? "address(this)" : innerProperty.predicate %>,
+          inputs: [<%=getInputs(innerProperty)%>]
+        })]
+      });
+      <% } else if(property.definition.body.predicate == 'Not') {
+        const innerProperty = property.definition.body.inputs[0];
+        %>
+      return type.Property({
+        predicateAddress: <%= innerProperty.originalPredicateName %>,
+        inputs: [_inputs[<%= (innerProperty.inputs[0]) %>]]
+      });
+      <% } %>
+    }
+  <% } %>
+  /**
+   * Decides <%= property.definition.name %>(<%= property.inputDefs %>).
+   */
+  function decideTrue<%= property.definition.name %>(bytes[] memory _inputs, bytes memory _witness) public {
+      bytes32 propertyHash = keccak256(abi.encode(types.Property({
+        predicateAddress: address(this),
+        inputs: _inputs
+      })));
+      // check property is true
+    <% if(property.definition.body.predicate == 'And') { %>
+      // check And
+      <%
+        for(var j = 0;j < property.definition.body.inputs.length;j++) {
+          var item = property.definition.body.inputs[j]
+      %>
+      require(AdjudicationContract.isDecided(keccak256(abi.encode({
+          predicateAddress: <%= item.originalPredicateName %>,
+          inputs: [<%= getInputs(item) %>]
+        }))));
+      <% } %>
+      AdjudicationContract.setPredicateDecision(propertyHash, true);
+    <% } else if(property.definition.body.predicate == 'ThereExistsSuchThat') { %>
+      // check ThereExistsSuchThat
+      <%
+        const quantifier = property.definition.body.inputs[0]
+        const innerProperty = property.definition.body.inputs[2]
+      %>
+      require(<%= quantifier.definition.name %>.decide(<%= getInputs(quantifier, "_witness", true) %>));
+      require(AdjudicationContract.isDecided(keccak256(abi.encode({
+        predicateAddress: <%= innerProperty.originalPredicateName %>,
+        inputs: [<%= getInputs(innerProperty, "_witness") %>]
+      }))));
+      AdjudicationContract.setPredicateDecision(propertyHash, true);
+    <% } else if(property.definition.body.predicate == 'Or') { %>
+      // check Or
+    var result = false
+      <%
+        for(var j = 0;j < property.definition.body.inputs.length;j++) {
+          var item = property.definition.body.inputs[j]
+      %>
+    result = result | AdjudicationContract.isDecided(keccak256(abi.encode({
+        predicateAddress: <%= item.originalPredicateName %>,
+        inputs: [<%= getInputs(item) %>]
+      })))
+      <% } %>
+    require(result);
+    AdjudicationContract.setPredicateDecision(propertyHash, true);
+    <% } %>
+  }
+  <% } %>
+
+  function bytesToBytes32(bytes memory source) returns (bytes32 result) {
+    if (source.length == 0) {
+        return 0x0;
+    }
+
+    assembly {
+        result := mload(add(source, 32))
+    }
+  }
+}
+<% } %>
