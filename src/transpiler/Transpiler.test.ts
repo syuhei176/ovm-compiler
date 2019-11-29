@@ -1,4 +1,5 @@
-import { PropertyDef, Transpiler } from './'
+import { Transpiler } from './'
+import { PropertyDef } from '../parser/PropertyDef'
 
 describe('Transpiler', () => {
   beforeEach(async () => {})

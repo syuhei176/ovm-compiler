@@ -1,5 +1,5 @@
 import { Parser } from './Parser'
-import { PropertyDef } from '../transpiler/PropertyDef'
+import { PropertyDef } from './PropertyDef'
 import fs from 'fs'
 import path from 'path'
 

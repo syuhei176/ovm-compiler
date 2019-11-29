@@ -1,30 +1,18 @@
 /**
- * Parsed Property definition
- */
-export interface PropertyDef {
-  name: string
-  inputDefs: string[]
-  body: PropertyNode | null
-}
-
-export interface PropertyNode {
-  type: 'PropertyNode'
-  predicate: string
-  inputs: Input[]
-  isCompiled?: boolean
-}
-
-type Input = string | PropertyNode | undefined
-
-/**
  * Compiled Property definition
  */
+export interface CompiledPredicate {
+  type: 'CompiledPredicate'
+  name: string
+  inputDefs: string[]
+  contracts: IntermediateCompiledPredicate[]
+}
+
 export interface IntermediateCompiledPredicate {
   type: 'IntermediateCompiledPredicate'
   isCompiled: boolean
   originalPredicateName: string
   definition: IntermediateCompiledPredicateDef
-  //  inputs: number[]
 }
 
 export interface IntermediateCompiledPredicateDef {
@@ -42,10 +30,3 @@ export interface AtomicProposition {
 }
 
 export type CompiledInput = number | number[]
-
-export interface CompiledPredicate {
-  type: 'CompiledPredicate'
-  name: string
-  inputDefs: string[]
-  contracts: IntermediateCompiledPredicate[]
-}

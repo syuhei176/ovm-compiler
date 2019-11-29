@@ -3,10 +3,10 @@ import {
   CompiledInput,
   CompiledPredicate,
   IntermediateCompiledPredicate,
-  PropertyDef,
-  PropertyNode,
   AtomicProposition
-} from './PropertyDef'
+} from './CompiledPredicate'
+
+import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 
 /**
  *

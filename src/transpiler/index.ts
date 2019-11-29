@@ -2,4 +2,4 @@ import * as Transpiler from './Transpiler'
 
 export { Transpiler }
 
-export * from './PropertyDef'
+export * from './CompiledPredicate'
