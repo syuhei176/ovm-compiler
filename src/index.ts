@@ -14,3 +14,12 @@ import { SolidityCodeGenerator } from './generator'
 import { Transpiler } from './transpiler'
 
 export { Parser, SolidityCodeGenerator, Transpiler }
+
+export function generateSolidityCode(source: string): string {
+  const parser = new Parser()
+  const compiledPredicates = Transpiler.calculateInteractiveNodes(
+    parser.parse(source)
+  )
+  const generator = new SolidityCodeGenerator()
+  return generator.generate(compiledPredicates)
+}
