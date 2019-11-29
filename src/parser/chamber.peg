@@ -109,12 +109,8 @@ Integer "integer"
   = _ [0-9]+ { return parseInt(text(), 10); }
 
 Object
-  = parent:String "." child:String {
-    return {
-      syntax: "bind",
-      parent: parent,
-      child: child
-    }
+  = parent:String "." child:(String / Integer) {
+    return parent + '.' + child
   }
 
 String "string"

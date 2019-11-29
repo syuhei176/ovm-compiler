@@ -1,5 +1,5 @@
 /**
- * Property definition
+ * Parsed Property definition
  */
 export interface PropertyDef {
   name: string
@@ -14,15 +14,34 @@ export interface PropertyNode {
   isCompiled?: boolean
 }
 
+type Input = string | PropertyNode | undefined
+
+/**
+ * Compiled Property definition
+ */
 export interface IntermediateCompiledPredicate {
   type: 'IntermediateCompiledPredicate'
   isCompiled: boolean
   originalPredicateName: string
-  definition: PropertyDef
-  inputs: number[]
+  definition: IntermediateCompiledPredicateDef
+  //  inputs: number[]
 }
 
-type Input = string | PropertyNode | undefined
+export interface IntermediateCompiledPredicateDef {
+  type: 'IntermediateCompiledPredicateDef'
+  name: string
+  predicate: string
+  inputDefs: string[]
+  inputs: AtomicProposition[]
+}
+
+export interface AtomicProposition {
+  type: 'AtomicProposition'
+  predicate: string
+  inputs: CompiledInput[]
+}
+
+export type CompiledInput = number | number[]
 
 export interface CompiledPredicate {
   type: 'CompiledPredicate'

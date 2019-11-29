@@ -1,9 +1,11 @@
 import * as utils from './utils'
 import {
+  CompiledInput,
   CompiledPredicate,
   IntermediateCompiledPredicate,
   PropertyDef,
-  PropertyNode
+  PropertyNode,
+  AtomicProposition
 } from './PropertyDef'
 
 /**
@@ -51,8 +53,13 @@ function calculateInteractiveNodesPerProperty(
       type: 'IntermediateCompiledPredicate',
       isCompiled: true,
       originalPredicateName: '',
-      inputs: [],
-      definition: p
+      definition: {
+        type: 'IntermediateCompiledPredicateDef',
+        name: '',
+        predicate: '',
+        inputDefs: p.inputDefs,
+        inputs: []
+      }
     },
     name,
     ''
@@ -79,7 +86,7 @@ function searchInteractiveNode(
   parent: IntermediateCompiledPredicate,
   name?: string,
   parentSuffix?: string
-): PropertyNode {
+): AtomicProposition {
   if (
     utils.isNotAtomicProposition(property.predicate) &&
     name !== undefined &&
@@ -94,15 +101,13 @@ function searchInteractiveNode(
       isCompiled: true,
       originalPredicateName: name,
       definition: {
+        type: 'IntermediateCompiledPredicateDef',
         name: makeContractName(name, suffix),
+        predicate: property.predicate,
         inputDefs: newInputDefs,
-        body: {
-          type: 'PropertyNode',
-          predicate: property.predicate,
-          inputs: []
-        }
-      },
-      inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
+        inputs: []
+      }
+      //      inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
     }
     let children = []
     if (
@@ -134,7 +139,7 @@ function searchInteractiveNode(
         newContract
       )
       // innerProperty
-      children[2] = searchInteractiveNode(
+      children[1] = searchInteractiveNode(
         contracts,
         property.inputs[2],
         newContract,
@@ -167,66 +172,37 @@ function searchInteractiveNode(
         }
       )
     }
-    if (newContract.definition.body) {
-      newContract.definition.body.inputs = children
-    } else {
-      throw new Error('newContract.definition.body must not be null')
-    }
+    newContract.definition.inputs = children
     // If not atomic proposition, generate a contract
     contracts.push(newContract)
     return {
-      type: 'PropertyNode',
+      type: 'AtomicProposition',
       predicate: newContract.definition.name,
-      inputs: newContract.definition.inputDefs,
-      isCompiled: true
+      inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
     }
   } else {
-    const processedProperty = property //processBindOperator(property)
-    return property
-    /*
     return {
-      type: 'PropertyNode',
-      predicate: '',
-      isCompiled: false,
-      originalPredicateName: processedProperty.predicate,
-      definition: {
-        name: processedProperty.predicate,
-        inputDefs: processedProperty.inputs as string[],
-        body: null
-      },
+      type: 'AtomicProposition',
+      predicate: property.predicate,
       inputs: getInputIndex(
         parent.definition.inputDefs,
-        processedProperty.inputs as string[]
+        property.inputs as string[]
       )
     }
-    */
   }
 }
 
-/*
-function processBindOperator(property: PropertyNode): PropertyNode {
-  if (
-    utils.isComparisonPredicate(property.predicate) &&
-    property.inputDefs[0].syntax == 'bind'
-  ) {
-    return {
-      predicate: property.predicate,
-      inputDefs: [
-        property.inputDefs[0].parent,
-        // TODO: constant value
-        property.inputDefs[0].child,
-        property.inputDefs[1]
-      ]
-    }
-  } else {
-    return property
-  }
-}
-*/
-
-function getInputIndex(inputDefs: any, inputs: string[]) {
+function getInputIndex(inputDefs: string[], inputs: string[]): CompiledInput[] {
   return inputs.map(name => {
-    return inputDefs.indexOf(name)
+    if (name.indexOf('.') > 0) {
+      // in case of that name is bind operator
+      const nameArr = name.split('.')
+      const parent = nameArr[0]
+      const child = nameArr[1]
+      return [inputDefs.indexOf(parent), Number(child)]
+    } else {
+      return inputDefs.indexOf(name)
+    }
   })
 }
 
@@ -241,28 +217,20 @@ function getArguments(property: PropertyNode): any[] {
     const innerArgs = getArguments(property.inputs[2] as PropertyNode)
     args = args.concat(innerArgs.filter(a => a != variable))
   } else {
-    property.inputs.forEach(
-      (
-        p: PropertyNode | IntermediateCompiledPredicate | string | undefined
-      ) => {
-        if (
-          typeof p != 'string' &&
-          p !== undefined &&
-          p.type == 'PropertyNode'
-        ) {
+    property.inputs.forEach((p: PropertyNode | string | undefined) => {
+      if (p !== undefined) {
+        if (typeof p === 'string') {
+          // bind operator
+          if (p.indexOf('.') > 0) {
+            args.push(p.substr(0, p.indexOf('.')))
+          } else {
+            args.push(p)
+          }
+        } else if (p.type == 'PropertyNode') {
           args = args.concat(getArguments(p))
-        } else {
-          /*
-        if (p.syntax == 'bind') {
-          args.push(p.parent)
-        } else {
-          args.push(p)
-        }
-        */
-          args.push(p)
         }
       }
-    )
+    })
   }
   return args.filter(function(x, i, self) {
     return self.indexOf(x) === i

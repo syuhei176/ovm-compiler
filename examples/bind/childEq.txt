@@ -1,0 +1,1 @@
+def childEq(a) := with Bytes() as b {equal(b.0, a)}
