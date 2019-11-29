@@ -8,7 +8,7 @@
     "dist/**/*.d.ts"
   ],
   "scripts": {
-    "build": "tnode preprocessor.js && sc --build ./tsconfig.json",
+    "build": "node preprocessor.js && tsc --build ./tsconfig.json",
     "build:check": "tsc --noEmit",
     "build:dev": "tsc",
     "test": "node preprocessor.js && jest",
