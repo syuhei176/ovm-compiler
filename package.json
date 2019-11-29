@@ -53,6 +53,7 @@
     }
   },
   "dependencies": {
+    "@types/node": "^12.12.14",
     "ejs": "^3.0.1",
     "pegjs": "^0.10.0"
   }
