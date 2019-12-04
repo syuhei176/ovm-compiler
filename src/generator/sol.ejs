@@ -37,6 +37,20 @@ function isValidChallenge(predicate) {
     predicate == 'And'
   )
 }
+
+function getEncodedProperty(innerProperty) {
+  if(innerProperty.predicate.type == 'InputPredicate') {
+    return '_inputs[' + innerProperty.predicate.source + ']'
+  } else if(innerProperty.predicate.type == 'VariablePredicate') {
+    return 'challengeInput'
+  } else {
+    return 'abi.encode(type.Property({'
+      + 'predicateAddress: ' + (innerProperty.isCompiled ? 'address(this)' : innerProperty.predicate.source) + ','
+      + 'inputs: [' + getInputs(innerProperty) + ']'
+    + '}))'
+  }
+}
+
 %>
 
 <%
@@ -133,10 +147,7 @@ contract <%= claimDef.name %> {
         if(challengeInput == <%= j %>) {
           return type.Property({
             predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: <%= item.predicate %>,
-              inputs: [<%=getInputs(item)%>]
-            })]
+            inputs: [<%= getEncodedProperty(item) %>]
           });
         }
         <% } %>
@@ -144,21 +155,15 @@ contract <%= claimDef.name %> {
         const quantifier = property.definition.inputs[0];
         const innerProperty = property.definition.inputs[1];
         %>
-      require(<%= quantifier.predicate %>.decide(<%=getInputs(quantifier)%>, challengeInput));
+      require(<%= quantifier.predicate.source %>.decide(<%=getInputs(quantifier)%>, challengeInput));
       return type.Property({
         predicateAddress: Not,
-        inputs: [type.Property({
-          predicateAddress: <%= innerProperty.isCompiled ? "address(this)" : innerProperty.predicate %>,
-          inputs: [<%=getInputs(innerProperty)%>]
-        })]
+        inputs: [<%= getEncodedProperty(innerProperty) %>]
       });
       <% } else if(property.definition.predicate == 'Not') {
         const innerProperty = property.definition.inputs[0];
         %>
-      return type.Property({
-        predicateAddress: <%= innerProperty.predicate %>,
-        inputs: [_inputs[<%= (innerProperty.inputs[0]) %>]]
-      });
+      return <%= getEncodedProperty(innerProperty) %>;
       <% } %>
     }
   <% } %>
@@ -177,10 +182,7 @@ contract <%= claimDef.name %> {
         for(var j = 0;j < property.definition.inputs.length;j++) {
           var item = property.definition.inputs[j]
       %>
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: <%= item.predicate %>,
-          inputs: [<%= getInputs(item) %>]
-        }))));
+      require(AdjudicationContract.isDecided(keccak256(<%= getEncodedProperty(item) %>)));
       <% } %>
       AdjudicationContract.setPredicateDecision(propertyHash, true);
     <% } else if(property.definition.predicate == 'ThereExistsSuchThat') { %>
@@ -189,11 +191,8 @@ contract <%= claimDef.name %> {
         const quantifier = property.definition.inputs[0]
         const innerProperty = property.definition.inputs[1]
       %>
-      require(<%= quantifier.predicate %>.decide(<%= getInputs(quantifier, "_witness", true) %>));
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: <%= innerProperty.predicate %>,
-        inputs: [<%= getInputs(innerProperty, "_witness") %>]
-      }))));
+      require(<%= quantifier.predicate.source %>.decide(<%= getInputs(quantifier, "_witness", true) %>));
+      require(AdjudicationContract.isDecided(keccak256(<%= getEncodedProperty(innerProperty) %>)));
       AdjudicationContract.setPredicateDecision(propertyHash, true);
     <% } else if(property.definition.predicate == 'Or') { %>
       // check Or
@@ -202,10 +201,7 @@ contract <%= claimDef.name %> {
         for(var j = 0;j < property.definition.inputs.length;j++) {
           var item = property.definition.inputs[j]
       %>
-    result = result | AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: <%= item.predicate %>,
-        inputs: [<%= getInputs(item) %>]
-      })))
+    result = result | AdjudicationContract.isDecided(keccak256(<%= getEncodedProperty(item) %>))
       <% } %>
     require(result);
     AdjudicationContract.setPredicateDecision(propertyHash, true);

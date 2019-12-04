@@ -1,0 +1,6 @@
+def checkpoint(B, C) := 
+for b in LessThan(B) {
+  for su in SU(B, C) {
+    su() or (verifyInclusion(su) and eq(su, ZeroHash))
+  }
+}

@@ -88,20 +88,14 @@ contract Test {
         if(challengeInput == 0) {
           return type.Property({
             predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: Foo,
-              inputs: [_inputs[1]]
-            })]
+            inputs: [abi.encode(type.Property({predicateAddress: Foo,inputs: [_inputs[1]]}))]
           });
         }
         
         if(challengeInput == 1) {
           return type.Property({
             predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: Bar,
-              inputs: [_inputs[1]]
-            })]
+            inputs: [abi.encode(type.Property({predicateAddress: Bar,inputs: [_inputs[1]]}))]
           });
         }
         
@@ -120,15 +114,9 @@ contract Test {
     
       // check And
       
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: Foo,
-          inputs: [_inputs[1]]
-        }))));
+      require(AdjudicationContract.isDecided(keccak256(abi.encode(type.Property({predicateAddress: Foo,inputs: [_inputs[1]]})))));
       
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: Bar,
-          inputs: [_inputs[1]]
-        }))));
+      require(AdjudicationContract.isDecided(keccak256(abi.encode(type.Property({predicateAddress: Bar,inputs: [_inputs[1]]})))));
       
       AdjudicationContract.setPredicateDecision(propertyHash, true);
     
@@ -143,10 +131,7 @@ contract Test {
       require(A.decide(_inputs[1], challengeInput));
       return type.Property({
         predicateAddress: Not,
-        inputs: [type.Property({
-          predicateAddress: TestFA,
-          inputs: [challengeInput,challengeInput]
-        })]
+        inputs: [abi.encode(type.Property({predicateAddress: TestFA,inputs: [challengeInput,challengeInput]}))]
       });
       
     }

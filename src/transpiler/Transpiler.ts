@@ -3,7 +3,8 @@ import {
   CompiledInput,
   CompiledPredicate,
   IntermediateCompiledPredicate,
-  AtomicProposition
+  AtomicProposition,
+  Predicate
 } from './CompiledPredicate'
 
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
@@ -177,17 +178,39 @@ function searchInteractiveNode(
     contracts.push(newContract)
     return {
       type: 'AtomicProposition',
-      predicate: newContract.definition.name,
+      predicate: {
+        type: 'AtomicPredicate',
+        source: newContract.definition.name
+      },
       inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
     }
   } else {
     return {
       type: 'AtomicProposition',
-      predicate: property.predicate,
+      predicate: getPredicate(parent.definition.inputDefs, property.predicate),
       inputs: getInputIndex(
         parent.definition.inputDefs,
         property.inputs as string[]
       )
+    }
+  }
+}
+
+function getPredicate(inputDefs: string[], name: string): Predicate {
+  const inputIndex = inputDefs.indexOf(name)
+  if (inputIndex >= 0) {
+    return {
+      type: 'InputPredicate',
+      source: inputIndex
+    }
+  } else if (utils.isUpperCase(name[0])) {
+    return {
+      type: 'AtomicPredicate',
+      source: name
+    }
+  } else {
+    return {
+      type: 'VariablePredicate'
     }
   }
 }
@@ -217,6 +240,9 @@ function getArguments(property: PropertyNode): any[] {
     const innerArgs = getArguments(property.inputs[2] as PropertyNode)
     args = args.concat(innerArgs.filter(a => a != variable))
   } else {
+    if (!utils.isUpperCase(property.predicate[0])) {
+      args.push(property.predicate)
+    }
     property.inputs.forEach((p: PropertyNode | string | undefined) => {
       if (p !== undefined) {
         if (typeof p === 'string') {

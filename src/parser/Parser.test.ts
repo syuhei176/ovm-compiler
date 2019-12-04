@@ -78,146 +78,47 @@ describe('Parser', () => {
       ])
     })
 
-    test('order', () => {
+    test('variable: eval1', () => {
       const testOutput = fs
-        .readFileSync(path.join(__dirname, '../../examples/order/order.txt'))
+        .readFileSync(
+          path.join(__dirname, '../../examples/testcases/variable/eval1.txt')
+        )
         .toString()
       const ast: PropertyDef[] = parser.parse(testOutput)
-      // console.log(JSON.stringify(ast))
       expect(ast).toStrictEqual([
         {
-          name: 'order',
-          inputDefs: ['maker', 'c_token', 'c_amount', 'min_block_number'],
+          name: 'evalTest',
+          inputDefs: ['a', 'b'],
+          body: {
+            type: 'PropertyNode',
+            predicate: 'And',
+            inputs: [
+              { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] },
+              { type: 'PropertyNode', predicate: 'b', inputs: [] }
+            ]
+          }
+        }
+      ])
+    })
+
+    test('variable: eval2', () => {
+      const testOutput = fs
+        .readFileSync(
+          path.join(__dirname, '../../examples/testcases/variable/eval2.txt')
+        )
+        .toString()
+      const ast: PropertyDef[] = parser.parse(testOutput)
+      expect(ast).toStrictEqual([
+        {
+          name: 'evalTest',
+          inputDefs: [],
           body: {
             type: 'PropertyNode',
             predicate: 'ThereExistsSuchThat',
             inputs: [
-              { type: 'PropertyNode', predicate: 'Bytes', inputs: [] },
-              'tx',
-              {
-                type: 'PropertyNode',
-                predicate: 'And',
-                inputs: [
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'SameRange',
-                    inputs: ['tx', 'self']
-                  },
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'ThereExistsSuchThat',
-                    inputs: [
-                      { type: 'PropertyNode', predicate: 'SU', inputs: [] },
-                      'c_su',
-                      {
-                        type: 'PropertyNode',
-                        predicate: 'And',
-                        inputs: [
-                          {
-                            type: 'PropertyNode',
-                            predicate: 'assert',
-                            inputs: ['c_su.0', 'c_token']
-                          },
-                          {
-                            type: 'PropertyNode',
-                            predicate: 'checkAmount',
-                            inputs: ['c_su.1', 'c_amount']
-                          },
-                          {
-                            type: 'PropertyNode',
-                            predicate: 'gte',
-                            inputs: ['c_su.2', 'min_block_number']
-                          },
-                          {
-                            type: 'PropertyNode',
-                            predicate: 'assert',
-                            inputs: ['c_su.3', 'maker']
-                          },
-                          {
-                            type: 'PropertyNode',
-                            predicate: 'Or',
-                            inputs: [
-                              {
-                                type: 'PropertyNode',
-                                predicate: 'And',
-                                inputs: [
-                                  {
-                                    type: 'PropertyNode',
-                                    predicate: 'withdraw',
-                                    inputs: ['c_su']
-                                  },
-                                  {
-                                    type: 'PropertyNode',
-                                    predicate: 'IsValidSignature',
-                                    inputs: ['tx', 'c_su.3']
-                                  }
-                                ]
-                              },
-                              {
-                                type: 'PropertyNode',
-                                predicate: 'And',
-                                inputs: [
-                                  {
-                                    type: 'PropertyNode',
-                                    predicate: 'Not',
-                                    inputs: [
-                                      {
-                                        type: 'PropertyNode',
-                                        predicate: 'withdraw',
-                                        inputs: ['c_su']
-                                      }
-                                    ]
-                                  },
-                                  {
-                                    type: 'PropertyNode',
-                                    predicate: 'IsValidSignature',
-                                    inputs: ['tx', 'maker']
-                                  }
-                                ]
-                              }
-                            ]
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        },
-        {
-          name: 'exit_correspondent',
-          inputDefs: ['c_su', 'maker'],
-          body: {
-            type: 'PropertyNode',
-            predicate: 'Or',
-            inputs: [
-              {
-                type: 'PropertyNode',
-                predicate: 'And',
-                inputs: [
-                  { type: 'PropertyNode', predicate: 'exit', inputs: ['c_su'] },
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'deposit_exists',
-                    inputs: ['c_su.0', 'c_su.1']
-                  }
-                ]
-              },
-              {
-                type: 'PropertyNode',
-                predicate: 'ThereExistsSuchThat',
-                inputs: [
-                  { type: 'PropertyNode', predicate: 'Tx', inputs: ['c_su.1'] },
-                  'tx',
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'IsValidSignature',
-                    inputs: ['maker']
-                  }
-                ]
-              }
+              { type: 'PropertyNode', predicate: 'A', inputs: [] },
+              'a',
+              { type: 'PropertyNode', predicate: 'a', inputs: [] }
             ]
           }
         }

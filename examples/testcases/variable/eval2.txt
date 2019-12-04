@@ -1,0 +1,4 @@
+def evalTest() :=
+with A() as a {
+  a()
+}
