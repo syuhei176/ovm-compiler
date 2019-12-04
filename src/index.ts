@@ -9,17 +9,17 @@
  * compile
  * disassemble
  */
-import { Parser } from './parser'
-import { SolidityCodeGenerator } from './generator'
-import { Transpiler } from './transpiler'
+import * as parser from './parser'
+import * as generator from './generator'
+import * as transpiler from './transpiler'
 
-export { Parser, SolidityCodeGenerator, Transpiler }
+export { parser, generator, transpiler }
 
 export function generateSolidityCode(source: string): string {
-  const parser = new Parser()
-  const compiledPredicates = Transpiler.calculateInteractiveNodes(
-    parser.parse(source)
+  const chamberParser = new parser.Parser()
+  const compiledPredicates = transpiler.Transpiler.calculateInteractiveNodes(
+    chamberParser.parse(source)
   )
-  const generator = new SolidityCodeGenerator()
-  return generator.generate(compiledPredicates)
+  const codeGenerator = new generator.SolidityCodeGenerator()
+  return codeGenerator.generate(compiledPredicates)
 }
