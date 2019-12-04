@@ -21,3 +21,7 @@ export function isComparisonPredicate(predicate: any) {
 export function toCapitalCase(name: string) {
   return name[0].toUpperCase() + name.substr(1)
 }
+
+export function isUpperCase(name: string): boolean {
+  return name == name.toUpperCase()
+}

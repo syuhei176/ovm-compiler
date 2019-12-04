@@ -1,0 +1,8 @@
+def stateUpdate(token, range, block_number, so) :=
+  with Bytes() as tx {
+    Eq(tx.adderss, Tx.address)
+    and Eq(tx.0, token)
+    and Within(tx.1, range)
+    and Eq(tx.2, block_number)
+    and so()
+  }

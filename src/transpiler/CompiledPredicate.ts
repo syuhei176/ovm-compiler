@@ -25,8 +25,29 @@ export interface IntermediateCompiledPredicateDef {
 
 export interface AtomicProposition {
   type: 'AtomicProposition'
-  predicate: string
+  predicate: Predicate
   inputs: CompiledInput[]
 }
 
+export type Predicate = AtomicPredicate | InputPredicate | VariablePredicate
+
+export interface AtomicPredicate {
+  type: 'AtomicPredicate'
+  source: string
+}
+
+export interface InputPredicate {
+  type: 'InputPredicate'
+  source: CompiledInput
+}
+
+export interface VariablePredicate {
+  type: 'VariablePredicate'
+}
+
+/**
+ * challengeInput -1
+ * inputs[0] is 0
+ * inputs[0].inputs[0] is [0, 0]
+ */
 export type CompiledInput = number | number[]

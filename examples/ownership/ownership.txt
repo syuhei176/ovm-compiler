@@ -1,0 +1,4 @@
+def ownership(owner) :=
+  with Bytes() as signature {
+    IsValidSignature(tx, owner, signature)
+  }

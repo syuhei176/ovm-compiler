@@ -9,11 +9,11 @@ import "./NotPredicate.sol";
 
 
 /**
- * ChildEq(a)
+ * EvalTest()
  */
-contract ChildEq {
+contract EvalTest {
   
-    bytes32 public ChildEqT;
+    bytes32 public EvalTestT;
   
     UniversalAdjudicationContract AdjudicationContract;
     AtomicPredicate SU;
@@ -26,7 +26,7 @@ contract ChildEq {
     constructor(address _adjudicationContractAddress) {
       AdjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
       
-      ChildEqT = keccak256("ChildEqT");
+      EvalTestT = keccak256("EvalTestT");
       
     }
     /**
@@ -56,8 +56,8 @@ contract ChildEq {
   function decideTrue(bytes[] memory _inputs, bytes memory _witness) public {
     bytes32 input0 = bytesToBytes32(_inputs[0]);
     
-    if(input0 == ChildEqT) {
-      decideTrueChildEqT(_inputs, _witness);
+    if(input0 == EvalTestT) {
+      decideTrueEvalTestT(_inputs, _witness);
     }
     
   }
@@ -65,9 +65,9 @@ contract ChildEq {
   
   
   /**
-   * Decides ChildEqT(ChildEqT,b,a).
+   * Decides EvalTestT(EvalTestT).
    */
-  function decideTrueChildEqT(bytes[] memory _inputs, bytes memory _witness) public {
+  function decideTrueEvalTestT(bytes[] memory _inputs, bytes memory _witness) public {
       bytes32 propertyHash = keccak256(abi.encode(types.Property({
         predicateAddress: address(this),
         inputs: _inputs
@@ -76,11 +76,8 @@ contract ChildEq {
     
       // check ThereExistsSuchThat
       
-      require(Bytes.decide(_witness));
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: equal,
-        inputs: [_witness,_inputs[2]]
-      }))));
+      require(A.decide(_witness));
+      require(AdjudicationContract.isDecided(keccak256(challengeInput)));
       AdjudicationContract.setPredicateDecision(propertyHash, true);
     
   }
