@@ -1,3 +1,14 @@
+## <small>0.1.4 (2019-12-05)</small>
+
+* 0.1.3 ([4476efb](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4476efb))
+* 0.1.4 ([541f0fe](https://github.com/cryptoeconomicslab/ovm-compiler/commit/541f0fe))
+* update changelog ([c268480](https://github.com/cryptoeconomicslab/ovm-compiler/commit/c268480))
+* fix(transpiler): remove invalid import to fix build ([7d41f7b](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7d41f7b))
+* fix(transpiler): Separate CompiledInput to NormalInput and VariableInput ([ed86754](https://github.com/cryptoeconomicslab/ovm-compiler/commit/ed86754))
+* clean(transpiler): Modify searchInteractiveNode's argument ([3d88d6a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3d88d6a))
+
+
+
 ## <small>0.1.2 (2019-12-04)</small>
 
 * 0.1.2 ([54a8641](https://github.com/cryptoeconomicslab/ovm-compiler/commit/54a8641))
