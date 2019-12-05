@@ -27,12 +27,16 @@ describe('SolidityCodeGenerator', () => {
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'Foo' },
-                    inputs: [1]
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
                   },
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'Bar' },
-                    inputs: [1]
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
                   }
                 ]
               }
@@ -50,12 +54,21 @@ describe('SolidityCodeGenerator', () => {
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'A' },
-                    inputs: [1]
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
                   },
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'TestFA' },
-                    inputs: [-1, -1]
+                    inputs: [
+                      {
+                        type: 'VariableInput',
+                        placeholder: 'TestFA',
+                        children: []
+                      },
+                      { type: 'VariableInput', placeholder: 'b', children: [] }
+                    ]
                   }
                 ]
               }
@@ -101,7 +114,14 @@ describe('SolidityCodeGenerator', () => {
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'Equal' },
-                    inputs: [[-1, 0], 1]
+                    inputs: [
+                      {
+                        type: 'VariableInput',
+                        placeholder: 'b',
+                        children: [0]
+                      },
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
                   }
                 ]
               }
@@ -143,11 +163,24 @@ describe('SolidityCodeGenerator', () => {
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'Foo' },
-                    inputs: [1]
+                    inputs: [
+                      {
+                        type: 'NormalInput',
+                        inputIndex: 1,
+                        children: []
+                      }
+                    ]
                   },
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'InputPredicate', source: 2 },
+                    predicate: {
+                      type: 'InputPredicate',
+                      source: {
+                        type: 'NormalInput',
+                        inputIndex: 2,
+                        children: []
+                      }
+                    },
                     inputs: []
                   }
                 ]

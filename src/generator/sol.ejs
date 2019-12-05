@@ -11,10 +11,11 @@ function getInputs(item, witnessName, doesWitnessExist) {
   if(item.isCompiled) {
     str += item.definition.name + ', '
   }
-  for(var k=0;k < item.inputs.length;k++){
-    if(item.inputs[k] >= 0) {
-      str += "_inputs[" + (item.inputs[k]) + "]"
-    }else{
+  for(var k=0;k < item.inputs.length;k++) {
+    const input = item.inputs[k]
+    if(input.type == 'NormalInput') {
+      str += "_inputs[" + (input.inputIndex) + "]"
+    } else {
       str += witnessName || "challengeInput"
     }
     if(k < item.inputs.length - 1) {
@@ -40,7 +41,7 @@ function isValidChallenge(predicate) {
 
 function getEncodedProperty(innerProperty) {
   if(innerProperty.predicate.type == 'InputPredicate') {
-    return '_inputs[' + innerProperty.predicate.source + ']'
+    return '_inputs[' + innerProperty.predicate.source.inputIndex + ']'
   } else if(innerProperty.predicate.type == 'VariablePredicate') {
     return 'challengeInput'
   } else {
