@@ -90,6 +90,7 @@ describe('Transpiler', () => {
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
                   },
+                  'b',
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'TestFA' },
@@ -156,6 +157,7 @@ describe('Transpiler', () => {
                     predicate: { type: 'AtomicPredicate', source: 'Bytes' },
                     inputs: []
                   },
+                  'b',
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'Equal' },
@@ -281,6 +283,7 @@ describe('Transpiler', () => {
                     predicate: { type: 'AtomicPredicate', source: 'A' },
                     inputs: []
                   },
+                  'a',
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'VariablePredicate' },

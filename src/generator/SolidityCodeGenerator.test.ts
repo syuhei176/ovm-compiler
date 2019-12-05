@@ -58,6 +58,7 @@ describe('SolidityCodeGenerator', () => {
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
                   },
+                  'b',
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'TestFA' },
@@ -111,6 +112,7 @@ describe('SolidityCodeGenerator', () => {
                     predicate: { type: 'AtomicPredicate', source: 'Bytes' },
                     inputs: []
                   },
+                  'b',
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'AtomicPredicate', source: 'Equal' },
@@ -225,6 +227,7 @@ describe('SolidityCodeGenerator', () => {
                     predicate: { type: 'AtomicPredicate', source: 'A' },
                     inputs: []
                   },
+                  'b',
                   {
                     type: 'AtomicProposition',
                     predicate: { type: 'VariablePredicate' },
