@@ -201,7 +201,11 @@ function getPredicate(inputDefs: string[], name: string): Predicate {
   if (inputIndex >= 0) {
     return {
       type: 'InputPredicate',
-      source: inputIndex
+      source: {
+        type: 'NormalInput',
+        inputIndex: inputIndex,
+        children: []
+      }
     }
   } else if (utils.isUpperCase(name[0])) {
     return {
@@ -222,9 +226,34 @@ function getInputIndex(inputDefs: string[], inputs: string[]): CompiledInput[] {
       const nameArr = name.split('.')
       const parent = nameArr[0]
       const child = nameArr[1]
-      return [inputDefs.indexOf(parent), Number(child)]
+      const inputIndex = inputDefs.indexOf(parent)
+      if (inputIndex >= 0) {
+        return {
+          type: 'NormalInput',
+          inputIndex: inputDefs.indexOf(parent),
+          children: [Number(child)]
+        }
+      } else {
+        return {
+          type: 'VariableInput',
+          placeholder: parent,
+          children: [Number(child)]
+        }
+      }
     } else {
-      return inputDefs.indexOf(name)
+      const inputIndex = inputDefs.indexOf(name)
+      if (inputIndex >= 0) {
+        return {
+          type: 'NormalInput',
+          inputIndex: inputDefs.indexOf(name),
+          children: []
+        }
+      }
+    }
+    return {
+      type: 'VariableInput',
+      placeholder: name,
+      children: []
     }
   })
 }

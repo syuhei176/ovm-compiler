@@ -38,7 +38,7 @@ export interface AtomicPredicate {
 
 export interface InputPredicate {
   type: 'InputPredicate'
-  source: CompiledInput
+  source: NormalInput
 }
 
 export interface VariablePredicate {
@@ -50,4 +50,16 @@ export interface VariablePredicate {
  * inputs[0] is 0
  * inputs[0].inputs[0] is [0, 0]
  */
-export type CompiledInput = number | number[]
+export type CompiledInput = NormalInput | VariableInput
+
+export interface NormalInput {
+  type: 'NormalInput'
+  inputIndex: number
+  children: number[]
+}
+
+export interface VariableInput {
+  type: 'VariableInput'
+  placeholder: string
+  children: number[]
+}
