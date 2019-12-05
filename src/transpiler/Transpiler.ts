@@ -6,7 +6,6 @@ import {
   AtomicProposition,
   Predicate
 } from './CompiledPredicate'
-import * as primitive from './primitive'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 
 /**
