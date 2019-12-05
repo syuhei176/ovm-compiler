@@ -154,7 +154,7 @@ contract <%= claimDef.name %> {
         <% } %>
       <% } else if(property.definition.predicate == 'ForAllSuchThat') {
         const quantifier = property.definition.inputs[0];
-        const innerProperty = property.definition.inputs[1];
+        const innerProperty = property.definition.inputs[2];
         %>
       require(<%= quantifier.predicate.source %>.decide(<%=getInputs(quantifier)%>, challengeInput));
       return type.Property({
@@ -190,7 +190,7 @@ contract <%= claimDef.name %> {
       // check ThereExistsSuchThat
       <%
         const quantifier = property.definition.inputs[0]
-        const innerProperty = property.definition.inputs[1]
+        const innerProperty = property.definition.inputs[2]
       %>
       require(<%= quantifier.predicate.source %>.decide(<%= getInputs(quantifier, "_witness", true) %>));
       require(AdjudicationContract.isDecided(keccak256(<%= getEncodedProperty(innerProperty) %>)));

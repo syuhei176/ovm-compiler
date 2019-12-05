@@ -4,6 +4,7 @@ import {
   CompiledPredicate,
   IntermediateCompiledPredicate,
   AtomicProposition,
+  Placeholder,
   Predicate
 } from './CompiledPredicate'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
@@ -92,7 +93,7 @@ function searchInteractiveNode(
       }
       //      inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
     }
-    let children = []
+    let children: (AtomicProposition | Placeholder)[] = []
     if (
       property.predicate == 'ForAllSuchThat' ||
       property.predicate == 'ThereExistsSuchThat'
@@ -121,8 +122,10 @@ function searchInteractiveNode(
         property.inputs[0],
         newContract.definition.inputDefs
       )
+      // placeholder
+      children[1] = property.inputs[1] as string
       // innerProperty
-      children[1] = searchInteractiveNode(
+      children[2] = searchInteractiveNode(
         contracts,
         property.inputs[2],
         newContract.definition.inputDefs,
@@ -135,10 +138,7 @@ function searchInteractiveNode(
       property.predicate == 'Not'
     ) {
       property.inputs.forEach(
-        (
-          p: PropertyNode | IntermediateCompiledPredicate | string | undefined,
-          i: number
-        ) => {
+        (p: PropertyNode | string | undefined, i: number) => {
           if (typeof p == 'string' || p == undefined) {
             throw new Error(`property.inputs[${i}] must not be string`)
           }

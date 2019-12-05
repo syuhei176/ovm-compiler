@@ -21,7 +21,7 @@ export interface IntermediateCompiledPredicateDef {
   // logical connective
   predicate: string
   inputDefs: string[]
-  inputs: AtomicProposition[]
+  inputs: (AtomicProposition | Placeholder)[]
 }
 
 export interface AtomicProposition {
@@ -29,6 +29,8 @@ export interface AtomicProposition {
   predicate: Predicate
   inputs: CompiledInput[]
 }
+
+export type Placeholder = string
 
 export type Predicate = AtomicPredicate | InputPredicate | VariablePredicate
 
