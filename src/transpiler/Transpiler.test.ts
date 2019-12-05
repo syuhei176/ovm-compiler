@@ -95,9 +95,8 @@ describe('Transpiler', () => {
                     predicate: { type: 'AtomicPredicate', source: 'TestFA' },
                     inputs: [
                       {
-                        type: 'VariableInput',
-                        placeholder: 'TestFA',
-                        children: []
+                        type: 'LabelInput',
+                        label: 'TestFA'
                       },
                       { type: 'VariableInput', placeholder: 'b', children: [] }
                     ]

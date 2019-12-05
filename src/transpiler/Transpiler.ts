@@ -164,7 +164,7 @@ function searchInteractiveNode(
         type: 'AtomicPredicate',
         source: newContract.definition.name
       },
-      inputs: getInputIndex(parentInputDefs, newInputDefs)
+      inputs: getInputIndex(parentInputDefs, newInputDefs, true)
     }
   } else {
     return {
@@ -198,8 +198,12 @@ function getPredicate(inputDefs: string[], name: string): Predicate {
   }
 }
 
-function getInputIndex(inputDefs: string[], inputs: string[]): CompiledInput[] {
-  return inputs.map(name => {
+function getInputIndex(
+  inputDefs: string[],
+  inputs: string[],
+  isFirstInputLabel: boolean = false
+): CompiledInput[] {
+  return inputs.map((name, index) => {
     if (name.indexOf('.') > 0) {
       // in case of that name is bind operator
       const nameArr = name.split('.')
@@ -229,10 +233,17 @@ function getInputIndex(inputDefs: string[], inputs: string[]): CompiledInput[] {
         }
       }
     }
-    return {
-      type: 'VariableInput',
-      placeholder: name,
-      children: []
+    if (isFirstInputLabel && index == 0) {
+      return {
+        type: 'LabelInput',
+        label: name
+      }
+    } else {
+      return {
+        type: 'VariableInput',
+        placeholder: name,
+        children: []
+      }
     }
   })
 }
