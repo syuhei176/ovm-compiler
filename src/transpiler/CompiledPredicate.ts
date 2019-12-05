@@ -51,7 +51,12 @@ export interface VariablePredicate {
  * inputs[0] is 0
  * inputs[0].inputs[0] is [0, 0]
  */
-export type CompiledInput = NormalInput | VariableInput
+export type CompiledInput = LabelInput | NormalInput | VariableInput
+
+export interface LabelInput {
+  type: 'LabelInput'
+  label: string
+}
 
 export interface NormalInput {
   type: 'NormalInput'
