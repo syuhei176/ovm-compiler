@@ -6,7 +6,7 @@ import {
   AtomicProposition,
   Predicate
 } from './CompiledPredicate'
-
+import * as primitive from './primitive'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 
 /**
@@ -47,24 +47,7 @@ function calculateInteractiveNodesPerProperty(
   if (p.body == null) {
     throw new Error('p.body must not be null')
   }
-  searchInteractiveNode(
-    newContracts,
-    p.body,
-    {
-      type: 'IntermediateCompiledPredicate',
-      isCompiled: true,
-      originalPredicateName: '',
-      definition: {
-        type: 'IntermediateCompiledPredicateDef',
-        name: '',
-        predicate: '',
-        inputDefs: p.inputDefs,
-        inputs: []
-      }
-    },
-    name,
-    ''
-  )
+  searchInteractiveNode(newContracts, p.body, p.inputDefs, name, '')
   return {
     type: 'CompiledPredicate',
     name,
@@ -84,7 +67,7 @@ function calculateInteractiveNodesPerProperty(
 function searchInteractiveNode(
   contracts: IntermediateCompiledPredicate[],
   property: PropertyNode,
-  parent: IntermediateCompiledPredicate,
+  parentInputDefs: string[],
   name?: string,
   parentSuffix?: string
 ): AtomicProposition {
@@ -137,13 +120,13 @@ function searchInteractiveNode(
       children[0] = searchInteractiveNode(
         contracts,
         property.inputs[0],
-        newContract
+        newContract.definition.inputDefs
       )
       // innerProperty
       children[1] = searchInteractiveNode(
         contracts,
         property.inputs[2],
-        newContract,
+        newContract.definition.inputDefs,
         name,
         suffix
       )
@@ -166,7 +149,7 @@ function searchInteractiveNode(
           children[i] = searchInteractiveNode(
             contracts,
             p,
-            newContract,
+            newContract.definition.inputDefs,
             name,
             suffix + (i + 1)
           )
@@ -182,16 +165,13 @@ function searchInteractiveNode(
         type: 'AtomicPredicate',
         source: newContract.definition.name
       },
-      inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
+      inputs: getInputIndex(parentInputDefs, newInputDefs)
     }
   } else {
     return {
       type: 'AtomicProposition',
-      predicate: getPredicate(parent.definition.inputDefs, property.predicate),
-      inputs: getInputIndex(
-        parent.definition.inputDefs,
-        property.inputs as string[]
-      )
+      predicate: getPredicate(parentInputDefs, property.predicate),
+      inputs: getInputIndex(parentInputDefs, property.inputs as string[])
     }
   }
 }

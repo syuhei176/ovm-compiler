@@ -18,6 +18,7 @@ export interface IntermediateCompiledPredicate {
 export interface IntermediateCompiledPredicateDef {
   type: 'IntermediateCompiledPredicateDef'
   name: string
+  // logical connective
   predicate: string
   inputDefs: string[]
   inputs: AtomicProposition[]
