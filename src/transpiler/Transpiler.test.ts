@@ -1,4 +1,4 @@
-import { Transpiler } from './'
+import { createCompiledPredicates } from './'
 import { PropertyDef } from '../parser/PropertyDef'
 
 describe('Transpiler', () => {
@@ -39,7 +39,7 @@ describe('Transpiler', () => {
           }
         }
       ]
-      const output = Transpiler.calculateInteractiveNodes(input)
+      const output = createCompiledPredicates(input)
       expect(output).toEqual([
         {
           type: 'CompiledPredicate',
@@ -100,7 +100,8 @@ describe('Transpiler', () => {
                         label: 'TestFA'
                       },
                       { type: 'VariableInput', placeholder: 'b', children: [] }
-                    ]
+                    ],
+                    isCompiled: true
                   }
                 ]
               }
@@ -134,7 +135,7 @@ describe('Transpiler', () => {
           }
         }
       ]
-      const output = Transpiler.calculateInteractiveNodes(input)
+      const output = createCompiledPredicates(input)
 
       expect(output).toEqual([
         {
@@ -194,7 +195,7 @@ describe('Transpiler', () => {
         }
       ]
 
-      const output = Transpiler.calculateInteractiveNodes(input)
+      const output = createCompiledPredicates(input)
 
       expect(output).toEqual([
         {
@@ -260,7 +261,7 @@ describe('Transpiler', () => {
         }
       ]
 
-      const output = Transpiler.calculateInteractiveNodes(input)
+      const output = createCompiledPredicates(input)
 
       expect(output).toEqual([
         {

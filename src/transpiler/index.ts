@@ -1,5 +1,5 @@
-import * as Transpiler from './Transpiler'
+import { createCompiledPredicates } from './Transpiler'
 
-export { Transpiler }
+export { createCompiledPredicates }
 
 export * from './CompiledPredicate'

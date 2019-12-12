@@ -17,7 +17,7 @@ export { parser, generator, transpiler }
 
 export function generateSolidityCode(source: string): string {
   const chamberParser = new parser.Parser()
-  const compiledPredicates = transpiler.Transpiler.calculateInteractiveNodes(
+  const compiledPredicates = transpiler.createCompiledPredicates(
     chamberParser.parse(source)
   )
   const codeGenerator = new generator.SolidityCodeGenerator()

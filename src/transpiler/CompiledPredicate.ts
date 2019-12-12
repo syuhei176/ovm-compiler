@@ -28,6 +28,7 @@ export interface AtomicProposition {
   type: 'AtomicProposition'
   predicate: Predicate
   inputs: CompiledInput[]
+  isCompiled?: boolean
 }
 
 export type Placeholder = string

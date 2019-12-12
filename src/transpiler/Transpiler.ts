@@ -33,7 +33,7 @@ import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
  * }
  * ```
  */
-export function calculateInteractiveNodes(
+export function createCompiledPredicates(
   claimDefinitions: PropertyDef[]
 ): CompiledPredicate[] {
   return claimDefinitions.map(calculateInteractiveNodesPerProperty)
@@ -164,7 +164,8 @@ function searchInteractiveNode(
         type: 'AtomicPredicate',
         source: newContract.definition.name
       },
-      inputs: getInputIndex(parentInputDefs, newInputDefs, true)
+      inputs: getInputIndex(parentInputDefs, newInputDefs, true),
+      isCompiled: true
     }
   } else {
     return {

@@ -1,4 +1,7 @@
 def ownership(owner) :=
-  with Bytes() as signature {
-    IsValidSignature(tx, owner, signature)
+  with Bytes() as tx {
+    StateUpdate(tx, su)
+    and with Bytes() as signature {
+      IsValidSignature(tx, owner, signature)
+    }
   }

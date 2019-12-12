@@ -1,0 +1,33 @@
+    /**
+     * Decides <%= property.definition.name %>(<%= property.definition.inputDefs %>).
+     */
+    function decide<%= property.definition.name %>(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+<% if(property.definition.predicate == 'And') { -%>
+        // And logical connective
+<%
+for(var j = 0;j < property.definition.inputs.length;j++) {
+var item = property.definition.inputs[j]
+-%>
+        require(<%= item.predicate.source %>.decide([<%= getInputs(item) %>], _witness));
+<% } -%>
+<% } else if(property.definition.predicate == 'ThereExistsSuchThat') { -%>
+        // check ThereExistsSuchThat
+<%
+const quantifier = property.definition.inputs[0]
+const innerProperty = property.definition.inputs[2]
+-%>
+        require(<%= quantifier.predicate.source %>.decide(<%= getInputs(quantifier, "_witness", true) %>));
+        require(<%= innerProperty.predicate.source %>.decide([<%= getInputs(innerProperty) %>], _witness));
+<% } else if(property.definition.predicate == 'Or') { -%>
+        // check Or
+        var result = false
+<%
+for(var j = 0;j < property.definition.inputs.length;j++) {
+var item = property.definition.inputs[j]
+console.log(item.predicate)
+-%>
+        result = result | require(<%= item.predicate.source %>.decide([<%= getInputs(item) %>], _witness))
+<% } -%>
+        require(result);
+<% } -%>
+    }

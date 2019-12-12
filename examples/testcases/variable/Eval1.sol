@@ -56,14 +56,23 @@ contract EvalTest {
   /**
    * @dev check the property is true
    */
-  function decideTrue(bytes[] memory _inputs, bytes memory _witness) public {
+  function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
     bytes32 input0 = bytesToBytes32(_inputs[0]);
     
     if(input0 == EvalTestA) {
-      decideTrueEvalTestA(_inputs, _witness);
+      decideEvalTestA(_inputs, _witness);
     }
     
   }
+
+    function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
+        require(decide(_inputs, _witness), "must be true");
+        types.Property memory property = types.Property({
+            predicateAddress: address(this),
+            inputs: _inputs
+        });
+        adjudicationContract.setPredicateDecision(utils.getPropertyId(property), true);
+    }
 
   
   
@@ -74,17 +83,21 @@ contract EvalTest {
       
         
         if(challengeInput == 0) {
+      
           return type.Property({
             predicateAddress: Not,
             inputs: [abi.encode(type.Property({predicateAddress: Foo,inputs: [_inputs[1]]}))]
           });
+      
         }
         
         if(challengeInput == 1) {
+      
           return type.Property({
             predicateAddress: Not,
             inputs: [_inputs[2]]
           });
+      
         }
         
       
@@ -93,32 +106,16 @@ contract EvalTest {
   /**
    * Decides EvalTestA(EvalTestA,a,b).
    */
-  function decideTrueEvalTestA(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
+  function decideEvalTestA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
     
-      // check And
+      // And logical connective
       
-      require(AdjudicationContract.isDecided(keccak256(abi.encode(type.Property({predicateAddress: Foo,inputs: [_inputs[1]]})))));
+      require(Foo.decide([_inputs[1]], _witness));
       
-      require(AdjudicationContract.isDecided(keccak256(_inputs[2])));
+      require([object Object].decide([], _witness));
       
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
     
   }
   
-
-  function bytesToBytes32(bytes memory source) returns (bytes32 result) {
-    if (source.length == 0) {
-        return 0x0;
-    }
-
-    assembly {
-        result := mload(add(source, 32))
-    }
-  }
 }
 

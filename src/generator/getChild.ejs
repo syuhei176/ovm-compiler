@@ -1,0 +1,39 @@
+    /**
+     * Gets child of <%= property.definition.name %>(<%= property.inputDefs %>).
+     */
+    function getChild<%= property.definition.name %>(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
+<% if(property.definition.predicate == 'And') { -%>
+<%
+        for(var j = 0;j < property.definition.inputs.length;j++) {
+          var item = property.definition.inputs[j]
+-%>
+        if(challengeInput == <%= j %>) {
+<% if(item.isCompiled) { -%>
+            return getChild<%= item.predicate.source %>([<%=getInputs(item)%>], challengeInputs.subArray(1));
+<% } else { -%>
+            return type.Property({
+                predicateAddress: Not,
+                inputs: [<%= getEncodedProperty(item) %>]
+            });
+<% } -%>
+        }
+<% } -%>
+<% } else if(property.definition.predicate == 'ForAllSuchThat') {
+      const quantifier = property.definition.inputs[0];
+      const innerProperty = property.definition.inputs[2];
+-%>
+        require(<%= quantifier.predicate.source %>.decide(<%=getInputs(quantifier)%>, challengeInput));
+<% if(innerProperty.isCompiled) { -%>
+        return getChild<%= innerProperty.predicate.source %>([<%=getInputs(innerProperty)%>], challengeInputs.subArray(1));
+<% } else { -%>
+        return type.Property({
+            predicateAddress: Not,
+            inputs: [<%= getEncodedProperty(innerProperty) %>]
+        });
+<% } -%>
+<% } else if(property.definition.predicate == 'Not') {
+        const innerProperty = property.definition.inputs[0];
+-%>
+        return <%= getEncodedProperty(innerProperty) %>;
+<% } -%>
+    }

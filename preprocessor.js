@@ -3,6 +3,8 @@ const path = require('path')
 
 convert(path.join(__dirname, './src/parser/chamber.peg'))
 convert(path.join(__dirname, './src/generator/sol.ejs'))
+convert(path.join(__dirname, './src/generator/decide.ejs'))
+convert(path.join(__dirname, './src/generator/getChild.ejs'))
 
 function convert(filePath) {
   const data = fs.readFileSync(filePath)
