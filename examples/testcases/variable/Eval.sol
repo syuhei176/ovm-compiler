@@ -85,7 +85,7 @@ contract EvalTest {
             }));
         }
         if(challengeInput == 1) {
-            notInputs[0] = _inputs[2]
+            notInputs[0] = _inputs[2];
         }
         return type.Property({
             predicateAddress: notAddress,

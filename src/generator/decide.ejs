@@ -41,7 +41,7 @@ const innerProperty = property.definition.inputs[2]
         return true;
 <% } else if(property.definition.predicate == 'Or') { -%>
         // check Or
-        var result = false
+        var result = false;
 <%
         property.definition.inputs.forEach((item, index) => {
 -%>

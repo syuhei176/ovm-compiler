@@ -76,27 +76,27 @@ contract OrTest {
     function getChildOrTestO(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
 
         bytes[] memory andInputs = new bytes[](2);
-        bytes[] memory notInputs = new bytes[](1);
+        bytes[] memory notInputs0 = new bytes[](1);
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = _inputs[1];
-            notInputs[0] = abi.encode(type.Property({
+            notInputs0[0] = abi.encode(type.Property({
                 predicateAddress: Foo,
                 inputs: childInputs
             }));
         andInputs[0] = abi.encode(type.Property({
             predicateAddress: notAddress,
-            inputs: notInputs
+            inputs: notInputs0
         }));
-        bytes[] memory notInputs = new bytes[](1);
+        bytes[] memory notInputs1 = new bytes[](1);
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = _inputs[2];
-            notInputs[0] = abi.encode(type.Property({
+            notInputs1[0] = abi.encode(type.Property({
                 predicateAddress: Bar,
                 inputs: childInputs
             }));
         andInputs[1] = abi.encode(type.Property({
             predicateAddress: notAddress,
-            inputs: notInputs
+            inputs: notInputs1
         }));
         return type.Property({
             predicateAddress: And,
@@ -108,7 +108,7 @@ contract OrTest {
      */
     function decideOrTestO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        var result = false
+        var result = false;
         bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
 
