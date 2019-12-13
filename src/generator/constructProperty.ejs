@@ -1,6 +1,6 @@
 <%  if(property.predicate.type == 'InputPredicate') { -%>
 <%    if(property.inputs.length == 0) { -%>
-            <%= valName %> = _inputs[<%= property.predicate.source.inputIndex %>]
+            <%= valName %> = _inputs[<%= property.predicate.source.inputIndex %>];
 <%    } else { -%>
             types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex %>], (types.Property));
             bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
