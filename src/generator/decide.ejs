@@ -5,11 +5,14 @@
 <% if(property.definition.predicate == 'And') { -%>
         // And logical connective
 <%
-for(var j = 0;j < property.definition.inputs.length;j++) {
-var item = property.definition.inputs[j]
+        property.definition.inputs.forEach((item, index) => {
 -%>
-        require(<%= item.predicate.source %>.decide([<%= getInputs(item) %>], _witness));
-<% } -%>
+<%      if(item.isCompiled) { -%>
+        require(decide<%= item.predicate.source %>(childInputs<%= index %>, Utils.subArray(_witness, 1, _witness.length)));
+<%      } else { %>
+<%- include('decideProperty', {property: item, valName: 'childInputs' + index}) -%>
+<%      } %>
+<%      }) -%>
 <% } else if(property.definition.predicate == 'ThereExistsSuchThat') { -%>
         // check ThereExistsSuchThat
 <%
@@ -17,17 +20,27 @@ const quantifier = property.definition.inputs[0]
 const innerProperty = property.definition.inputs[2]
 -%>
         require(<%= quantifier.predicate.source %>.decide(<%= getInputs(quantifier, "_witness", true) %>));
-        require(<%= innerProperty.predicate.source %>.decide([<%= getInputs(innerProperty) %>], _witness));
+        bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
+<%- include('constructInputs', {property: innerProperty, valName: 'childInputs'}) -%>
+<%      if(innerProperty.isCompiled) { -%>
+        require(decide<%= innerProperty.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+<%      } else { %>
+<%- include('decideProperty', {property: innerProperty, valName: 'childInputs'}) -%>
+<%      } %>
 <% } else if(property.definition.predicate == 'Or') { -%>
         // check Or
         var result = false
 <%
-for(var j = 0;j < property.definition.inputs.length;j++) {
-var item = property.definition.inputs[j]
-console.log(item.predicate)
+        property.definition.inputs.forEach((item, index) => {
 -%>
-        result = result | require(<%= item.predicate.source %>.decide([<%= getInputs(item) %>], _witness))
-<% } -%>
+        bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
+<%- include('constructInputs', {property: item, valName: 'childInputs' + index}) -%>
+<%      if(item.isCompiled) { -%>
+        result = result | decide<%= item.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length));
+<%      } else { %>
+        result = result | <%= item.predicate.source %>.decide(childInputs);
+<%      } %>
+<%      }) -%>
         require(result);
 <% } -%>
     }

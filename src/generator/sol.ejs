@@ -22,7 +22,7 @@ contract <%= claimDef.name %> {
 <%
   }
 %>
-    UniversalAdjudicationContract AdjudicationContract;
+    UniversalAdjudicationContract adjudicationContract;
     AtomicPredicate SU;
     AtomicPredicate LessThan;
     AtomicPredicate eval;
@@ -32,7 +32,7 @@ contract <%= claimDef.name %> {
     NotPredicate Not;
 
     constructor(address _adjudicationContractAddress) {
-        AdjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+        adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
     }
 
     /**

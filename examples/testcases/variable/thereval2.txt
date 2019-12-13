@@ -1,0 +1,4 @@
+def thereValTest(a) :=
+with B() as b {
+  a(b)
+}

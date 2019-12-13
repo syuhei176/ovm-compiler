@@ -1,10 +1,19 @@
 const fs = require('fs')
 const path = require('path')
 
-convert(path.join(__dirname, './src/parser/chamber.peg'))
-convert(path.join(__dirname, './src/generator/sol.ejs'))
-convert(path.join(__dirname, './src/generator/decide.ejs'))
-convert(path.join(__dirname, './src/generator/getChild.ejs'))
+const list = [
+  './src/parser/chamber.peg',
+  './src/generator/sol.ejs',
+  './src/generator/decide.ejs',
+  './src/generator/getChild.ejs',
+  './src/generator/constructProperty.ejs',
+  './src/generator/constructInputs.ejs',
+  './src/generator/decideProperty.ejs'
+]
+
+list.forEach(file => {
+  convert(path.join(__dirname, file))
+})
 
 function convert(filePath) {
   const data = fs.readFileSync(filePath)

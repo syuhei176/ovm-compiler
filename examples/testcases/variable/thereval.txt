@@ -1,4 +1,4 @@
-def evalTest() :=
+def thereValTest() :=
 with A() as a {
   a()
 }

@@ -1,39 +1,79 @@
     /**
      * Gets child of <%= property.definition.name %>(<%= property.inputDefs %>).
      */
-    function getChild<%= property.definition.name %>(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-<% if(property.definition.predicate == 'And') { -%>
+    function getChild<%= property.definition.name %>(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+<%  if(property.definition.predicate == 'And') { -%>
+        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        bytes[] memory notInputs = new bytes[](1);
 <%
-        for(var j = 0;j < property.definition.inputs.length;j++) {
-          var item = property.definition.inputs[j]
+      for(var j = 0;j < property.definition.inputs.length;j++) {
+        var item = property.definition.inputs[j]
 -%>
         if(challengeInput == <%= j %>) {
-<% if(item.isCompiled) { -%>
-            return getChild<%= item.predicate.source %>([<%=getInputs(item)%>], challengeInputs.subArray(1));
-<% } else { -%>
-            return type.Property({
-                predicateAddress: Not,
-                inputs: [<%= getEncodedProperty(item) %>]
-            });
-<% } -%>
+<%      if(item.isCompiled) { -%>
+            bytes[] memory childInputs = new bytes[](<%= item.inputs.length %>);
+<%- include('constructInputs', {property: item, valName: 'childInputs'}) -%>
+            return getChild<%= item.predicate.source %>(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
+<%      } else { -%>
+<%-  include('constrcutProperty', {property: item, valName: 'notInputs[0]'}) -%>
+<%      } -%>
         }
-<% } -%>
-<% } else if(property.definition.predicate == 'ForAllSuchThat') {
+<%    } -%>
+        return type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        });
+<%  } else if(property.definition.predicate == 'ForAllSuchThat') {
       const quantifier = property.definition.inputs[0];
       const innerProperty = property.definition.inputs[2];
 -%>
-        require(<%= quantifier.predicate.source %>.decide(<%=getInputs(quantifier)%>, challengeInput));
-<% if(innerProperty.isCompiled) { -%>
-        return getChild<%= innerProperty.predicate.source %>([<%=getInputs(innerProperty)%>], challengeInputs.subArray(1));
-<% } else { -%>
+        require(<%= quantifier.predicate.source %>.decide(<%=getInputs(quantifier)%>, challengeInputs[0]));
+<%    if(innerProperty.isCompiled) { -%>
+        bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
+<%- include('constructInputs', {property: innerProperty, valName: 'childInputs'}) -%>
+        return getChild<%= innerProperty.predicate.source %>(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
+<%    } else { -%>
+        bytes[] memory notInputs = new bytes[](1);
+<%-  include('constrcutProperty', {property: innerProperty, valName: 'notInputs[0]'}) -%>
         return type.Property({
-            predicateAddress: Not,
-            inputs: [<%= getEncodedProperty(innerProperty) %>]
+            predicateAddress: notAddress,
+            inputs: notInputs
         });
-<% } -%>
-<% } else if(property.definition.predicate == 'Not') {
+<%    } -%>
+<%  } else if(property.definition.predicate == 'Not') {
         const innerProperty = property.definition.inputs[0];
 -%>
-        return <%= getEncodedProperty(innerProperty) %>;
-<% } -%>
+        bytes memory property;
+<%-  include('constrcutProperty', {property: innerProperty, valName: 'property'}) -%>
+        return property;
+<%  } else if(property.definition.predicate == 'ThereExistsSuchThat') {
+        const quantifier = property.definition.inputs[0];
+        const innerProperty = property.definition.inputs[2];
+-%>
+        bytes[] memory forAllSuchThatInputs = new bytes[](3);
+        bytes[] memory notInputs = new bytes[](1);
+<%-  include('constrcutProperty', {property: innerProperty, valName: 'notInputs[0]'}) -%>
+        forAllSuchThatInputs[0] = bytes("");
+        forAllSuchThatInputs[1] = bytes("<%= property.definition.inputs[1] %>");
+        forAllSuchThatInputs[2] = abi.encode(types.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        }));
+<%  } else if(property.definition.predicate == 'Or') {  %>
+        bytes[] memory andInputs = new bytes[](<%= property.definition.inputs.length %>);
+<%
+        property.definition.inputs.forEach((item, index) => {
+-%>
+        bytes[] memory notInputs = new bytes[](1);
+<%-  include('constrcutProperty', {property: item, valName: 'notInputs[0]'}) -%>
+        andInputs[<%= index %>] = abi.encode(type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        }));
+<%      }) -%>
+        return type.Property({
+            predicateAddress: And,
+            inputs: andInputs
+        });
+<%  } -%>
     }

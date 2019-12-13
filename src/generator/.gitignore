@@ -1,3 +1,6 @@
 sol.ts
 decide.ts
 getChild.ts
+constructProperty.ts
+constructInputs.ts
+decideProperty.ts
