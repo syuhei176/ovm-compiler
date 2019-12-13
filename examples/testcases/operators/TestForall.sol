@@ -74,10 +74,13 @@ contract ForallTest {
      * Gets child of ForallTestF().
      */
     function getChildForallTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        require(A.decide(_inputs[1], challengeInputs[0]));
+        bytes[] memory quantifierInputs = new bytes[](2);
+            quantifierInputs[0] = _inputs[1];
+        quantifierInputs[1] = challengeInputs[0];
+        require(AtomicPredicate(A).decide(quantifierInputs));
         bytes[] memory notInputs = new bytes[](1);
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[];
+            childInputs[0] = challengeInputs[0];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Foo,
                 inputs: childInputs
@@ -91,6 +94,7 @@ contract ForallTest {
      * Decides ForallTestF(ForallTestF,a).
      */
     function decideForallTestF(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        return false;
     }
 
 }

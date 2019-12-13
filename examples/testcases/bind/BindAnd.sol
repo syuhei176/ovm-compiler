@@ -74,11 +74,12 @@ contract BindAndTest {
      * Gets child of BindAndTestA().
      */
     function getChildBindAndTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
+            childInputs[0] = inputProperty1.inputs[0];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Foo,
                 inputs: childInputs
@@ -86,7 +87,7 @@ contract BindAndTest {
         }
         if(challengeInput == 1) {
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
+            childInputs[0] = inputProperty1.inputs[1];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Bar,
                 inputs: childInputs
@@ -101,17 +102,19 @@ contract BindAndTest {
      * Decides BindAndTestA(BindAndTestA,a).
      */
     function decideBindAndTestA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         // And logical connective
 
             bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
+            childInputs0[0] = inputProperty1.inputs[0];
             require(Foo.decide(childInputs0));
 
 
             bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = _inputs[1];
+            childInputs1[0] = inputProperty1.inputs[1];
             require(Bar.decide(childInputs1));
 
+        return true;
     }
 
 }

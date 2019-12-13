@@ -77,7 +77,7 @@ contract ThereTest {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[];
+            childInputs[0] = challengeInputs[0];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Foo,
                 inputs: childInputs
@@ -94,14 +94,17 @@ contract ThereTest {
      */
     function decideThereTestT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        require(A.decide(_witness));
+        bytes[] memory quantifierInputs = new bytes[](1);
+        quantifierInputs[0] = _witness[0];
+        require(AtomicPredicate(A).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](1);
-            childInputs[0] = _inputs[];
+            childInputs[0] = witness[0];
 
             bytes[] memory childInputs = new bytes[](1);
-            childInputs[0] = _inputs[];
+            childInputs[0] = witness[0];
             require(Foo.decide(childInputs));
 
+        return true;
     }
 
 }

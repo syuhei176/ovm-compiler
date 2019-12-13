@@ -112,6 +112,7 @@ contract AndTest {
             childInputs1[0] = _inputs[2];
             require(Bar.decide(childInputs1));
 
+        return true;
     }
 
 }

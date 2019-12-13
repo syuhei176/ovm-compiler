@@ -120,6 +120,7 @@ contract OrTest {
         result = result | Bar.decide(childInputs);
 
         require(result);
+        return true;
     }
 
 }

@@ -30,7 +30,7 @@
 <%    } -%>
 <%  } else { -%>
             bytes[] memory childInputs = new bytes[](2);
-<%- include('constructInputs', {property: property, valName: 'childInputs'}) -%>
+<%- include('constructInputs', {property: property, valName: 'childInputs', witnessName: 'challengeInputs'}) -%>
             <%= valName %> = abi.encode(type.Property({
                 predicateAddress: <%= property.predicate.source %>,
                 inputs: childInputs

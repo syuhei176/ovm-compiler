@@ -51,7 +51,8 @@ describe('Transpiler', () => {
                         { type: 'NormalInput', inputIndex: 2, children: [] }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -104,7 +105,8 @@ describe('Transpiler', () => {
                         { type: 'NormalInput', inputIndex: 2, children: [] }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -149,7 +151,8 @@ describe('Transpiler', () => {
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -208,7 +211,8 @@ describe('Transpiler', () => {
                         }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -265,7 +269,8 @@ describe('Transpiler', () => {
                         }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -320,7 +325,8 @@ describe('Transpiler', () => {
                         { type: 'NormalInput', inputIndex: 1, children: [1] }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: [1]
                 }
               }
             ]
@@ -378,7 +384,8 @@ describe('Transpiler', () => {
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -386,7 +393,6 @@ describe('Transpiler', () => {
         ])
       })
     })
-
     describe('variable', () => {
       test('eval1', () => {
         const input: PropertyDef[] = [
@@ -439,7 +445,8 @@ describe('Transpiler', () => {
                       },
                       inputs: []
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -492,7 +499,8 @@ describe('Transpiler', () => {
                       predicate: { type: 'VariablePredicate' },
                       inputs: []
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -543,7 +551,8 @@ describe('Transpiler', () => {
                       predicate: { type: 'VariablePredicate' },
                       inputs: []
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]
@@ -607,7 +616,8 @@ describe('Transpiler', () => {
                         }
                       ]
                     }
-                  ]
+                  ],
+                  propertyInputs: []
                 }
               }
             ]

@@ -77,7 +77,7 @@ contract BindValTest {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[];
+            childInputs[0] = challengeInputs[0];
             childInputs[1] = _inputs[1];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Foo,
@@ -95,16 +95,19 @@ contract BindValTest {
      */
     function decideBindValTestT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        require(Bytes.decide(_witness));
+        bytes[] memory quantifierInputs = new bytes[](1);
+        quantifierInputs[0] = _witness[0];
+        require(AtomicPredicate(Bytes).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[];
+            childInputs[0] = witness[0];
             childInputs[1] = _inputs[1];
 
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[];
+            childInputs[0] = witness[0];
             childInputs[1] = _inputs[1];
             require(Foo.decide(childInputs));
 
+        return true;
     }
 
 }

@@ -74,7 +74,10 @@ contract ForValTest {
      * Gets child of ForValTestF().
      */
     function getChildForValTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        require(A.decide(_inputs[1], challengeInputs[0]));
+        bytes[] memory quantifierInputs = new bytes[](2);
+            quantifierInputs[0] = _inputs[1];
+        quantifierInputs[1] = challengeInputs[0];
+        require(AtomicPredicate(A).decide(quantifierInputs));
         bytes[] memory notInputs = new bytes[](1);
             notInputs[0] = challengeInput
         return type.Property({
@@ -86,6 +89,7 @@ contract ForValTest {
      * Decides ForValTestF(ForValTestF,a).
      */
     function decideForValTestF(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        return false;
     }
 
 }

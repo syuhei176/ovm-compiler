@@ -39,7 +39,8 @@ describe('SolidityCodeGenerator', () => {
                       { type: 'NormalInput', inputIndex: 2, children: [] }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -86,7 +87,8 @@ describe('SolidityCodeGenerator', () => {
                       { type: 'NormalInput', inputIndex: 2, children: [] }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -126,7 +128,8 @@ describe('SolidityCodeGenerator', () => {
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -178,7 +181,8 @@ describe('SolidityCodeGenerator', () => {
                       }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -234,7 +238,8 @@ describe('SolidityCodeGenerator', () => {
                       }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -286,7 +291,8 @@ describe('SolidityCodeGenerator', () => {
                       { type: 'NormalInput', inputIndex: 1, children: [1] }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: [1]
               }
             }
           ]
@@ -337,7 +343,8 @@ describe('SolidityCodeGenerator', () => {
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -391,7 +398,8 @@ describe('SolidityCodeGenerator', () => {
                     },
                     inputs: []
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -437,7 +445,8 @@ describe('SolidityCodeGenerator', () => {
                     predicate: { type: 'VariablePredicate' },
                     inputs: []
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -481,7 +490,8 @@ describe('SolidityCodeGenerator', () => {
                     predicate: { type: 'VariablePredicate' },
                     inputs: []
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]
@@ -538,7 +548,8 @@ describe('SolidityCodeGenerator', () => {
                       }
                     ]
                   }
-                ]
+                ],
+                propertyInputs: []
               }
             }
           ]

@@ -89,9 +89,9 @@ function searchInteractiveNode(
         name: makeContractName(name, suffix),
         predicate: property.predicate,
         inputDefs: newInputDefs,
-        inputs: []
+        inputs: [],
+        propertyInputs: []
       }
-      //      inputs: getInputIndex(parent.definition.inputDefs, newInputDefs)
     }
     let children: (AtomicProposition | Placeholder)[] = []
     if (
@@ -156,6 +156,10 @@ function searchInteractiveNode(
       )
     }
     newContract.definition.inputs = children
+    newContract.definition.propertyInputs = getPropertyInputIndexes(
+      newInputDefs,
+      children
+    )
     // If not atomic proposition, generate a contract
     contracts.push(newContract)
     return {
@@ -197,6 +201,31 @@ function getPredicate(inputDefs: string[], name: string): Predicate {
       type: 'VariablePredicate'
     }
   }
+}
+
+function getPropertyInputIndexes(
+  inputDefs: string[],
+  children: (AtomicProposition | Placeholder)[]
+): number[] {
+  const allInputs = children.reduce((acc: CompiledInput[], c) => {
+    if (typeof c != 'string') {
+      return acc.concat(c.inputs)
+    }
+    return acc
+  }, [])
+  return allInputs
+    .map(input => {
+      if (input.type == 'NormalInput') {
+        if (input.children.length > 0) {
+          return input.inputIndex
+        }
+      }
+      return -1
+    })
+    .filter(i => i >= 0)
+    .filter(function(x, i, self) {
+      return self.indexOf(x) === i
+    })
 }
 
 function getInputIndex(

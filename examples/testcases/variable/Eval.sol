@@ -105,6 +105,7 @@ contract EvalTest {
 
             require(adjudicationContract.isDecided(_inputs[2]));
 
+        return true;
     }
 
 }

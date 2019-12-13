@@ -87,6 +87,7 @@ contract NotTest {
      * Decides NotTestN(NotTestN,a).
      */
     function decideNotTestN(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        return false;
     }
 
 }

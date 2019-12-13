@@ -1,3 +1,15 @@
 <%    property.inputs.forEach((input, index) => { -%>
+<%      if(input.type == 'LabelInput') { -%>
             <%= valName %>[<%=index%>] = _inputs[<%=input.inputIndex%>];
+<%      } else if(input.type == 'NormalInput') { -%>
+<%        if(input.children.length > 0) { -%>
+            <%= valName %>[<%=index%>] = inputProperty<%=input.inputIndex%>.inputs[<%= input.children[0] %>];
+<%        } else { -%>
+            <%= valName %>[<%=index%>] = _inputs[<%=input.inputIndex%>];
+<%        } -%>
+<%      } else if(input.type == 'VariableInput') { -%>
+            <%= valName %>[<%=index%>] = <%= witnessName %>[0];
+<%      } else { -%>
+            // error unknown input type
+<%      } -%>
 <%    }) -%>
