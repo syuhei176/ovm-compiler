@@ -6,22 +6,13 @@ import "../UniversalAdjudicationContract.sol";
 import "./AtomicPredicate.sol";
 import "./NotPredicate.sol";
 
-<%
-  for(let c = 0;c < compiledPredicates.length;c++) {
-    const claimDef = compiledPredicates[c]
-%>
+
 /**
- * <%= claimDef.name %>(<%= claimDef.inputDefs %>)
+ * EvalTest(a,b)
  */
-contract <%= claimDef.name %> {
-<%
-  for(var i = 0;i < claimDef.contracts.length;i++) {
-    let property = claimDef.contracts[i]
--%>
-    bytes public <%= property.definition.name %> = bytes("<%= property.definition.name %>");
-<%
-  }
-%>
+contract EvalTest {
+    bytes public EvalTestA = bytes("EvalTestA");
+
     UniversalAdjudicationContract adjudicationContract;
     AtomicPredicate SU;
     AtomicPredicate LessThan;
@@ -55,15 +46,9 @@ contract <%= claimDef.name %> {
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
         bytes32 input0 = bytesToBytes32(inputs[0]);
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-        if(input0 == <%= property.definition.name %>) {
-            return getChild<%= property.definition.name %>(inputs, challengeInput);
+        if(input0 == EvalTestA) {
+            return getChildEvalTestA(inputs, challengeInput);
         }
-<%
-  })
--%>
     }
 
     /**
@@ -71,15 +56,9 @@ contract <%= claimDef.name %> {
      */
     function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
         bytes32 input0 = bytesToBytes32(_inputs[0]);
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-        if(input0 == <%= property.definition.name %>) {
-            decide<%= property.definition.name %>(_inputs, _witness);
+        if(input0 == EvalTestA) {
+            decideEvalTestA(_inputs, _witness);
         }
-<%
-  })
--%>
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -91,20 +70,43 @@ contract <%= claimDef.name %> {
         adjudicationContract.setPredicateDecision(utils.getPropertyId(property), true);
     }
 
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-<%- include('getChild', {property: property}); -%>
-<%
-  })
--%>
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-<%- include('decide', {property: property}); -%>
-<%
-  })
--%>
+    /**
+     * Gets child of EvalTestA().
+     */
+    function getChildEvalTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        bytes[] memory notInputs = new bytes[](1);
+        if(challengeInput == 0) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = _inputs[1];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Foo,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 1) {
+            notInputs[0] = _inputs[2]
+        }
+        return type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        });
+    }
+    /**
+     * Decides EvalTestA(EvalTestA,a,b).
+     */
+    function decideEvalTestA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        // And logical connective
+
+            bytes[] memory childInputs0 = new bytes[](1);
+            childInputs0[0] = _inputs[1];
+            require(Foo.decide(childInputs0));
+
+
+            require(adjudicationContract.isDecided(_inputs[2]));
+
+        return true;
+    }
 
 }
-<% } %>
+

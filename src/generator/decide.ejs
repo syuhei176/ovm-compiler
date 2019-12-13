@@ -1,0 +1,61 @@
+    /**
+     * Decides <%= property.definition.name %>(<%= property.definition.inputDefs %>).
+     */
+    function decide<%= property.definition.name %>(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+<%
+        property.definition.propertyInputs.forEach((propertyInput, index) => {
+-%>
+        types.Property memory inputProperty<%=propertyInput%> = abi.decode(_inputs[<%=propertyInput%>], (types.Property));
+<%
+        })
+-%>
+<% if(property.definition.predicate == 'And') { -%>
+        // And logical connective
+<%
+        property.definition.inputs.forEach((item, index) => {
+-%>
+<%      if(item.isCompiled) { -%>
+        require(decide<%= item.predicate.source %>(childInputs<%= index %>, Utils.subArray(_witness, 1, _witness.length)));
+<%      } else { %>
+<%- include('decideProperty', {property: item, valName: 'childInputs' + index}) -%>
+<%      } %>
+<%      }) -%>
+        return true;
+<% } else if(property.definition.predicate == 'ThereExistsSuchThat') { -%>
+        // check ThereExistsSuchThat
+<%
+const quantifier = property.definition.inputs[0]
+const innerProperty = property.definition.inputs[2]
+-%>
+        bytes[] memory quantifierInputs = new bytes[](<%= quantifier.inputs.length + 1 %>);
+<%- include('constructInputs', {property: quantifier, valName: 'quantifierInputs', witnessName: 'witness'}) -%>
+        quantifierInputs[<%= quantifier.inputs.length %>] = _witness[0];
+        require(AtomicPredicate(<%= quantifier.predicate.source %>).decide(quantifierInputs));
+        bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
+<%- include('constructInputs', {property: innerProperty, valName: 'childInputs', witnessName: 'witness'}) -%>
+<%      if(innerProperty.isCompiled) { -%>
+        require(decide<%= innerProperty.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+<%      } else { %>
+<%- include('decideProperty', {property: innerProperty, valName: 'childInputs'}) -%>
+<%      } %>
+        return true;
+<% } else if(property.definition.predicate == 'Or') { -%>
+        // check Or
+        var result = false
+<%
+        property.definition.inputs.forEach((item, index) => {
+-%>
+        bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
+<%- include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: 'witness'}) -%>
+<%      if(item.isCompiled) { -%>
+        result = result | decide<%= item.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length));
+<%      } else { %>
+        result = result | <%= item.predicate.source %>.decide(childInputs);
+<%      } %>
+<%      }) -%>
+        require(result);
+        return true;
+<% } else { -%>
+        return false;
+<% } -%>
+    }

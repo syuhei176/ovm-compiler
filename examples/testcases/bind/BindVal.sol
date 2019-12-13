@@ -6,22 +6,13 @@ import "../UniversalAdjudicationContract.sol";
 import "./AtomicPredicate.sol";
 import "./NotPredicate.sol";
 
-<%
-  for(let c = 0;c < compiledPredicates.length;c++) {
-    const claimDef = compiledPredicates[c]
-%>
+
 /**
- * <%= claimDef.name %>(<%= claimDef.inputDefs %>)
+ * BindValTest(a)
  */
-contract <%= claimDef.name %> {
-<%
-  for(var i = 0;i < claimDef.contracts.length;i++) {
-    let property = claimDef.contracts[i]
--%>
-    bytes public <%= property.definition.name %> = bytes("<%= property.definition.name %>");
-<%
-  }
-%>
+contract BindValTest {
+    bytes public BindValTestT = bytes("BindValTestT");
+
     UniversalAdjudicationContract adjudicationContract;
     AtomicPredicate SU;
     AtomicPredicate LessThan;
@@ -55,15 +46,9 @@ contract <%= claimDef.name %> {
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
         bytes32 input0 = bytesToBytes32(inputs[0]);
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-        if(input0 == <%= property.definition.name %>) {
-            return getChild<%= property.definition.name %>(inputs, challengeInput);
+        if(input0 == BindValTestT) {
+            return getChildBindValTestT(inputs, challengeInput);
         }
-<%
-  })
--%>
     }
 
     /**
@@ -71,15 +56,9 @@ contract <%= claimDef.name %> {
      */
     function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
         bytes32 input0 = bytesToBytes32(_inputs[0]);
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-        if(input0 == <%= property.definition.name %>) {
-            decide<%= property.definition.name %>(_inputs, _witness);
+        if(input0 == BindValTestT) {
+            decideBindValTestT(_inputs, _witness);
         }
-<%
-  })
--%>
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -91,20 +70,45 @@ contract <%= claimDef.name %> {
         adjudicationContract.setPredicateDecision(utils.getPropertyId(property), true);
     }
 
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-<%- include('getChild', {property: property}); -%>
-<%
-  })
--%>
-<%
-  claimDef.contracts.forEach((property) => {
--%>
-<%- include('decide', {property: property}); -%>
-<%
-  })
--%>
+    /**
+     * Gets child of BindValTestT().
+     */
+    function getChildBindValTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        bytes[] memory forAllSuchThatInputs = new bytes[](3);
+        bytes[] memory notInputs = new bytes[](1);
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = challengeInputs[0];
+            childInputs[1] = _inputs[1];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Foo,
+                inputs: childInputs
+            }));
+        forAllSuchThatInputs[0] = bytes("");
+        forAllSuchThatInputs[1] = bytes("b");
+        forAllSuchThatInputs[2] = abi.encode(types.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        }));
+    }
+    /**
+     * Decides BindValTestT(BindValTestT,a).
+     */
+    function decideBindValTestT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        // check ThereExistsSuchThat
+        bytes[] memory quantifierInputs = new bytes[](1);
+        quantifierInputs[0] = _witness[0];
+        require(AtomicPredicate(Bytes).decide(quantifierInputs));
+        bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = witness[0];
+            childInputs[1] = _inputs[1];
+
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = witness[0];
+            childInputs[1] = _inputs[1];
+            require(Foo.decide(childInputs));
+
+        return true;
+    }
 
 }
-<% } %>
+

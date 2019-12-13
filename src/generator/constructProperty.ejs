@@ -1,0 +1,38 @@
+<%  if(property.predicate.type == 'InputPredicate') { -%>
+<%    if(property.inputs.length == 0) { -%>
+            <%= valName %> = _inputs[<%= property.predicate.source.inputIndex %>]
+<%    } else { -%>
+            types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex %>], (types.Property));
+            bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+                childInputs[i] = inputPredicateProperty.inputs[i];
+            }
+            childInputs[stateObject.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
+            <%= valName %> = abi.encode(types.Property({
+                predicateAddress: inputPredicateProperty.predicateAddress,
+                inputs: childInputs
+            }));
+<%    } -%>
+<%  } else if(property.predicate.type == 'VariablePredicate') { -%>
+<%    if(property.inputs.length == 0) { -%>
+            <%= valName %> = challengeInput
+<%    } else { -%>
+            types.Property memory inputPredicateProperty = abi.decode(challengeInput, (types.Property));
+            bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+                childInputs[i] = inputPredicateProperty.inputs[i];
+            }
+            childInputs[stateObject.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
+            <%= valName %> = abi.encode(types.Property({
+                predicateAddress: inputPredicateProperty.predicateAddress,
+                inputs: childInputs
+            }));
+<%    } -%>
+<%  } else { -%>
+            bytes[] memory childInputs = new bytes[](2);
+<%- include('constructInputs', {property: property, valName: 'childInputs', witnessName: 'challengeInputs'}) -%>
+            <%= valName %> = abi.encode(type.Property({
+                predicateAddress: <%= property.predicate.source %>,
+                inputs: childInputs
+            }));
+<%  } -%>

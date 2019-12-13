@@ -3,126 +3,229 @@ import { PropertyDef } from './PropertyDef'
 import fs from 'fs'
 import path from 'path'
 
+function loadTest(testCaseName: string) {
+  return fs
+    .readFileSync(
+      path.join(__dirname, `../../examples/testcases/${testCaseName}.txt`)
+    )
+    .toString()
+}
+
 describe('Parser', () => {
   let parser: Parser
   beforeEach(async () => {
     parser = new Parser()
   })
   describe('parse', () => {
-    test('return abstract syntax tree', () => {
-      const ast: PropertyDef[] = parser.parse(
-        'def test(a) := for b in A(a) {Foo(b) and Bar(b)}'
-      )
-      expect(ast).toStrictEqual([
-        {
-          name: 'test',
-          inputDefs: ['a'],
-          body: {
-            type: 'PropertyNode',
-            inputs: [
-              {
-                type: 'PropertyNode',
-                inputs: ['a'],
-                predicate: 'A'
-              },
-              'b',
-              {
-                type: 'PropertyNode',
-                inputs: [
-                  {
-                    type: 'PropertyNode',
-                    inputs: ['b'],
-                    predicate: 'Foo'
-                  },
-                  {
-                    type: 'PropertyNode',
-                    inputs: ['b'],
-                    predicate: 'Bar'
-                  }
-                ],
-                predicate: 'And'
-              }
-            ],
-            predicate: 'ForAllSuchThat'
+    describe('operator', () => {
+      test('and', () => {
+        const testOutput = loadTest('operators/and')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'andTest',
+            inputDefs: ['a', 'b'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['b'] }
+              ]
+            }
           }
-        }
-      ])
+        ])
+      })
+      test('or', () => {
+        const testOutput = loadTest('operators/or')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'orTest',
+            inputDefs: ['a', 'b'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'Or',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['b'] }
+              ]
+            }
+          }
+        ])
+      })
+      test('not', () => {
+        const testOutput = loadTest('operators/not')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'notTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'Not',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] }
+              ]
+            }
+          }
+        ])
+      })
+      test('forall', () => {
+        const testOutput = loadTest('operators/forall')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'forallTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ForAllSuchThat',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'A', inputs: ['a'] },
+                'b',
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['b'] }
+              ]
+            }
+          }
+        ])
+      })
+      test('there', () => {
+        const testOutput = loadTest('operators/there')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'thereTest',
+            inputDefs: [],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ThereExistsSuchThat',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'A', inputs: [] },
+                'a',
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] }
+              ]
+            }
+          }
+        ])
+      })
+    })
+    describe('bind', () => {
+      test('bindand', () => {
+        const testOutput = loadTest('bind/bindand')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'bindAndTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a.0'] },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['a.1'] }
+              ]
+            }
+          }
+        ])
+      })
+      test('bindval', () => {
+        const testOutput = loadTest('bind/bindval')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'bindValTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ThereExistsSuchThat',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Bytes', inputs: [] },
+                'b',
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['b.0', 'a'] }
+              ]
+            }
+          }
+        ])
+      })
     })
 
-    test('bind operator', () => {
-      const ast: PropertyDef[] = parser.parse(
-        'def childEq(a) := with Bytes() as b {equal(b.0, a)}'
-      )
-      expect(ast).toStrictEqual([
-        {
-          name: 'childEq',
-          inputDefs: ['a'],
-          body: {
-            type: 'PropertyNode',
-            predicate: 'ThereExistsSuchThat',
-            inputs: [
-              {
-                predicate: 'Bytes',
-                type: 'PropertyNode',
-                inputs: []
-              },
-              'b',
-              {
-                inputs: ['b.0', 'a'],
-                predicate: 'equal',
-                type: 'PropertyNode'
-              }
-            ]
+    describe('variable', () => {
+      test('eval1', () => {
+        const testOutput = loadTest('variable/eval1')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'evalTest',
+            inputDefs: ['a', 'b'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] },
+                { type: 'PropertyNode', predicate: 'b', inputs: [] }
+              ]
+            }
           }
-        }
-      ])
-    })
-
-    test('variable: eval1', () => {
-      const testOutput = fs
-        .readFileSync(
-          path.join(__dirname, '../../examples/testcases/variable/eval1.txt')
-        )
-        .toString()
-      const ast: PropertyDef[] = parser.parse(testOutput)
-      expect(ast).toStrictEqual([
-        {
-          name: 'evalTest',
-          inputDefs: ['a', 'b'],
-          body: {
-            type: 'PropertyNode',
-            predicate: 'And',
-            inputs: [
-              { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] },
-              { type: 'PropertyNode', predicate: 'b', inputs: [] }
-            ]
+        ])
+      })
+      test('forval', () => {
+        const testOutput = loadTest('variable/forval')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'forValTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ForAllSuchThat',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'A', inputs: ['a'] },
+                'b',
+                { type: 'PropertyNode', predicate: 'b', inputs: [] }
+              ]
+            }
           }
-        }
-      ])
-    })
-
-    test('variable: eval2', () => {
-      const testOutput = fs
-        .readFileSync(
-          path.join(__dirname, '../../examples/testcases/variable/eval2.txt')
-        )
-        .toString()
-      const ast: PropertyDef[] = parser.parse(testOutput)
-      expect(ast).toStrictEqual([
-        {
-          name: 'evalTest',
-          inputDefs: [],
-          body: {
-            type: 'PropertyNode',
-            predicate: 'ThereExistsSuchThat',
-            inputs: [
-              { type: 'PropertyNode', predicate: 'A', inputs: [] },
-              'a',
-              { type: 'PropertyNode', predicate: 'a', inputs: [] }
-            ]
+        ])
+      })
+      test('thereval', () => {
+        const testOutput = loadTest('variable/thereval')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'thereValTest',
+            inputDefs: [],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ThereExistsSuchThat',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'A', inputs: [] },
+                'a',
+                { type: 'PropertyNode', predicate: 'a', inputs: [] }
+              ]
+            }
           }
-        }
-      ])
+        ])
+      })
+      test('thereval2', () => {
+        const testOutput = loadTest('variable/thereval2')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'thereValTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ThereExistsSuchThat',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'B', inputs: [] },
+                'b',
+                { type: 'PropertyNode', predicate: 'a', inputs: ['b'] }
+              ]
+            }
+          }
+        ])
+      })
     })
   })
 })

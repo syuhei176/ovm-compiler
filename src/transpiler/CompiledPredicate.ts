@@ -22,12 +22,14 @@ export interface IntermediateCompiledPredicateDef {
   predicate: string
   inputDefs: string[]
   inputs: (AtomicProposition | Placeholder)[]
+  propertyInputs: number[]
 }
 
 export interface AtomicProposition {
   type: 'AtomicProposition'
   predicate: Predicate
   inputs: CompiledInput[]
+  isCompiled?: boolean
 }
 
 export type Placeholder = string
