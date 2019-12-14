@@ -292,7 +292,9 @@ describe('SolidityCodeGenerator', () => {
                     ]
                   }
                 ],
-                propertyInputs: [1]
+                propertyInputs: [
+                  { type: 'NormalInput', inputIndex: 1, children: [] }
+                ]
               }
             }
           ]
@@ -308,6 +310,58 @@ describe('SolidityCodeGenerator', () => {
       )
       expect(output).toBe(testOutput.toString())
     })
+
+    test('bind2', () => {
+      const input: CompiledPredicate[] = [
+        {
+          type: 'CompiledPredicate',
+          name: 'Bind2Test',
+          inputDefs: ['a'],
+          contracts: [
+            {
+              type: 'IntermediateCompiledPredicate',
+              isCompiled: true,
+              originalPredicateName: 'Bind2Test',
+              definition: {
+                type: 'IntermediateCompiledPredicateDef',
+                name: 'Bind2TestA',
+                predicate: 'And',
+                inputDefs: ['Bind2TestA', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [0] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [1, 2] }
+                    ]
+                  }
+                ],
+                propertyInputs: [
+                  { type: 'NormalInput', inputIndex: 1, children: [1] }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+      const output = generator.generate(input)
+      fs.writeFileSync(
+        path.join(__dirname, '../../examples/testcases/bind/Bind2.sol'),
+        output
+      )
+      const testOutput = fs.readFileSync(
+        path.join(__dirname, '../../examples/testcases/bind/Bind2.sol')
+      )
+      expect(output).toBe(testOutput.toString())
+    })
+
     test('bindval', () => {
       const input: CompiledPredicate[] = [
         {

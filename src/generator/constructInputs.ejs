@@ -2,8 +2,10 @@
 <%      if(input.type == 'LabelInput') { -%>
             <%= valName %>[<%=index%>] = <%=input.label%>;
 <%      } else if(input.type == 'NormalInput') { -%>
-<%        if(input.children.length > 0) { -%>
+<%        if(input.children.length == 1) { -%>
             <%= valName %>[<%=index%>] = inputProperty<%=input.inputIndex%>.inputs[<%= input.children[0] %>];
+<%        } else if(input.children.length == 2) { -%>
+            <%= valName %>[<%=index%>] = inputProperty<%=input.inputIndex%>Child<%=input.children[0]%>.inputs[<%= input.children[1] %>];
 <%        } else { -%>
             <%= valName %>[<%=index%>] = _inputs[<%=input.inputIndex%>];
 <%        } -%>

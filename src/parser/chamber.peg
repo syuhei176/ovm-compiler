@@ -37,9 +37,6 @@ ArgsExist
 Args
   = ArgsExist / NoArgs
 
-Arg
-  = Object / String
-
 Decider
   = name:String _ args:Args {
   return {
@@ -108,13 +105,13 @@ Factor
 Integer "integer"
   = _ [0-9]+ { return parseInt(text(), 10); }
 
-Object
-  = parent:String "." child:(String / Integer) {
-    return parent + '.' + child
+Arg
+  = parent:String children:("." Integer)* {
+    return parent + children.map(c => '.' + c[1]).join('')
   }
 
 String "string"
-  = _ [a-zA-Z_]+ { return text(); }
+  = _ [a-zA-Z0-9_]+ { return text(); }
 
 _ "whitespace"
   =  [ \t\n\r]*

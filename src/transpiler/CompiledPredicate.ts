@@ -22,7 +22,7 @@ export interface IntermediateCompiledPredicateDef {
   predicate: string
   inputDefs: string[]
   inputs: (AtomicProposition | Placeholder)[]
-  propertyInputs: number[]
+  propertyInputs: NormalInput[]
 }
 
 export interface AtomicProposition {

@@ -5,7 +5,8 @@ import {
   IntermediateCompiledPredicate,
   AtomicProposition,
   Placeholder,
-  Predicate
+  Predicate,
+  NormalInput
 } from './CompiledPredicate'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 
@@ -156,10 +157,7 @@ function searchInteractiveNode(
       )
     }
     newContract.definition.inputs = children
-    newContract.definition.propertyInputs = getPropertyInputIndexes(
-      newInputDefs,
-      children
-    )
+    newContract.definition.propertyInputs = getPropertyInputIndexes(children)
     // If not atomic proposition, generate a contract
     contracts.push(newContract)
     return {
@@ -204,28 +202,32 @@ function getPredicate(inputDefs: string[], name: string): Predicate {
 }
 
 function getPropertyInputIndexes(
-  inputDefs: string[],
   children: (AtomicProposition | Placeholder)[]
-): number[] {
+): NormalInput[] {
   const allInputs = children.reduce((acc: CompiledInput[], c) => {
     if (typeof c != 'string') {
       return acc.concat(c.inputs)
     }
     return acc
   }, [])
-  return allInputs
-    .map(input => {
-      if (input.type == 'NormalInput') {
-        if (input.children.length > 0) {
-          return input.inputIndex
+  const result: NormalInput[] = []
+  allInputs.forEach(input => {
+    if (input.type == 'NormalInput') {
+      if (input.children.length >= 1) {
+        if (!result[input.inputIndex]) {
+          result[input.inputIndex] = {
+            type: 'NormalInput',
+            inputIndex: input.inputIndex,
+            children: []
+          }
+        }
+        if (input.children.length == 2) {
+          result[input.inputIndex].children.push(input.children[0])
         }
       }
-      return -1
-    })
-    .filter(i => i >= 0)
-    .filter(function(x, i, self) {
-      return self.indexOf(x) === i
-    })
+    }
+  })
+  return result.filter(r => !!r)
 }
 
 function getInputIndex(
@@ -238,19 +240,19 @@ function getInputIndex(
       // in case of that name is bind operator
       const nameArr = name.split('.')
       const parent = nameArr[0]
-      const child = nameArr[1]
+      const childlen = nameArr.slice(1).map(c => Number(c))
       const inputIndex = inputDefs.indexOf(parent)
       if (inputIndex >= 0) {
         return {
           type: 'NormalInput',
           inputIndex: inputDefs.indexOf(parent),
-          children: [Number(child)]
+          children: childlen
         }
       } else {
         return {
           type: 'VariableInput',
           placeholder: parent,
-          children: [Number(child)]
+          children: childlen
         }
       }
     } else {
