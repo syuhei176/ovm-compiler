@@ -3,8 +3,9 @@ pragma experimental ABIEncoderV2;
 
 import {DataTypes as types} from "../DataTypes.sol";
 import "../UniversalAdjudicationContract.sol";
+import "../Utils.sol";
 import "./AtomicPredicate.sol";
-import "./NotPredicate.sol";
+import "./CompiledPredicate.sol";
 
 
 /**
@@ -14,16 +15,22 @@ contract OrTest {
     bytes public OrTestO = bytes("OrTestO");
 
     UniversalAdjudicationContract adjudicationContract;
-    AtomicPredicate SU;
-    AtomicPredicate LessThan;
-    AtomicPredicate eval;
-    AtomicPredicate Bytes;
-    AtomicPredicate SameRange;
-    AtomicPredicate IsValidSignature;
-    NotPredicate Not;
+    Utils utils;
+    address LessThan = address(0x0000000000000000000000000000000000000000);
+    address Equal = address(0x0000000000000000000000000000000000000000);
+    address IsValidSignature = address(0x0000000000000000000000000000000000000000);
+    address Bytes = address(0x0000000000000000000000000000000000000000);
+    address SU = address(0x0000000000000000000000000000000000000000);
+    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address notAddress = address(0x0000000000000000000000000000000000000000);
+    address andAddress = address(0x0000000000000000000000000000000000000000);
+    address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
 
-    constructor(address _adjudicationContractAddress) {
+    constructor(address _adjudicationContractAddress, address _utilsAddress) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+        utils = Utils(_utilsAddress);
     }
 
     /**
@@ -99,7 +106,7 @@ contract OrTest {
             inputs: notInputs1
         }));
         return type.Property({
-            predicateAddress: And,
+            predicateAddress: andAddress,
             inputs: andInputs
         });
     }

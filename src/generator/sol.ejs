@@ -3,8 +3,9 @@ pragma experimental ABIEncoderV2;
 
 import {DataTypes as types} from "../DataTypes.sol";
 import "../UniversalAdjudicationContract.sol";
+import "../Utils.sol";
 import "./AtomicPredicate.sol";
-import "./NotPredicate.sol";
+import "./CompiledPredicate.sol";
 
 <%
   for(let c = 0;c < compiledPredicates.length;c++) {
@@ -23,16 +24,22 @@ contract <%= claimDef.name %> {
   }
 %>
     UniversalAdjudicationContract adjudicationContract;
-    AtomicPredicate SU;
-    AtomicPredicate LessThan;
-    AtomicPredicate eval;
-    AtomicPredicate Bytes;
-    AtomicPredicate SameRange;
-    AtomicPredicate IsValidSignature;
-    NotPredicate Not;
+    Utils utils;
+    address LessThan = address(<%= getAddress('LessThan') %>);
+    address Equal = address(<%= getAddress('Equal') %>);
+    address IsValidSignature = address(<%= getAddress('IsValidSignature') %>);
+    address Bytes = address(<%= getAddress('Bytes') %>);
+    address SU = address(<%= getAddress('SU') %>);
+    address IsContainedPredicate = address(<%= getAddress('IsContainedPredicate') %>);
+    address VerifyInclusionPredicate = address(<%= getAddress('VerifyInclusionPredicate') %>);
+    address IsValidStateTransitionPredicate = address(<%= getAddress('IsValidStateTransitionPredicate') %>);
+    address notAddress = address(<%= getAddress('Not') %>);
+    address andAddress = address(<%= getAddress('And') %>);
+    address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
 
-    constructor(address _adjudicationContractAddress) {
+    constructor(address _adjudicationContractAddress, address _utilsAddress) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+        utils = Utils(_utilsAddress);
     }
 
     /**

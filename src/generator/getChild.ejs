@@ -69,6 +69,10 @@
             predicateAddress: notAddress,
             inputs: notInputs
         }));
+        return type.Property({
+            predicateAddress: forAllSuchThatAddress,
+            inputs: forAllSuchThatInputs
+        });
 <%  } else if(property.definition.predicate == 'Or') {  %>
         bytes[] memory andInputs = new bytes[](<%= property.definition.inputs.length %>);
 <%
@@ -82,7 +86,7 @@
         }));
 <%      }) -%>
         return type.Property({
-            predicateAddress: And,
+            predicateAddress: andAddress,
             inputs: andInputs
         });
 <%  } -%>
