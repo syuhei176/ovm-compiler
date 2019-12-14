@@ -15,26 +15,48 @@ const templates: { [key: string]: string } = {
   constructInputs: constructInputs.toString(),
   decideProperty: decideProperty.toString()
 }
-const helpers = {}
 
-const includeCallback = (filename: string, d: any) => {
-  const template = ejs.compile(templates[filename], {
-    client: true
-  })
-  return template({ ...helpers, ...d }, undefined, includeCallback)
+export interface SolidityCodeGeneratorOptions {
+  addressTable: { [key: string]: string }
 }
 
 export class SolidityCodeGenerator implements CodeGenerator {
+  constructor(
+    readonly options: SolidityCodeGeneratorOptions = { addressTable: {} }
+  ) {}
   generate(compiledPredicates: CompiledPredicate[]) {
     const template = ejs.compile(templateSource.toString(), { client: true })
     const output = template(
       {
         compiledPredicates,
-        ...helpers
+        ...this.getHelpers()
       },
       undefined,
-      includeCallback
+      this.includeCallback
     )
     return output
+  }
+
+  includeCallback = (filename: string, d: any) => {
+    const template = ejs.compile(templates[filename], {
+      client: true
+    })
+    return template(
+      { ...this.getHelpers(), ...d },
+      undefined,
+      this.includeCallback
+    )
+  }
+
+  getAddress = (predicateName: string) => {
+    return (
+      this.options.addressTable[predicateName] ||
+      '0x0000000000000000000000000000000000000000'
+    )
+  }
+  getHelpers = () => {
+    return {
+      getAddress: this.getAddress
+    }
   }
 }

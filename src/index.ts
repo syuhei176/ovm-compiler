@@ -15,11 +15,14 @@ import * as transpiler from './transpiler'
 
 export { parser, generator, transpiler }
 
-export function generateSolidityCode(source: string): string {
+export function generateSolidityCode(
+  source: string,
+  options?: generator.SolidityCodeGeneratorOptions
+): string {
   const chamberParser = new parser.Parser()
   const compiledPredicates = transpiler.createCompiledPredicates(
     chamberParser.parse(source)
   )
-  const codeGenerator = new generator.SolidityCodeGenerator()
+  const codeGenerator = new generator.SolidityCodeGenerator(options)
   return codeGenerator.generate(compiledPredicates)
 }
