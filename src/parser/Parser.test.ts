@@ -148,6 +148,24 @@ describe('Parser', () => {
           }
         ])
       })
+      test('bind2', () => {
+        const testOutput = loadTest('bind/bind2')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'bind2Test',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a.0'] },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['a.1.2'] }
+              ]
+            }
+          }
+        ])
+      })
     })
 
     describe('variable', () => {

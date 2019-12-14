@@ -326,7 +326,65 @@ describe('Transpiler', () => {
                       ]
                     }
                   ],
-                  propertyInputs: [1]
+                  propertyInputs: [
+                    { type: 'NormalInput', inputIndex: 1, children: [] }
+                  ]
+                }
+              }
+            ]
+          }
+        ])
+      })
+      test('bind2', () => {
+        const input: PropertyDef[] = [
+          {
+            name: 'bind2Test',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                { type: 'PropertyNode', predicate: 'Foo', inputs: ['a.0'] },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['a.1.2'] }
+              ]
+            }
+          }
+        ]
+        const output = createCompiledPredicates(input)
+        expect(output).toStrictEqual([
+          {
+            type: 'CompiledPredicate',
+            name: 'Bind2Test',
+            inputDefs: ['a'],
+            contracts: [
+              {
+                type: 'IntermediateCompiledPredicate',
+                isCompiled: true,
+                originalPredicateName: 'Bind2Test',
+                definition: {
+                  type: 'IntermediateCompiledPredicateDef',
+                  name: 'Bind2TestA',
+                  predicate: 'And',
+                  inputDefs: ['Bind2TestA', 'a'],
+                  inputs: [
+                    {
+                      type: 'AtomicProposition',
+                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      inputs: [
+                        { type: 'NormalInput', inputIndex: 1, children: [0] }
+                      ]
+                    },
+                    {
+                      type: 'AtomicProposition',
+                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      inputs: [
+                        { type: 'NormalInput', inputIndex: 1, children: [1, 2] }
+                      ]
+                    }
+                  ],
+                  propertyInputs: [
+                    { type: 'NormalInput', inputIndex: 1, children: [1] }
+                  ]
                 }
               }
             ]
