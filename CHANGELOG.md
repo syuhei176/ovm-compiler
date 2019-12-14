@@ -1,3 +1,19 @@
+## <small>0.1.5 (2019-12-14)</small>
+
+* 0.1.5 ([76a0680](https://github.com/cryptoeconomicslab/ovm-compiler/commit/76a0680))
+* update changelog ([48872db](https://github.com/cryptoeconomicslab/ovm-compiler/commit/48872db))
+* chore: add .gitattributes ([1369b27](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1369b27))
+* feat: add address table option ([a462c4b](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a462c4b))
+* feat(transpiler): Add LabelInput type ([0adefe4](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0adefe4))
+* feat(transpiler): Add placeholder to intermediate representation ([e0977c8](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e0977c8))
+* fix: generator bug ([8ce88a9](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8ce88a9))
+* fix: support bind operator for generator ([4381f8f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4381f8f))
+* fix: update generator ([4c1ddc4](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4c1ddc4))
+* fix: update generator and write test code ([163fec6](https://github.com/cryptoeconomicslab/ovm-compiler/commit/163fec6))
+* test: Write test cases ([913507a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/913507a))
+
+
+
 ## <small>0.1.4 (2019-12-05)</small>
 
 * 0.1.3 ([4476efb](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4476efb))
