@@ -83,16 +83,16 @@ contract ThereValTest {
     function getChildThereValTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
-            bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                childInputs[i] = inputPredicateProperty.inputs[i];
-            }
-            childInputs[stateObject.inputs.length] = _inputs[];
-            notInputs[0] = abi.encode(types.Property({
-                predicateAddress: inputPredicateProperty.predicateAddress,
-                inputs: childInputs
-            }));
+        types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
+        bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            childInputs[i] = inputPredicateProperty.inputs[i];
+        }
+        childInputs[stateObject.inputs.length] = _inputs[];
+        notInputs[0] = abi.encode(types.Property({
+            predicateAddress: inputPredicateProperty.predicateAddress,
+            inputs: childInputs
+        }));
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("b");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
@@ -113,15 +113,15 @@ contract ThereValTest {
         quantifierInputs[0] = _witness[0];
         require(AtomicPredicate(B).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](1);
-            childInputs[0] = witness[0];
+        childInputs[0] = witness[0];
 
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
-            bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                childInputs[i] = inputPredicateProperty.inputs[i];
-            }
-            childInputs[stateObject.inputs.length] = _inputs[];
-            require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+        types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
+        bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            childInputs[i] = inputPredicateProperty.inputs[i];
+        }
+        childInputs[stateObject.inputs.length] = _inputs[];
+        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         return true;
     }

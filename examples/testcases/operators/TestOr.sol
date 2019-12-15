@@ -84,23 +84,23 @@ contract OrTest {
 
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
-            notInputs0[0] = abi.encode(type.Property({
-                predicateAddress: Foo,
-                inputs: childInputs
-            }));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = _inputs[1];
+        notInputs0[0] = abi.encode(type.Property({
+            predicateAddress: Foo,
+            inputs: childInputs
+        }));
         andInputs[0] = abi.encode(type.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
         }));
         bytes[] memory notInputs1 = new bytes[](1);
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[2];
-            notInputs1[0] = abi.encode(type.Property({
-                predicateAddress: Bar,
-                inputs: childInputs
-            }));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = _inputs[2];
+        notInputs1[0] = abi.encode(type.Property({
+            predicateAddress: Bar,
+            inputs: childInputs
+        }));
         andInputs[1] = abi.encode(type.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
@@ -117,12 +117,12 @@ contract OrTest {
         // check Or
         var result = false;
         bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
+        childInputs0[0] = _inputs[1];
 
         result = result | Foo.decide(childInputs);
 
         bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = _inputs[2];
+        childInputs1[0] = _inputs[2];
 
         result = result | Bar.decide(childInputs);
 

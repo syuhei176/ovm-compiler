@@ -83,13 +83,13 @@ contract BindValTest {
     function getChildBindValTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = challengeInputs[0];
-            childInputs[1] = _inputs[1];
-            notInputs[0] = abi.encode(type.Property({
-                predicateAddress: Foo,
-                inputs: childInputs
-            }));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = challengeInputs[0];
+        childInputs[1] = _inputs[1];
+        notInputs[0] = abi.encode(type.Property({
+            predicateAddress: Foo,
+            inputs: childInputs
+        }));
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("b");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
@@ -110,13 +110,13 @@ contract BindValTest {
         quantifierInputs[0] = _witness[0];
         require(AtomicPredicate(Bytes).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = witness[0];
-            childInputs[1] = _inputs[1];
+        childInputs[0] = witness[0];
+        childInputs[1] = _inputs[1];
 
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = witness[0];
-            childInputs[1] = _inputs[1];
-            require(Foo.decide(childInputs));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = witness[0];
+        childInputs[1] = _inputs[1];
+        require(Foo.decide(childInputs));
 
         return true;
     }
