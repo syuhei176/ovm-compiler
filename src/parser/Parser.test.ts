@@ -166,6 +166,29 @@ describe('Parser', () => {
           }
         ])
       })
+
+      test('bindaddr', () => {
+        const testOutput = loadTest('bind/bindaddr')
+        const ast: PropertyDef[] = parser.parse(testOutput)
+        expect(ast).toStrictEqual([
+          {
+            name: 'bindAddrTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                {
+                  type: 'PropertyNode',
+                  predicate: 'Equal',
+                  inputs: ['a.address', 'self.address']
+                },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['a.0'] }
+              ]
+            }
+          }
+        ])
+      })
     })
 
     describe('variable', () => {

@@ -55,7 +55,7 @@ export interface VariablePredicate {
  * inputs[0] is 0
  * inputs[0].inputs[0] is [0, 0]
  */
-export type CompiledInput = LabelInput | NormalInput | VariableInput
+export type CompiledInput = LabelInput | NormalInput | VariableInput | SelfInput
 
 export interface LabelInput {
   type: 'LabelInput'
@@ -71,5 +71,10 @@ export interface NormalInput {
 export interface VariableInput {
   type: 'VariableInput'
   placeholder: string
+  children: number[]
+}
+
+export interface SelfInput {
+  type: 'SelfInput'
   children: number[]
 }
