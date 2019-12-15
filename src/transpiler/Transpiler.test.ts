@@ -450,6 +450,72 @@ describe('Transpiler', () => {
           }
         ])
       })
+
+      test('bindaddr', () => {
+        const input: PropertyDef[] = [
+          {
+            name: 'bindAddrTest',
+            inputDefs: ['a'],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'And',
+              inputs: [
+                {
+                  type: 'PropertyNode',
+                  predicate: 'Equal',
+                  inputs: ['a.address', 'self.address']
+                },
+                { type: 'PropertyNode', predicate: 'Bar', inputs: ['a.0'] }
+              ]
+            }
+          }
+        ]
+        const output = createCompiledPredicates(input)
+        expect(output).toStrictEqual([
+          {
+            type: 'CompiledPredicate',
+            name: 'BindAddrTest',
+            inputDefs: ['a'],
+            contracts: [
+              {
+                type: 'IntermediateCompiledPredicate',
+                isCompiled: true,
+                originalPredicateName: 'BindAddrTest',
+                definition: {
+                  type: 'IntermediateCompiledPredicateDef',
+                  name: 'BindAddrTestA',
+                  predicate: 'And',
+                  inputDefs: ['BindAddrTestA', 'a'],
+                  inputs: [
+                    {
+                      type: 'AtomicProposition',
+                      predicate: { type: 'AtomicPredicate', source: 'Equal' },
+                      inputs: [
+                        {
+                          type: 'NormalInput',
+                          inputIndex: 1,
+                          children: [-1]
+                        },
+                        { type: 'SelfInput', children: [-1] }
+                      ]
+                    },
+                    {
+                      type: 'AtomicProposition',
+                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      inputs: [
+                        { type: 'NormalInput', inputIndex: 1, children: [0] }
+                      ]
+                    }
+                  ],
+                  propertyInputs: [
+                    { type: 'NormalInput', inputIndex: 1, children: [] }
+                  ]
+                }
+              }
+            ]
+          }
+        ])
+      })
     })
     describe('variable', () => {
       test('eval1', () => {

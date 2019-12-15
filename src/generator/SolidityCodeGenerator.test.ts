@@ -414,6 +414,62 @@ describe('SolidityCodeGenerator', () => {
       )
       expect(output).toBe(testOutput.toString())
     })
+
+    test('bindaddr', () => {
+      const input: CompiledPredicate[] = [
+        {
+          type: 'CompiledPredicate',
+          name: 'BindAddrTest',
+          inputDefs: ['a'],
+          contracts: [
+            {
+              type: 'IntermediateCompiledPredicate',
+              isCompiled: true,
+              originalPredicateName: 'BindAddrTest',
+              definition: {
+                type: 'IntermediateCompiledPredicateDef',
+                name: 'BindAddrTestA',
+                predicate: 'And',
+                inputDefs: ['BindAddrTestA', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicate', source: 'Equal' },
+                    inputs: [
+                      {
+                        type: 'NormalInput',
+                        inputIndex: 1,
+                        children: [-1]
+                      },
+                      { type: 'SelfInput', children: [-1] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [0] }
+                    ]
+                  }
+                ],
+                propertyInputs: [
+                  { type: 'NormalInput', inputIndex: 1, children: [] }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+      const output = generator.generate(input)
+      fs.writeFileSync(
+        path.join(__dirname, '../../examples/testcases/bind/BindAddr.sol'),
+        output
+      )
+      const testOutput = fs.readFileSync(
+        path.join(__dirname, '../../examples/testcases/bind/BindAddr.sol')
+      )
+      expect(output).toBe(testOutput.toString())
+    })
   })
   describe('variable', () => {
     test('eval1', () => {

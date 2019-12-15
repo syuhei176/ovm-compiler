@@ -240,7 +240,13 @@ function getInputIndex(
       // in case of that name is bind operator
       const nameArr = name.split('.')
       const parent = nameArr[0]
-      const childlen = nameArr.slice(1).map(c => Number(c))
+      const childlen = nameArr.slice(1).map(c => {
+        if (c == 'address') {
+          return -1
+        } else {
+          return Number(c)
+        }
+      })
       const inputIndex = inputDefs.indexOf(parent)
       if (inputIndex >= 0) {
         return {
@@ -249,10 +255,17 @@ function getInputIndex(
           children: childlen
         }
       } else {
-        return {
-          type: 'VariableInput',
-          placeholder: parent,
-          children: childlen
+        if (parent == 'self') {
+          return {
+            type: 'SelfInput',
+            children: childlen
+          }
+        } else {
+          return {
+            type: 'VariableInput',
+            placeholder: parent,
+            children: childlen
+          }
         }
       }
     } else {
@@ -297,11 +310,15 @@ function getArguments(property: PropertyNode): any[] {
     property.inputs.forEach((p: PropertyNode | string | undefined) => {
       if (p !== undefined) {
         if (typeof p === 'string') {
+          let usedValName = null
           // bind operator
           if (p.indexOf('.') > 0) {
-            args.push(p.substr(0, p.indexOf('.')))
+            usedValName = p.substr(0, p.indexOf('.'))
           } else {
-            args.push(p)
+            usedValName = p
+          }
+          if (usedValName != 'self') {
+            args.push(usedValName)
           }
         } else if (p.type == 'PropertyNode') {
           args = args.concat(getArguments(p))

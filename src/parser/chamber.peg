@@ -106,7 +106,7 @@ Integer "integer"
   = _ [0-9]+ { return parseInt(text(), 10); }
 
 Arg
-  = parent:String children:("." Integer)* {
+  = parent:String children:("." (Integer / "address"))* {
     return parent + children.map(c => '.' + c[1]).join('')
   }
 
