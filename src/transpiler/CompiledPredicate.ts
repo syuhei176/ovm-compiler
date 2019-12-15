@@ -6,6 +6,7 @@ export interface CompiledPredicate {
   name: string
   inputDefs: string[]
   contracts: IntermediateCompiledPredicate[]
+  constants?: ConstantInput[]
 }
 
 export interface IntermediateCompiledPredicate {
@@ -55,7 +56,17 @@ export interface VariablePredicate {
  * inputs[0] is 0
  * inputs[0].inputs[0] is [0, 0]
  */
-export type CompiledInput = LabelInput | NormalInput | VariableInput | SelfInput
+export type CompiledInput =
+  | ConstantInput
+  | LabelInput
+  | NormalInput
+  | VariableInput
+  | SelfInput
+
+export interface ConstantInput {
+  type: 'ConstantInput'
+  name: string
+}
 
 export interface LabelInput {
   type: 'LabelInput'

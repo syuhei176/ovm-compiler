@@ -28,7 +28,10 @@ contract OrTest {
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
 
-    constructor(address _adjudicationContractAddress, address _utilsAddress) {
+    constructor(
+        address _adjudicationContractAddress,
+        address _utilsAddress
+    ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
     }

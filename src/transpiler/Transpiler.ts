@@ -6,7 +6,8 @@ import {
   AtomicProposition,
   Placeholder,
   Predicate,
-  NormalInput
+  NormalInput,
+  ConstantInput
 } from './CompiledPredicate'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 
@@ -49,12 +50,17 @@ function calculateInteractiveNodesPerProperty(
     throw new Error('p.body must not be null')
   }
   searchInteractiveNode(newContracts, p.body, p.inputDefs, name, '')
-  return {
+  const constants = getConstants(newContracts)
+  let result: CompiledPredicate = {
     type: 'CompiledPredicate',
     name,
     inputDefs: p.inputDefs,
     contracts: newContracts
   }
+  if (constants.length > 0) {
+    result.constants = constants
+  }
+  return result
 }
 
 /**
@@ -278,7 +284,12 @@ function getInputIndex(
         }
       }
     }
-    if (isFirstInputLabel && index == 0) {
+    if (utils.isConstantVariable(name)) {
+      return {
+        type: 'ConstantInput',
+        name: name.substr(1)
+      }
+    } else if (isFirstInputLabel && index == 0) {
       return {
         type: 'LabelInput',
         label: name
@@ -317,7 +328,7 @@ function getArguments(property: PropertyNode): any[] {
           } else {
             usedValName = p
           }
-          if (usedValName != 'self') {
+          if (usedValName != 'self' && !utils.isConstantVariable(usedValName)) {
             args.push(usedValName)
           }
         } else if (p.type == 'PropertyNode') {
@@ -333,4 +344,25 @@ function getArguments(property: PropertyNode): any[] {
 
 function makeContractName(name: string, suffix: string) {
   return utils.toCapitalCase(name) + suffix
+}
+
+function getConstants(
+  predicates: IntermediateCompiledPredicate[]
+): ConstantInput[] {
+  const results: ConstantInput[] = []
+  predicates.forEach(p => {
+    p.definition.inputs.forEach(i => {
+      if (typeof i != 'string' && i.type == 'AtomicProposition') {
+        i.inputs.forEach(i => {
+          if (
+            i.type == 'ConstantInput' &&
+            !results.find(r => r.type == i.name)
+          ) {
+            results.push(i)
+          }
+        })
+      }
+    })
+  })
+  return results
 }

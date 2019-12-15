@@ -1,5 +1,7 @@
 <%    property.inputs.forEach((input, index) => { -%>
-<%      if(input.type == 'LabelInput') { -%>
+<%      if(input.type == 'ConstantInput') { -%>
+        <%= valName %>[<%=index%>] = <%=input.name%>;
+<%      } else if(input.type == 'LabelInput') { -%>
         <%= valName %>[<%=index%>] = <%=input.label%>;
 <%      } else if(input.type == 'NormalInput') { -%>
 <%        if(input.children.length == 1) { -%>
