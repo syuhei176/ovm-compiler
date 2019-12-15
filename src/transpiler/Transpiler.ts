@@ -244,33 +244,25 @@ function getInputIndex(
   return inputs.map((name, index) => {
     if (name.indexOf('.') > 0) {
       // in case of that name is bind operator
-      const nameArr = name.split('.')
-      const parent = nameArr[0]
-      const childlen = nameArr.slice(1).map(c => {
-        if (c == 'address') {
-          return -1
-        } else {
-          return Number(c)
-        }
-      })
-      const inputIndex = inputDefs.indexOf(parent)
+      const parentAndChildren = utils.getBindParams(name)
+      const inputIndex = inputDefs.indexOf(parentAndChildren.parent)
       if (inputIndex >= 0) {
         return {
           type: 'NormalInput',
-          inputIndex: inputDefs.indexOf(parent),
-          children: childlen
+          inputIndex: inputDefs.indexOf(parentAndChildren.parent),
+          children: parentAndChildren.children
         }
       } else {
-        if (parent == 'self') {
+        if (utils.isReservedWord(parentAndChildren.parent)) {
           return {
             type: 'SelfInput',
-            children: childlen
+            children: parentAndChildren.children
           }
         } else {
           return {
             type: 'VariableInput',
-            placeholder: parent,
-            children: childlen
+            placeholder: parentAndChildren.parent,
+            children: parentAndChildren.children
           }
         }
       }
@@ -304,8 +296,8 @@ function getInputIndex(
   })
 }
 
-function getArguments(property: PropertyNode): any[] {
-  let args: any[] = []
+function getArguments(property: PropertyNode): string[] {
+  let args: string[] = []
   if (
     property.predicate == 'ForAllSuchThat' ||
     property.predicate == 'ThereExistsSuchThat'
@@ -319,21 +311,25 @@ function getArguments(property: PropertyNode): any[] {
       args.push(property.predicate)
     }
     property.inputs.forEach((p: PropertyNode | string | undefined) => {
-      if (p !== undefined) {
-        if (typeof p === 'string') {
-          let usedValName = null
-          // bind operator
-          if (p.indexOf('.') > 0) {
-            usedValName = p.substr(0, p.indexOf('.'))
-          } else {
-            usedValName = p
-          }
-          if (usedValName != 'self' && !utils.isConstantVariable(usedValName)) {
-            args.push(usedValName)
-          }
-        } else if (p.type == 'PropertyNode') {
-          args = args.concat(getArguments(p))
+      if (p === undefined) {
+        return
+      }
+      if (typeof p === 'string') {
+        let usedValName = null
+        // bind operator
+        if (p.indexOf('.') > 0) {
+          usedValName = p.substr(0, p.indexOf('.'))
+        } else {
+          usedValName = p
         }
+        if (
+          !utils.isReservedWord(usedValName) &&
+          !utils.isConstantVariable(usedValName)
+        ) {
+          args.push(usedValName)
+        }
+      } else if (p.type == 'PropertyNode') {
+        args = args.concat(getArguments(p))
       }
     })
   }

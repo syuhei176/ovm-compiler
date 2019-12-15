@@ -29,3 +29,22 @@ export function isUpperCase(name: string): boolean {
 export function isConstantVariable(name: string): boolean {
   return name[0] === '$'
 }
+
+export function isReservedWord(name: string): boolean {
+  return name == 'self'
+}
+
+export function getBindParams(
+  name: string
+): { parent: string; children: number[] } {
+  const nameArr = name.split('.')
+  const parent = nameArr[0]
+  const children = nameArr.slice(1).map(c => {
+    if (c == 'address') {
+      return -1
+    } else {
+      return Number(c)
+    }
+  })
+  return { parent, children }
+}
