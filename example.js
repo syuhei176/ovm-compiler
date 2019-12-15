@@ -3,8 +3,13 @@ const fs = require('fs')
 const path = require('path')
 
 generate('checkpoint')
+generate('limboExit')
+generate('order')
+generate('ownership')
+generate('su')
 
 function generate(name) {
+  console.log(`compiling ${name}`)
   const source = fs.readFileSync(
     path.join(__dirname, `./examples/${name}/${name}.txt`)
   )
@@ -13,6 +18,7 @@ function generate(name) {
     path.join(__dirname, `./examples/${name}/${getContractName(name)}.sol`),
     output
   )
+  console.log(`compiled ${name}`)
 }
 
 function getContractName(name) {

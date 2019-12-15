@@ -3,715 +3,499 @@ pragma experimental ABIEncoderV2;
 
 import {DataTypes as types} from "../DataTypes.sol";
 import "../UniversalAdjudicationContract.sol";
+import "../Utils.sol";
 import "./AtomicPredicate.sol";
-import "./NotPredicate.sol";
-
+import "./CompiledPredicate.sol";
 
 
 /**
- * Order(maker,c_token,c_amount,min_block_number)
+ * Order(maker,c_token,c_amount,min_block_number,tx)
  */
 contract Order {
-  
-    bytes32 public OrderTA2TA5O1A;
-  
-    bytes32 public OrderTA2TA5O2A1N;
-  
-    bytes32 public OrderTA2TA5O2A;
-  
-    bytes32 public OrderTA2TA5O;
-  
-    bytes32 public OrderTA2TA;
-  
-    bytes32 public OrderTA2T;
-  
-    bytes32 public OrderTA;
-  
-    bytes32 public OrderT;
-  
-    UniversalAdjudicationContract AdjudicationContract;
-    AtomicPredicate SU;
-    AtomicPredicate LessThan;
-    AtomicPredicate eval;
-    AtomicPredicate Bytes;
-    AtomicPredicate SameRange;
-    AtomicPredicate IsValidSignature;
-    NotPredicate Not;
-    constructor(address _adjudicationContractAddress) {
-      AdjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
-      
-      OrderTA2TA5O1A = keccak256("OrderTA2TA5O1A");
-      
-      OrderTA2TA5O2A1N = keccak256("OrderTA2TA5O2A1N");
-      
-      OrderTA2TA5O2A = keccak256("OrderTA2TA5O2A");
-      
-      OrderTA2TA5O = keccak256("OrderTA2TA5O");
-      
-      OrderTA2TA = keccak256("OrderTA2TA");
-      
-      OrderTA2T = keccak256("OrderTA2T");
-      
-      OrderTA = keccak256("OrderTA");
-      
-      OrderT = keccak256("OrderT");
-      
+    bytes public OrderTA = bytes("OrderTA");
+    bytes public OrderT = bytes("OrderT");
+
+    UniversalAdjudicationContract adjudicationContract;
+    Utils utils;
+    address LessThan = address(0x0000000000000000000000000000000000000000);
+    address Equal = address(0x0000000000000000000000000000000000000000);
+    address IsValidSignature = address(0x0000000000000000000000000000000000000000);
+    address Bytes = address(0x0000000000000000000000000000000000000000);
+    address SU = address(0x0000000000000000000000000000000000000000);
+    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address notAddress = address(0x0000000000000000000000000000000000000000);
+    address andAddress = address(0x0000000000000000000000000000000000000000);
+    address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+
+    constructor(address _adjudicationContractAddress, address _utilsAddress) {
+        adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+        utils = Utils(_utilsAddress);
     }
+
     /**
-    * @dev Validates a child node of the property in game tree.
-    */
+     * @dev Validates a child node of the property in game tree.
+     */
     function isValidChallenge(
         bytes[] memory _inputs,
-        bytes memory _challengeInput,
+        bytes[] memory _challengeInput,
         types.Property memory _challenge
     ) public returns (bool) {
         require(
-          keccak256(abi.encode(getChild(_inputs, _challengeInput))) == keccak256(abi.encode(_challenge)),
-          "_challenge must be valud child of game tree"
+            keccak256(abi.encode(getChild(_inputs, _challengeInput))) == keccak256(abi.encode(_challenge)),
+            "_challenge must be valud child of game tree"
         );
         return true;
     }
 
-    function getChild(bytes[] memory inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      bytes32 input0 = bytesToBytes32(inputs[0]);
-      
-        
-        if(input0 == OrderTA2TA5O1A) {
-          return getChildOrderTA2TA5O1A(inputs, challengeInput);
-        }
-        
-        if(input0 == OrderTA2TA5O2A1N) {
-          return getChildOrderTA2TA5O2A1N(inputs, challengeInput);
-        }
-        
-        if(input0 == OrderTA2TA5O2A) {
-          return getChildOrderTA2TA5O2A(inputs, challengeInput);
-        }
-        
-        
-        if(input0 == OrderTA2TA) {
-          return getChildOrderTA2TA(inputs, challengeInput);
-        }
-        
-        
+    function getChild(
+        bytes[] memory inputs,
+        bytes[] memory challengeInput
+    ) private returns (types.Property memory) {
+        bytes32 input0 = bytesToBytes32(inputs[0]);
         if(input0 == OrderTA) {
-          return getChildOrderTA(inputs, challengeInput);
+            return getChildOrderTA(inputs, challengeInput);
         }
-        
+        if(input0 == OrderT) {
+            return getChildOrderT(inputs, challengeInput);
+        }
     }
 
-  /**
-   * @dev check the property is true
-   */
-  function decideTrue(bytes[] memory _inputs, bytes memory _witness) public {
-    bytes32 input0 = bytesToBytes32(_inputs[0]);
-    
-    if(input0 == OrderTA2TA5O1A) {
-      decideTrueOrderTA2TA5O1A(_inputs, _witness);
+    /**
+     * @dev check the property is true
+     */
+    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
+        bytes32 input0 = bytesToBytes32(_inputs[0]);
+        if(input0 == OrderTA) {
+            decideOrderTA(_inputs, _witness);
+        }
+        if(input0 == OrderT) {
+            decideOrderT(_inputs, _witness);
+        }
     }
-    
-    if(input0 == OrderTA2TA5O2A1N) {
-      decideTrueOrderTA2TA5O2A1N(_inputs, _witness);
-    }
-    
-    if(input0 == OrderTA2TA5O2A) {
-      decideTrueOrderTA2TA5O2A(_inputs, _witness);
-    }
-    
-    if(input0 == OrderTA2TA5O) {
-      decideTrueOrderTA2TA5O(_inputs, _witness);
-    }
-    
-    if(input0 == OrderTA2TA) {
-      decideTrueOrderTA2TA(_inputs, _witness);
-    }
-    
-    if(input0 == OrderTA2T) {
-      decideTrueOrderTA2T(_inputs, _witness);
-    }
-    
-    if(input0 == OrderTA) {
-      decideTrueOrderTA(_inputs, _witness);
-    }
-    
-    if(input0 == OrderT) {
-      decideTrueOrderT(_inputs, _witness);
-    }
-    
-  }
 
-  
-  
-    /**
-     * Gets child of OrderTA2TA5O1A().
-     */
-    function getChildOrderTA2TA5O1A(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      
-        
-        if(challengeInput == 0) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: withdraw,
-              inputs: [_inputs[1]]
-            })]
-          });
-        }
-        
-        if(challengeInput == 1) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: IsValidSignature,
-              inputs: [_inputs[2],challengeInput]
-            })]
-          });
-        }
-        
-      
+    function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
+        require(decide(_inputs, _witness), "must be true");
+        types.Property memory property = types.Property({
+            predicateAddress: address(this),
+            inputs: _inputs
+        });
+        adjudicationContract.setPredicateDecision(utils.getPropertyId(property), true);
     }
-  
-  /**
-   * Decides OrderTA2TA5O1A(OrderTA2TA5O1A,c_su,tx).
-   */
-  function decideTrueOrderTA2TA5O1A(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check And
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: withdraw,
-          inputs: [_inputs[1]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: IsValidSignature,
-          inputs: [_inputs[2],challengeInput]
-        }))));
-      
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-    /**
-     * Gets child of OrderTA2TA5O2A1N().
-     */
-    function getChildOrderTA2TA5O2A1N(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      
-      return type.Property({
-        predicateAddress: withdraw,
-        inputs: [_inputs[1]]
-      });
-      
-    }
-  
-  /**
-   * Decides OrderTA2TA5O2A1N(OrderTA2TA5O2A1N,c_su).
-   */
-  function decideTrueOrderTA2TA5O2A1N(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-  }
-  
-  
-    /**
-     * Gets child of OrderTA2TA5O2A().
-     */
-    function getChildOrderTA2TA5O2A(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      
-        
-        if(challengeInput == 0) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: OrderTA2TA5O2A1N,
-              inputs: [challengeInput,_inputs[1]]
-            })]
-          });
-        }
-        
-        if(challengeInput == 1) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: IsValidSignature,
-              inputs: [_inputs[2],_inputs[3]]
-            })]
-          });
-        }
-        
-      
-    }
-  
-  /**
-   * Decides OrderTA2TA5O2A(OrderTA2TA5O2A,c_su,tx,maker).
-   */
-  function decideTrueOrderTA2TA5O2A(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check And
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: OrderTA2TA5O2A1N,
-          inputs: [challengeInput,_inputs[1]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: IsValidSignature,
-          inputs: [_inputs[2],_inputs[3]]
-        }))));
-      
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-  /**
-   * Decides OrderTA2TA5O(OrderTA2TA5O,c_su,tx,maker).
-   */
-  function decideTrueOrderTA2TA5O(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check Or
-    var result = false
-      
-    result = result | AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: OrderTA2TA5O1A,
-        inputs: [challengeInput,_inputs[1],_inputs[2]]
-      })))
-      
-    result = result | AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: OrderTA2TA5O2A,
-        inputs: [challengeInput,_inputs[1],_inputs[2],_inputs[3]]
-      })))
-      
-    require(result);
-    AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-    /**
-     * Gets child of OrderTA2TA().
-     */
-    function getChildOrderTA2TA(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      
-        
-        if(challengeInput == 0) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: assert,
-              inputs: [challengeInput,_inputs[2]]
-            })]
-          });
-        }
-        
-        if(challengeInput == 1) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: checkAmount,
-              inputs: [challengeInput,_inputs[3]]
-            })]
-          });
-        }
-        
-        if(challengeInput == 2) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: gte,
-              inputs: [challengeInput,_inputs[4]]
-            })]
-          });
-        }
-        
-        if(challengeInput == 3) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: assert,
-              inputs: [challengeInput,_inputs[5]]
-            })]
-          });
-        }
-        
-        if(challengeInput == 4) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: OrderTA2TA5O,
-              inputs: [challengeInput,_inputs[1],_inputs[6],_inputs[5]]
-            })]
-          });
-        }
-        
-      
-    }
-  
-  /**
-   * Decides OrderTA2TA(OrderTA2TA,c_su,c_token,c_amount,min_block_number,maker,tx).
-   */
-  function decideTrueOrderTA2TA(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check And
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: assert,
-          inputs: [challengeInput,_inputs[2]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: checkAmount,
-          inputs: [challengeInput,_inputs[3]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: gte,
-          inputs: [challengeInput,_inputs[4]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: assert,
-          inputs: [challengeInput,_inputs[5]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: OrderTA2TA5O,
-          inputs: [challengeInput,_inputs[1],_inputs[6],_inputs[5]]
-        }))));
-      
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-  /**
-   * Decides OrderTA2T(OrderTA2T,c_token,c_amount,min_block_number,maker,tx).
-   */
-  function decideTrueOrderTA2T(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check ThereExistsSuchThat
-      
-      require(SU.decide(_witness));
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: OrderTA2TA,
-        inputs: [_witness,_witness,_inputs[1],_inputs[2],_inputs[3],_inputs[4],_inputs[5]]
-      }))));
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
+
     /**
      * Gets child of OrderTA().
      */
-    function getChildOrderTA(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      
-        
+    function getChildOrderTA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
+        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: SameRange,
-              inputs: [_inputs[1],_inputs[2]]
-            })]
-          });
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = abi.encodePacked(inputProperty1.predicateAddress);
+            childInputs[1] = abi.encodePacked(inputProperty2.predicateAddress);
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Equal,
+                inputs: childInputs
+            }));
         }
-        
         if(challengeInput == 1) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: OrderTA2T,
-              inputs: [challengeInput,_inputs[3],_inputs[4],_inputs[5],_inputs[6],_inputs[1]]
-            })]
-          });
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[0];
+            childInputs[1] = _inputs[3];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Equal,
+                inputs: childInputs
+            }));
         }
-        
-      
+        if(challengeInput == 2) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[1];
+            childInputs[1] = _inputs[4];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: CheckAmount,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 3) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[2];
+            childInputs[1] = _inputs[5];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Gte,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 4) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1Child3.inputs[1];
+            childInputs[1] = _inputs[6];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Equal,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 5) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = _inputs[1];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Withdraw,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 6) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = _inputs[7];
+            childInputs[1] = inputProperty1Child3.inputs[0];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: IsValidSignature,
+                inputs: childInputs
+            }));
+        }
+        return type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        });
     }
-  
-  /**
-   * Decides OrderTA(OrderTA,tx,self,c_token,c_amount,min_block_number,maker).
-   */
-  function decideTrueOrderTA(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check And
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: SameRange,
-          inputs: [_inputs[1],_inputs[2]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: OrderTA2T,
-          inputs: [challengeInput,_inputs[3],_inputs[4],_inputs[5],_inputs[6],_inputs[1]]
-        }))));
-      
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-  /**
-   * Decides OrderT(OrderT,self,c_token,c_amount,min_block_number,maker).
-   */
-  function decideTrueOrderT(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check ThereExistsSuchThat
-      
-      require(Bytes.decide(_witness));
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: OrderTA,
-        inputs: [_witness,_witness,_inputs[1],_inputs[2],_inputs[3],_inputs[4],_inputs[5]]
-      }))));
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
+    /**
+     * Gets child of OrderT().
+     */
+    function getChildOrderT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        bytes[] memory forAllSuchThatInputs = new bytes[](3);
+        bytes[] memory notInputs = new bytes[](1);
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = OrderTA;
+        childInputs[1] = challengeInputs[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = _inputs[2];
+        childInputs[4] = _inputs[3];
+        childInputs[5] = _inputs[4];
+        childInputs[6] = _inputs[5];
+        childInputs[7] = _inputs[6];
+        notInputs[0] = abi.encode(type.Property({
+            predicateAddress: OrderTA,
+            inputs: childInputs
+        }));
+        forAllSuchThatInputs[0] = bytes("");
+        forAllSuchThatInputs[1] = bytes("c_su");
+        forAllSuchThatInputs[2] = abi.encode(types.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        }));
+        return type.Property({
+            predicateAddress: forAllSuchThatAddress,
+            inputs: forAllSuchThatInputs
+        });
+    }
+    /**
+     * Decides OrderTA(OrderTA,c_su,swap,c_token,c_amount,min_block_number,maker,tx).
+     */
+    function decideOrderTA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
+        // And logical connective
 
-  function bytesToBytes32(bytes memory source) returns (bytes32 result) {
-    if (source.length == 0) {
-        return 0x0;
+        bytes[] memory childInputs0 = new bytes[](2);
+        childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
+        childInputs0[1] = abi.encodePacked(inputProperty2.predicateAddress);
+        require(Equal.decide(childInputs0));
+
+
+        bytes[] memory childInputs1 = new bytes[](2);
+        childInputs1[0] = inputProperty1.inputs[0];
+        childInputs1[1] = _inputs[3];
+        require(Equal.decide(childInputs1));
+
+
+        bytes[] memory childInputs2 = new bytes[](2);
+        childInputs2[0] = inputProperty1.inputs[1];
+        childInputs2[1] = _inputs[4];
+        require(CheckAmount.decide(childInputs2));
+
+
+        bytes[] memory childInputs3 = new bytes[](2);
+        childInputs3[0] = inputProperty1.inputs[2];
+        childInputs3[1] = _inputs[5];
+        require(Gte.decide(childInputs3));
+
+
+        bytes[] memory childInputs4 = new bytes[](2);
+        childInputs4[0] = inputProperty1Child3.inputs[1];
+        childInputs4[1] = _inputs[6];
+        require(Equal.decide(childInputs4));
+
+
+        bytes[] memory childInputs5 = new bytes[](1);
+        childInputs5[0] = _inputs[1];
+        require(Withdraw.decide(childInputs5));
+
+
+        bytes[] memory childInputs6 = new bytes[](2);
+        childInputs6[0] = _inputs[7];
+        childInputs6[1] = inputProperty1Child3.inputs[0];
+        require(IsValidSignature.decide(childInputs6));
+
+        return true;
+    }
+    /**
+     * Decides OrderT(OrderT,swap,c_token,c_amount,min_block_number,maker,tx).
+     */
+    function decideOrderT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        // check ThereExistsSuchThat
+        bytes[] memory quantifierInputs = new bytes[](1);
+        quantifierInputs[0] = _witness[0];
+        require(AtomicPredicate(SU).decide(quantifierInputs));
+        bytes[] memory childInputs = new bytes[](8);
+        childInputs[0] = OrderTA;
+        childInputs[1] = witness[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = _inputs[2];
+        childInputs[4] = _inputs[3];
+        childInputs[5] = _inputs[4];
+        childInputs[6] = _inputs[5];
+        childInputs[7] = _inputs[6];
+        require(decideOrderTA(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+
+        return true;
     }
 
-    assembly {
-        result := mload(add(source, 32))
-    }
-  }
 }
 
 /**
- * Exit_correspondent(c_su,maker)
+ * Withdraw(c_su,maker)
  */
-contract Exit_correspondent {
-  
-    bytes32 public Exit_correspondentO1A;
-  
-    bytes32 public Exit_correspondentO2T;
-  
-    bytes32 public Exit_correspondentO;
-  
-    UniversalAdjudicationContract AdjudicationContract;
-    AtomicPredicate SU;
-    AtomicPredicate LessThan;
-    AtomicPredicate eval;
-    AtomicPredicate Bytes;
-    AtomicPredicate SameRange;
-    AtomicPredicate IsValidSignature;
-    NotPredicate Not;
-    constructor(address _adjudicationContractAddress) {
-      AdjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
-      
-      Exit_correspondentO1A = keccak256("Exit_correspondentO1A");
-      
-      Exit_correspondentO2T = keccak256("Exit_correspondentO2T");
-      
-      Exit_correspondentO = keccak256("Exit_correspondentO");
-      
+contract Withdraw {
+    bytes public WithdrawO1A = bytes("WithdrawO1A");
+    bytes public WithdrawO2T = bytes("WithdrawO2T");
+    bytes public WithdrawO = bytes("WithdrawO");
+
+    UniversalAdjudicationContract adjudicationContract;
+    Utils utils;
+    address LessThan = address(0x0000000000000000000000000000000000000000);
+    address Equal = address(0x0000000000000000000000000000000000000000);
+    address IsValidSignature = address(0x0000000000000000000000000000000000000000);
+    address Bytes = address(0x0000000000000000000000000000000000000000);
+    address SU = address(0x0000000000000000000000000000000000000000);
+    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address notAddress = address(0x0000000000000000000000000000000000000000);
+    address andAddress = address(0x0000000000000000000000000000000000000000);
+    address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+
+    constructor(address _adjudicationContractAddress, address _utilsAddress) {
+        adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+        utils = Utils(_utilsAddress);
     }
+
     /**
-    * @dev Validates a child node of the property in game tree.
-    */
+     * @dev Validates a child node of the property in game tree.
+     */
     function isValidChallenge(
         bytes[] memory _inputs,
-        bytes memory _challengeInput,
+        bytes[] memory _challengeInput,
         types.Property memory _challenge
     ) public returns (bool) {
         require(
-          keccak256(abi.encode(getChild(_inputs, _challengeInput))) == keccak256(abi.encode(_challenge)),
-          "_challenge must be valud child of game tree"
+            keccak256(abi.encode(getChild(_inputs, _challengeInput))) == keccak256(abi.encode(_challenge)),
+            "_challenge must be valud child of game tree"
         );
         return true;
     }
 
-    function getChild(bytes[] memory inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      bytes32 input0 = bytesToBytes32(inputs[0]);
-      
-        
-        if(input0 == Exit_correspondentO1A) {
-          return getChildExit_correspondentO1A(inputs, challengeInput);
+    function getChild(
+        bytes[] memory inputs,
+        bytes[] memory challengeInput
+    ) private returns (types.Property memory) {
+        bytes32 input0 = bytesToBytes32(inputs[0]);
+        if(input0 == WithdrawO1A) {
+            return getChildWithdrawO1A(inputs, challengeInput);
         }
-        
-        
+        if(input0 == WithdrawO2T) {
+            return getChildWithdrawO2T(inputs, challengeInput);
+        }
+        if(input0 == WithdrawO) {
+            return getChildWithdrawO(inputs, challengeInput);
+        }
     }
 
-  /**
-   * @dev check the property is true
-   */
-  function decideTrue(bytes[] memory _inputs, bytes memory _witness) public {
-    bytes32 input0 = bytesToBytes32(_inputs[0]);
-    
-    if(input0 == Exit_correspondentO1A) {
-      decideTrueExit_correspondentO1A(_inputs, _witness);
-    }
-    
-    if(input0 == Exit_correspondentO2T) {
-      decideTrueExit_correspondentO2T(_inputs, _witness);
-    }
-    
-    if(input0 == Exit_correspondentO) {
-      decideTrueExit_correspondentO(_inputs, _witness);
-    }
-    
-  }
-
-  
-  
     /**
-     * Gets child of Exit_correspondentO1A().
+     * @dev check the property is true
      */
-    function getChildExit_correspondentO1A(bytes[] memory _inputs, bytes memory challengeInput) private returns (types.Property memory) {
-      
-        
+    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
+        bytes32 input0 = bytesToBytes32(_inputs[0]);
+        if(input0 == WithdrawO1A) {
+            decideWithdrawO1A(_inputs, _witness);
+        }
+        if(input0 == WithdrawO2T) {
+            decideWithdrawO2T(_inputs, _witness);
+        }
+        if(input0 == WithdrawO) {
+            decideWithdrawO(_inputs, _witness);
+        }
+    }
+
+    function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
+        require(decide(_inputs, _witness), "must be true");
+        types.Property memory property = types.Property({
+            predicateAddress: address(this),
+            inputs: _inputs
+        });
+        adjudicationContract.setPredicateDecision(utils.getPropertyId(property), true);
+    }
+
+    /**
+     * Gets child of WithdrawO1A().
+     */
+    function getChildWithdrawO1A(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: exit,
-              inputs: [_inputs[1]]
-            })]
-          });
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = _inputs[1];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Exit,
+                inputs: childInputs
+            }));
         }
-        
         if(challengeInput == 1) {
-          return type.Property({
-            predicateAddress: Not,
-            inputs: [type.Property({
-              predicateAddress: deposit_exists,
-              inputs: [challengeInput,challengeInput]
-            })]
-          });
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[0];
+            childInputs[1] = inputProperty1.inputs[1];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: DepositExists,
+                inputs: childInputs
+            }));
         }
-        
-      
+        return type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        });
     }
-  
-  /**
-   * Decides Exit_correspondentO1A(Exit_correspondentO1A,c_su).
-   */
-  function decideTrueExit_correspondentO1A(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check And
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: exit,
-          inputs: [_inputs[1]]
-        }))));
-      
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-          predicateAddress: deposit_exists,
-          inputs: [challengeInput,challengeInput]
-        }))));
-      
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-  /**
-   * Decides Exit_correspondentO2T(Exit_correspondentO2T,c_su,maker).
-   */
-  function decideTrueExit_correspondentO2T(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check ThereExistsSuchThat
-      
-      require(Tx.decide(_witness, _witness));
-      require(AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: IsValidSignature,
-        inputs: [_inputs[2]]
-      }))));
-      AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
-  
-  /**
-   * Decides Exit_correspondentO(Exit_correspondentO,c_su,maker).
-   */
-  function decideTrueExit_correspondentO(bytes[] memory _inputs, bytes memory _witness) public {
-      bytes32 propertyHash = keccak256(abi.encode(types.Property({
-        predicateAddress: address(this),
-        inputs: _inputs
-      })));
-      // check property is true
-    
-      // check Or
-    var result = false
-      
-    result = result | AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: Exit_correspondentO1A,
-        inputs: [challengeInput,_inputs[1]]
-      })))
-      
-    result = result | AdjudicationContract.isDecided(keccak256(abi.encode({
-        predicateAddress: Exit_correspondentO2T,
-        inputs: [challengeInput,_inputs[1],_inputs[2]]
-      })))
-      
-    require(result);
-    AdjudicationContract.setPredicateDecision(propertyHash, true);
-    
-  }
-  
+    /**
+     * Gets child of WithdrawO2T().
+     */
+    function getChildWithdrawO2T(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        bytes[] memory forAllSuchThatInputs = new bytes[](3);
+        bytes[] memory notInputs = new bytes[](1);
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = challengeInputs[0];
+        childInputs[1] = _inputs[2];
+        notInputs[0] = abi.encode(type.Property({
+            predicateAddress: IsValidSignature,
+            inputs: childInputs
+        }));
+        forAllSuchThatInputs[0] = bytes("");
+        forAllSuchThatInputs[1] = bytes("tx");
+        forAllSuchThatInputs[2] = abi.encode(types.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        }));
+        return type.Property({
+            predicateAddress: forAllSuchThatAddress,
+            inputs: forAllSuchThatInputs
+        });
+    }
+    /**
+     * Gets child of WithdrawO().
+     */
+    function getChildWithdrawO(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
 
-  function bytesToBytes32(bytes memory source) returns (bytes32 result) {
-    if (source.length == 0) {
-        return 0x0;
+        bytes[] memory andInputs = new bytes[](2);
+        bytes[] memory notInputs0 = new bytes[](1);
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = WithdrawO1A;
+        childInputs[1] = _inputs[1];
+        notInputs0[0] = abi.encode(type.Property({
+            predicateAddress: WithdrawO1A,
+            inputs: childInputs
+        }));
+        andInputs[0] = abi.encode(type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs0
+        }));
+        bytes[] memory notInputs1 = new bytes[](1);
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = WithdrawO2T;
+        childInputs[1] = _inputs[1];
+        childInputs[2] = _inputs[2];
+        notInputs1[0] = abi.encode(type.Property({
+            predicateAddress: WithdrawO2T,
+            inputs: childInputs
+        }));
+        andInputs[1] = abi.encode(type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs1
+        }));
+        return type.Property({
+            predicateAddress: andAddress,
+            inputs: andInputs
+        });
+    }
+    /**
+     * Decides WithdrawO1A(WithdrawO1A,c_su).
+     */
+    function decideWithdrawO1A(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        // And logical connective
+
+        bytes[] memory childInputs0 = new bytes[](1);
+        childInputs0[0] = _inputs[1];
+        require(Exit.decide(childInputs0));
+
+
+        bytes[] memory childInputs1 = new bytes[](2);
+        childInputs1[0] = inputProperty1.inputs[0];
+        childInputs1[1] = inputProperty1.inputs[1];
+        require(DepositExists.decide(childInputs1));
+
+        return true;
+    }
+    /**
+     * Decides WithdrawO2T(WithdrawO2T,c_su,maker).
+     */
+    function decideWithdrawO2T(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        // check ThereExistsSuchThat
+        bytes[] memory quantifierInputs = new bytes[](2);
+        quantifierInputs[0] = inputProperty1.inputs[1];
+        quantifierInputs[1] = _witness[0];
+        require(AtomicPredicate(Tx).decide(quantifierInputs));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = witness[0];
+        childInputs[1] = _inputs[2];
+
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = witness[0];
+        childInputs[1] = _inputs[2];
+        require(IsValidSignature.decide(childInputs));
+
+        return true;
+    }
+    /**
+     * Decides WithdrawO(WithdrawO,c_su,maker).
+     */
+    function decideWithdrawO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        // check Or
+        var result = false;
+        bytes[] memory childInputs0 = new bytes[](2);
+        childInputs0[0] = WithdrawO1A;
+        childInputs0[1] = _inputs[1];
+        result = result | decideWithdrawO1A(childInputs, Utils.subArray(_witness, 1, _witness.length));
+
+        bytes[] memory childInputs1 = new bytes[](3);
+        childInputs1[0] = WithdrawO2T;
+        childInputs1[1] = _inputs[1];
+        childInputs1[2] = _inputs[2];
+        result = result | decideWithdrawO2T(childInputs, Utils.subArray(_witness, 1, _witness.length));
+
+        require(result);
+        return true;
     }
 
-    assembly {
-        result := mload(add(source, 32))
-    }
-  }
 }
 
