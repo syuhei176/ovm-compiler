@@ -140,22 +140,22 @@ contract Checkpoint {
 
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
-            notInputs0[0] = _inputs[1];
+        notInputs0[0] = _inputs[1];
         andInputs[0] = abi.encode(type.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
         }));
         bytes[] memory notInputs1 = new bytes[](1);
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = CheckpointFFO2A;
-            childInputs[1] = _inputs[2];
-            childInputs[2] = _inputs[1];
-            childInputs[3] = _inputs[3];
-            childInputs[4] = _inputs[4];
-            notInputs1[0] = abi.encode(type.Property({
-                predicateAddress: CheckpointFFO2A,
-                inputs: childInputs
-            }));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = CheckpointFFO2A;
+        childInputs[1] = _inputs[2];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = _inputs[3];
+        childInputs[4] = _inputs[4];
+        notInputs1[0] = abi.encode(type.Property({
+            predicateAddress: CheckpointFFO2A,
+            inputs: childInputs
+        }));
         andInputs[1] = abi.encode(type.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
@@ -170,16 +170,16 @@ contract Checkpoint {
      */
     function getChildCheckpointFF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory quantifierInputs = new bytes[](3);
-            quantifierInputs[0] = _inputs[1];
-            quantifierInputs[1] = _inputs[2];
+        quantifierInputs[0] = _inputs[1];
+        quantifierInputs[1] = _inputs[2];
         quantifierInputs[2] = challengeInputs[0];
         require(AtomicPredicate(SU).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](5);
-            childInputs[0] = CheckpointFFO;
-            childInputs[1] = challengeInputs[0];
-            childInputs[2] = _inputs[3];
-            childInputs[3] = _inputs[4];
-            childInputs[4] = _inputs[5];
+        childInputs[0] = CheckpointFFO;
+        childInputs[1] = challengeInputs[0];
+        childInputs[2] = _inputs[3];
+        childInputs[3] = _inputs[4];
+        childInputs[4] = _inputs[5];
         return getChildCheckpointFFO(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
     }
     /**
@@ -187,16 +187,16 @@ contract Checkpoint {
      */
     function getChildCheckpointF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory quantifierInputs = new bytes[](2);
-            quantifierInputs[0] = _inputs[1];
+        quantifierInputs[0] = _inputs[1];
         quantifierInputs[1] = challengeInputs[0];
         require(AtomicPredicate(LessThan).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](6);
-            childInputs[0] = CheckpointFF;
-            childInputs[1] = _inputs[1];
-            childInputs[2] = _inputs[2];
-            childInputs[3] = _inputs[3];
-            childInputs[4] = _inputs[4];
-            childInputs[5] = _inputs[5];
+        childInputs[0] = CheckpointFF;
+        childInputs[1] = _inputs[1];
+        childInputs[2] = _inputs[2];
+        childInputs[3] = _inputs[3];
+        childInputs[4] = _inputs[4];
+        childInputs[5] = _inputs[5];
         return getChildCheckpointFF(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
     }
     /**
@@ -205,22 +205,22 @@ contract Checkpoint {
     function decideCheckpointFFO2A(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // And logical connective
 
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
-            bytes[] memory childInputs0 = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                childInputs0[i] = inputPredicateProperty.inputs[i];
-            }
-            childInputs0[stateObject.inputs.length] = _inputs[2];
-            require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs0, Utils.subArray(_witness, 1, _witness.length)));
+        types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
+        bytes[] memory childInputs0 = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            childInputs0[i] = inputPredicateProperty.inputs[i];
+        }
+        childInputs0[stateObject.inputs.length] = _inputs[2];
+        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs0, Utils.subArray(_witness, 1, _witness.length)));
 
 
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[3], (types.Property));
-            bytes[] memory childInputs1 = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                childInputs1[i] = inputPredicateProperty.inputs[i];
-            }
-            childInputs1[stateObject.inputs.length] = _inputs[2];
-            require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs1, Utils.subArray(_witness, 1, _witness.length)));
+        types.Property memory inputPredicateProperty = abi.decode(_inputs[3], (types.Property));
+        bytes[] memory childInputs1 = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            childInputs1[i] = inputPredicateProperty.inputs[i];
+        }
+        childInputs1[stateObject.inputs.length] = _inputs[2];
+        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs1, Utils.subArray(_witness, 1, _witness.length)));
 
         return true;
     }
@@ -235,11 +235,11 @@ contract Checkpoint {
         result = result | [object Object].decide(childInputs);
 
         bytes[] memory childInputs1 = new bytes[](5);
-            childInputs1[0] = CheckpointFFO2A;
-            childInputs1[1] = _inputs[2];
-            childInputs1[2] = _inputs[1];
-            childInputs1[3] = _inputs[3];
-            childInputs1[4] = _inputs[4];
+        childInputs1[0] = CheckpointFFO2A;
+        childInputs1[1] = _inputs[2];
+        childInputs1[2] = _inputs[1];
+        childInputs1[3] = _inputs[3];
+        childInputs1[4] = _inputs[4];
         result = result | decideCheckpointFFO2A(childInputs, Utils.subArray(_witness, 1, _witness.length));
 
         require(result);
