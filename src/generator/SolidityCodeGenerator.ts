@@ -54,9 +54,23 @@ export class SolidityCodeGenerator implements CodeGenerator {
       '0x0000000000000000000000000000000000000000'
     )
   }
+  indent = (text: string, depth: number) => {
+    return text
+      .split('\n')
+      .map(function(line, num) {
+        if (!!line) {
+          for (var i = 0; i < depth; i++) {
+            line = ' ' + line
+          }
+        }
+        return line
+      })
+      .join('\n')
+  }
   getHelpers = () => {
     return {
-      getAddress: this.getAddress
+      getAddress: this.getAddress,
+      indent: this.indent
     }
   }
 }

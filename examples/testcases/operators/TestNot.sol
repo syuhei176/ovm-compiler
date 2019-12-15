@@ -82,12 +82,12 @@ contract NotTest {
      */
     function getChildNotTestN(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes memory property;
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
-            property = abi.encode(type.Property({
-                predicateAddress: Foo,
-                inputs: childInputs
-            }));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = _inputs[1];
+        property = abi.encode(type.Property({
+            predicateAddress: Foo,
+            inputs: childInputs
+        }));
         return property;
     }
     /**

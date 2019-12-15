@@ -113,15 +113,15 @@ contract BindAddrTest {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         // And logical connective
 
-            bytes[] memory childInputs0 = new bytes[](2);
-            childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-            childInputs0[1] = abi.encodePacked(address(self));
-            require(Equal.decide(childInputs0));
+        bytes[] memory childInputs0 = new bytes[](2);
+        childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
+        childInputs0[1] = abi.encodePacked(address(self));
+        require(Equal.decide(childInputs0));
 
 
-            bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = inputProperty1.inputs[0];
-            require(Bar.decide(childInputs1));
+        bytes[] memory childInputs1 = new bytes[](1);
+        childInputs1[0] = inputProperty1.inputs[0];
+        require(Bar.decide(childInputs1));
 
         return true;
     }

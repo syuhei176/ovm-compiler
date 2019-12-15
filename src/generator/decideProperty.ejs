@@ -1,19 +1,19 @@
 <%  if(property.predicate.type == 'InputPredicate') { -%>
 <%    if(property.inputs.length == 0) { -%>
-            require(adjudicationContract.isDecided(_inputs[<%= property.predicate.source.inputIndex %>]));
+        require(adjudicationContract.isDecided(_inputs[<%= property.predicate.source.inputIndex %>]));
 <%    } else { -%>
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex %>], (types.Property));
-            bytes[] memory <%= valName %> = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                <%= valName %>[i] = inputPredicateProperty.inputs[i];
-            }
-            <%= valName %>[stateObject.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
-            require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(<%= valName %>, Utils.subArray(_witness, 1, _witness.length)));
+        types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex %>], (types.Property));
+        bytes[] memory <%= valName %> = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            <%= valName %>[i] = inputPredicateProperty.inputs[i];
+        }
+        <%= valName %>[stateObject.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
+        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(<%= valName %>, Utils.subArray(_witness, 1, _witness.length)));
 <%    } -%>
 <%  } else if(property.predicate.type == 'VariablePredicate') { -%>
-            require(adjudicationContract.isDecided(challengeInput));
+        require(adjudicationContract.isDecided(challengeInput));
 <%  } else { -%>
-            bytes[] memory <%= valName %> = new bytes[](<%= property.inputs.length %>);
+        bytes[] memory <%= valName %> = new bytes[](<%= property.inputs.length %>);
 <%- include('constructInputs', {property: property, valName: valName, witnessName: 'witness'}) -%>
-            require(<%= property.predicate.source %>.decide(<%= valName %>));
+        require(<%= property.predicate.source %>.decide(<%= valName %>));
 <%  } -%>

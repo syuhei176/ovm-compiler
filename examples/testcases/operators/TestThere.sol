@@ -83,12 +83,12 @@ contract ThereTest {
     function getChildThereTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = challengeInputs[0];
-            notInputs[0] = abi.encode(type.Property({
-                predicateAddress: Foo,
-                inputs: childInputs
-            }));
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = challengeInputs[0];
+        notInputs[0] = abi.encode(type.Property({
+            predicateAddress: Foo,
+            inputs: childInputs
+        }));
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("a");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
@@ -109,11 +109,11 @@ contract ThereTest {
         quantifierInputs[0] = _witness[0];
         require(AtomicPredicate(A).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](1);
-            childInputs[0] = witness[0];
+        childInputs[0] = witness[0];
 
-            bytes[] memory childInputs = new bytes[](1);
-            childInputs[0] = witness[0];
-            require(Foo.decide(childInputs));
+        bytes[] memory childInputs = new bytes[](1);
+        childInputs[0] = witness[0];
+        require(Foo.decide(childInputs));
 
         return true;
     }

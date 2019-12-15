@@ -110,14 +110,14 @@ contract AndTest {
     function decideAndTestA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // And logical connective
 
-            bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
-            require(Foo.decide(childInputs0));
+        bytes[] memory childInputs0 = new bytes[](1);
+        childInputs0[0] = _inputs[1];
+        require(Foo.decide(childInputs0));
 
 
-            bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = _inputs[2];
-            require(Bar.decide(childInputs1));
+        bytes[] memory childInputs1 = new bytes[](1);
+        childInputs1[0] = _inputs[2];
+        require(Bar.decide(childInputs1));
 
         return true;
     }

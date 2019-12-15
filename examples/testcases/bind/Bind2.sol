@@ -114,14 +114,14 @@ contract Bind2Test {
         types.Property memory inputProperty1Child1 = abi.decode(inputProperty1.inputs[1], (types.Property));
         // And logical connective
 
-            bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = inputProperty1.inputs[0];
-            require(Foo.decide(childInputs0));
+        bytes[] memory childInputs0 = new bytes[](1);
+        childInputs0[0] = inputProperty1.inputs[0];
+        require(Foo.decide(childInputs0));
 
 
-            bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = inputProperty1Child1.inputs[2];
-            require(Bar.decide(childInputs1));
+        bytes[] memory childInputs1 = new bytes[](1);
+        childInputs1[0] = inputProperty1Child1.inputs[2];
+        require(Bar.decide(childInputs1));
 
         return true;
     }

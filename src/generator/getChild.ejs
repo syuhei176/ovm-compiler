@@ -26,10 +26,10 @@
         if(challengeInput == <%= j %>) {
 <%      if(item.isCompiled) { -%>
             bytes[] memory childInputs = new bytes[](<%= item.inputs.length %>);
-<%- include('constructInputs', {property: item, valName: 'childInputs', witnessName: 'challengeInputs'}) -%>
+<%- indent(include('constructInputs', {property: item, valName: 'childInputs', witnessName: 'challengeInputs'}), 4) -%>
             return getChild<%= item.predicate.source %>(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
 <%      } else { -%>
-<%-  include('constructProperty', {property: item, valName: 'notInputs[0]'}) -%>
+<%-  indent(include('constructProperty', {property: item, valName: 'notInputs[0]'}), 4) -%>
 <%      } -%>
         }
 <%    } -%>
