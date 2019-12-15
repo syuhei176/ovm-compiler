@@ -1,9 +1,8 @@
     /**
-     * Gets child of Bind2TestA().
+     * Gets child of BindAndTestA().
      */
-    function getChildBind2TestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+    function getChildBindAndTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
-        types.Property memory inputProperty1Child1 = abi.decode(inputProperty1.inputs[1], (types.Property));
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
@@ -16,7 +15,7 @@
         }
         if(challengeInput == 1) {
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = inputProperty1Child1.inputs[2];
+            childInputs[0] = inputProperty1.inputs[1];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Bar,
                 inputs: childInputs

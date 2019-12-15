@@ -1,5 +1,5 @@
 import { SolidityCodeGenerator } from './'
-import { CompiledPredicate } from '../transpiler'
+import { CompiledPredicate, IntermediateCompiledPredicate } from '../transpiler'
 import fs from 'fs'
 import path from 'path'
 
@@ -47,10 +47,6 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/operators/TestAnd.sol'),
-        output
-      )
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/operators/TestAnd.sol')
       )
@@ -95,10 +91,6 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/operators/TestOr.sol'),
-        output
-      )
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/operators/TestOr.sol')
       )
@@ -136,10 +128,6 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/operators/TestNot.sol'),
-        output
-      )
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/operators/TestNot.sol')
       )
@@ -189,13 +177,6 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(
-          __dirname,
-          '../../examples/testcases/operators/TestForall.sol'
-        ),
-        output
-      )
       const testOutput = fs.readFileSync(
         path.join(
           __dirname,
@@ -246,116 +227,86 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(
-          __dirname,
-          '../../examples/testcases/operators/TestThere.sol'
-        ),
-        output
-      )
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/operators/TestThere.sol')
       )
       expect(output).toBe(testOutput.toString())
     })
   })
+
   describe('bind', () => {
     test('bindand', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'BindAndTest',
-          inputDefs: ['a'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'BindAndTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'BindAndTestA',
+          predicate: 'And',
+          inputDefs: ['BindAndTestA', 'a'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'BindAndTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'BindAndTestA',
-                predicate: 'And',
-                inputDefs: ['BindAndTestA', 'a'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [0] }
-                    ]
-                  },
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [1] }
-                    ]
-                  }
-                ],
-                propertyInputs: [
-                  { type: 'NormalInput', inputIndex: 1, children: [] }
-                ]
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [0] }]
+            },
+            {
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Bar' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [1] }]
             }
-          ]
+          ],
+          propertyInputs: [{ type: 'NormalInput', inputIndex: 1, children: [] }]
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/bind/BindAnd.sol'),
-        output
+      }
+      const outputOfGetChild = generator.includeCallback('getChild', {
+        property: input
+      })
+      const outputOfDecide = generator.includeCallback('decide', {
+        property: input
+      })
+      const testOutputOfGetChild = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/bind/BindAndGetChild.sol'
+        )
       )
-      const testOutput = fs.readFileSync(
-        path.join(__dirname, '../../examples/testcases/bind/BindAnd.sol')
+      const testOutputOfDecide = fs.readFileSync(
+        path.join(__dirname, '../../examples/testcases/bind/BindAndDecide.sol')
       )
-      expect(output).toBe(testOutput.toString())
+      expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
+      expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
 
     test('bind2', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'Bind2Test',
-          inputDefs: ['a'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'Bind2Test',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'Bind2TestA',
+          predicate: 'And',
+          inputDefs: ['Bind2TestA', 'a'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'Bind2Test',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'Bind2TestA',
-                predicate: 'And',
-                inputDefs: ['Bind2TestA', 'a'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [0] }
-                    ]
-                  },
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [1, 2] }
-                    ]
-                  }
-                ],
-                propertyInputs: [
-                  { type: 'NormalInput', inputIndex: 1, children: [1] }
-                ]
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [0] }]
+            },
+            {
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Bar' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [1, 2] }]
             }
+          ],
+          propertyInputs: [
+            { type: 'NormalInput', inputIndex: 1, children: [1] }
           ]
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/bind/Bind2.sol'),
-        output
-      )
+      }
+      const output = generator.includeCallback('getChild', { property: input })
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/bind/Bind2.sol')
       )
@@ -363,52 +314,39 @@ describe('SolidityCodeGenerator', () => {
     })
 
     test('bindval', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'BindValTest',
-          inputDefs: ['a'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'BindValTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'BindValTestT',
+          predicate: 'ThereExistsSuchThat',
+          inputDefs: ['BindValTestT', 'a'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'BindValTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'BindValTestT',
-                predicate: 'ThereExistsSuchThat',
-                inputDefs: ['BindValTestT', 'a'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Bytes' },
-                    inputs: []
-                  },
-                  'b',
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
-                    inputs: [
-                      {
-                        type: 'VariableInput',
-                        placeholder: 'b',
-                        children: [0]
-                      },
-                      { type: 'NormalInput', inputIndex: 1, children: [] }
-                    ]
-                  }
-                ],
-                propertyInputs: []
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Bytes' },
+              inputs: []
+            },
+            'b',
+            {
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              inputs: [
+                {
+                  type: 'VariableInput',
+                  placeholder: 'b',
+                  children: [0]
+                },
+                { type: 'NormalInput', inputIndex: 1, children: [] }
+              ]
             }
-          ]
+          ],
+          propertyInputs: []
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/bind/BindVal.sol'),
-        output
-      )
+      }
+      const output = generator.includeCallback('getChild', { property: input })
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/bind/BindVal.sol')
       )
@@ -416,264 +354,239 @@ describe('SolidityCodeGenerator', () => {
     })
 
     test('bindaddr', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'BindAddrTest',
-          inputDefs: ['a'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'BindAddrTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'BindAddrTestA',
+          predicate: 'And',
+          inputDefs: ['BindAddrTestA', 'a'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'BindAddrTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'BindAddrTestA',
-                predicate: 'And',
-                inputDefs: ['BindAddrTestA', 'a'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Equal' },
-                    inputs: [
-                      {
-                        type: 'NormalInput',
-                        inputIndex: 1,
-                        children: [-1]
-                      },
-                      { type: 'SelfInput', children: [-1] }
-                    ]
-                  },
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [0] }
-                    ]
-                  }
-                ],
-                propertyInputs: [
-                  { type: 'NormalInput', inputIndex: 1, children: [] }
-                ]
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Equal' },
+              inputs: [
+                {
+                  type: 'NormalInput',
+                  inputIndex: 1,
+                  children: [-1]
+                },
+                { type: 'SelfInput', children: [-1] }
+              ]
+            },
+            {
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Bar' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [0] }]
             }
-          ]
+          ],
+          propertyInputs: [{ type: 'NormalInput', inputIndex: 1, children: [] }]
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/bind/BindAddr.sol'),
-        output
-      )
+      }
+      const output = generator.includeCallback('getChild', { property: input })
       const testOutput = fs.readFileSync(
         path.join(__dirname, '../../examples/testcases/bind/BindAddr.sol')
       )
       expect(output).toBe(testOutput.toString())
     })
   })
+
   describe('variable', () => {
     test('eval1', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'EvalTest',
-          inputDefs: ['a', 'b'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'EvalTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'EvalTestA',
+          predicate: 'And',
+          inputDefs: ['EvalTestA', 'a', 'b'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'EvalTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'EvalTestA',
-                predicate: 'And',
-                inputDefs: ['EvalTestA', 'a', 'b'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [] }
-                    ]
-                  },
-                  {
-                    type: 'AtomicProposition',
-                    predicate: {
-                      type: 'InputPredicate',
-                      source: {
-                        type: 'NormalInput',
-                        inputIndex: 2,
-                        children: []
-                      }
-                    },
-                    inputs: []
-                  }
-                ],
-                propertyInputs: []
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [] }]
+            },
+            {
+              type: 'AtomicProposition',
+              predicate: {
+                type: 'InputPredicate',
+                source: {
+                  type: 'NormalInput',
+                  inputIndex: 2,
+                  children: []
+                }
+              },
+              inputs: []
             }
-          ]
+          ],
+          propertyInputs: []
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/Eval.sol'),
-        output
+      }
+      const outputOfGetChild = generator.includeCallback('getChild', {
+        property: input
+      })
+      const outputOfDecide = generator.includeCallback('decide', {
+        property: input
+      })
+      const testOutputOfGetChild = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/variable/EvalGetChild.sol'
+        )
       )
-      const testOutput = fs.readFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/Eval.sol')
+      const testOutputOfDecide = fs.readFileSync(
+        path.join(__dirname, '../../examples/testcases/variable/EvalDecide.sol')
       )
-      expect(output).toBe(testOutput.toString())
+      expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
+      expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
     test('forval', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'ForValTest',
-          inputDefs: ['a'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'ForValTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'ForValTestF',
+          predicate: 'ForAllSuchThat',
+          inputDefs: ['ForValTestF', 'a'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'ForValTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'ForValTestF',
-                predicate: 'ForAllSuchThat',
-                inputDefs: ['ForValTestF', 'a'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'A' },
-                    inputs: [
-                      { type: 'NormalInput', inputIndex: 1, children: [] }
-                    ]
-                  },
-                  'b',
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'VariablePredicate' },
-                    inputs: []
-                  }
-                ],
-                propertyInputs: []
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'A' },
+              inputs: [{ type: 'NormalInput', inputIndex: 1, children: [] }]
+            },
+            'b',
+            {
+              type: 'AtomicProposition',
+              predicate: { type: 'VariablePredicate' },
+              inputs: []
             }
-          ]
+          ],
+          propertyInputs: []
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/ForVal.sol'),
-        output
+      }
+      const outputOfGetChild = generator.includeCallback('getChild', {
+        property: input
+      })
+      const testOutputOfGetChild = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/variable/ForValGetChild.sol'
+        )
       )
-      const testOutput = fs.readFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/ForVal.sol')
-      )
-      expect(output).toBe(testOutput.toString())
+      expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
     })
     test('thereval', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'ThereValTest',
-          inputDefs: [],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'ThereValTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'ThereValTestT',
+          predicate: 'ThereExistsSuchThat',
+          inputDefs: ['ThereValTestT'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'ThereValTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'ThereValTestT',
-                predicate: 'ThereExistsSuchThat',
-                inputDefs: ['ThereValTestT'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'A' },
-                    inputs: []
-                  },
-                  'a',
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'VariablePredicate' },
-                    inputs: []
-                  }
-                ],
-                propertyInputs: []
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'A' },
+              inputs: []
+            },
+            'a',
+            {
+              type: 'AtomicProposition',
+              predicate: { type: 'VariablePredicate' },
+              inputs: []
             }
-          ]
+          ],
+          propertyInputs: []
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/ThereVal.sol'),
-        output
+      }
+      const outputOfGetChild = generator.includeCallback('getChild', {
+        property: input
+      })
+      const outputOfDecide = generator.includeCallback('decide', {
+        property: input
+      })
+      const testOutputOfGetChild = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/variable/ThereValGetChild.sol'
+        )
       )
-      const testOutput = fs.readFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/ThereVal.sol')
+      const testOutputOfDecide = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/variable/ThereValDecide.sol'
+        )
       )
-      expect(output).toBe(testOutput.toString())
+      expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
+      expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
     test('thereval2', () => {
-      const input: CompiledPredicate[] = [
-        {
-          type: 'CompiledPredicate',
-          name: 'ThereValTest',
-          inputDefs: ['a'],
-          contracts: [
+      const input: IntermediateCompiledPredicate = {
+        type: 'IntermediateCompiledPredicate',
+        isCompiled: true,
+        originalPredicateName: 'ThereValTest',
+        definition: {
+          type: 'IntermediateCompiledPredicateDef',
+          name: 'ThereValTestT',
+          predicate: 'ThereExistsSuchThat',
+          inputDefs: ['ThereValTestT', 'a'],
+          inputs: [
             {
-              type: 'IntermediateCompiledPredicate',
-              isCompiled: true,
-              originalPredicateName: 'ThereValTest',
-              definition: {
-                type: 'IntermediateCompiledPredicateDef',
-                name: 'ThereValTestT',
-                predicate: 'ThereExistsSuchThat',
-                inputDefs: ['ThereValTestT', 'a'],
-                inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'B' },
-                    inputs: []
-                  },
-                  'b',
-                  {
-                    type: 'AtomicProposition',
-                    predicate: {
-                      type: 'InputPredicate',
-                      source: {
-                        type: 'NormalInput',
-                        inputIndex: 1,
-                        children: []
-                      }
-                    },
-                    inputs: [
-                      {
-                        type: 'VariableInput',
-                        placeholder: 'b',
-                        children: []
-                      }
-                    ]
-                  }
-                ],
-                propertyInputs: []
-              }
+              type: 'AtomicProposition',
+              predicate: { type: 'AtomicPredicate', source: 'B' },
+              inputs: []
+            },
+            'b',
+            {
+              type: 'AtomicProposition',
+              predicate: {
+                type: 'InputPredicate',
+                source: {
+                  type: 'NormalInput',
+                  inputIndex: 1,
+                  children: []
+                }
+              },
+              inputs: [
+                {
+                  type: 'VariableInput',
+                  placeholder: 'b',
+                  children: []
+                }
+              ]
             }
-          ]
+          ],
+          propertyInputs: []
         }
-      ]
-      const output = generator.generate(input)
-      fs.writeFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/ThereVal2.sol'),
-        output
+      }
+      const outputOfGetChild = generator.includeCallback('getChild', {
+        property: input
+      })
+      const outputOfDecide = generator.includeCallback('decide', {
+        property: input
+      })
+      const testOutputOfGetChild = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/variable/ThereVal2GetChild.sol'
+        )
       )
-      const testOutput = fs.readFileSync(
-        path.join(__dirname, '../../examples/testcases/variable/ThereVal2.sol')
+      const testOutputOfDecide = fs.readFileSync(
+        path.join(
+          __dirname,
+          '../../examples/testcases/variable/ThereVal2Decide.sol'
+        )
       )
-      expect(output).toBe(testOutput.toString())
+      expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
+      expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
   })
 })
