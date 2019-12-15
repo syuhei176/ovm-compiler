@@ -25,3 +25,7 @@ export function toCapitalCase(name: string) {
 export function isUpperCase(name: string): boolean {
   return name == name.toUpperCase()
 }
+
+export function isConstantVariable(name: string): boolean {
+  return name[0] === '$'
+}

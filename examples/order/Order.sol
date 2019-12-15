@@ -28,10 +28,16 @@ contract Order {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    bytes swapAddress;
 
-    constructor(address _adjudicationContractAddress, address _utilsAddress) {
+    constructor(
+        address _adjudicationContractAddress,
+        address _utilsAddress,
+        bytes _swapAddress
+    ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        swapAddress = _swapAddress;
     }
 
     /**
@@ -89,13 +95,12 @@ contract Order {
      */
     function getChildOrderTA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
-        types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = abi.encodePacked(inputProperty1.predicateAddress);
-            childInputs[1] = abi.encodePacked(inputProperty2.predicateAddress);
+            childInputs[1] = swapAddress;
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Equal,
                 inputs: childInputs
@@ -104,7 +109,7 @@ contract Order {
         if(challengeInput == 1) {
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = inputProperty1.inputs[0];
-            childInputs[1] = _inputs[3];
+            childInputs[1] = _inputs[2];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Equal,
                 inputs: childInputs
@@ -113,7 +118,7 @@ contract Order {
         if(challengeInput == 2) {
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = inputProperty1.inputs[1];
-            childInputs[1] = _inputs[4];
+            childInputs[1] = _inputs[3];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: CheckAmount,
                 inputs: childInputs
@@ -122,7 +127,7 @@ contract Order {
         if(challengeInput == 3) {
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = inputProperty1.inputs[2];
-            childInputs[1] = _inputs[5];
+            childInputs[1] = _inputs[4];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Gte,
                 inputs: childInputs
@@ -131,7 +136,7 @@ contract Order {
         if(challengeInput == 4) {
             bytes[] memory childInputs = new bytes[](2);
             childInputs[0] = inputProperty1Child3.inputs[1];
-            childInputs[1] = _inputs[6];
+            childInputs[1] = _inputs[5];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: Equal,
                 inputs: childInputs
@@ -147,7 +152,7 @@ contract Order {
         }
         if(challengeInput == 6) {
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[7];
+            childInputs[0] = _inputs[6];
             childInputs[1] = inputProperty1Child3.inputs[0];
             notInputs[0] = abi.encode(type.Property({
                 predicateAddress: IsValidSignature,
@@ -173,7 +178,6 @@ contract Order {
         childInputs[4] = _inputs[3];
         childInputs[5] = _inputs[4];
         childInputs[6] = _inputs[5];
-        childInputs[7] = _inputs[6];
         notInputs[0] = abi.encode(type.Property({
             predicateAddress: OrderTA,
             inputs: childInputs
@@ -190,40 +194,39 @@ contract Order {
         });
     }
     /**
-     * Decides OrderTA(OrderTA,c_su,swap,c_token,c_amount,min_block_number,maker,tx).
+     * Decides OrderTA(OrderTA,c_su,c_token,c_amount,min_block_number,maker,tx).
      */
     function decideOrderTA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
-        types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
         // And logical connective
 
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-        childInputs0[1] = abi.encodePacked(inputProperty2.predicateAddress);
+        childInputs0[1] = swapAddress;
         require(Equal.decide(childInputs0));
 
 
         bytes[] memory childInputs1 = new bytes[](2);
         childInputs1[0] = inputProperty1.inputs[0];
-        childInputs1[1] = _inputs[3];
+        childInputs1[1] = _inputs[2];
         require(Equal.decide(childInputs1));
 
 
         bytes[] memory childInputs2 = new bytes[](2);
         childInputs2[0] = inputProperty1.inputs[1];
-        childInputs2[1] = _inputs[4];
+        childInputs2[1] = _inputs[3];
         require(CheckAmount.decide(childInputs2));
 
 
         bytes[] memory childInputs3 = new bytes[](2);
         childInputs3[0] = inputProperty1.inputs[2];
-        childInputs3[1] = _inputs[5];
+        childInputs3[1] = _inputs[4];
         require(Gte.decide(childInputs3));
 
 
         bytes[] memory childInputs4 = new bytes[](2);
         childInputs4[0] = inputProperty1Child3.inputs[1];
-        childInputs4[1] = _inputs[6];
+        childInputs4[1] = _inputs[5];
         require(Equal.decide(childInputs4));
 
 
@@ -233,21 +236,21 @@ contract Order {
 
 
         bytes[] memory childInputs6 = new bytes[](2);
-        childInputs6[0] = _inputs[7];
+        childInputs6[0] = _inputs[6];
         childInputs6[1] = inputProperty1Child3.inputs[0];
         require(IsValidSignature.decide(childInputs6));
 
         return true;
     }
     /**
-     * Decides OrderT(OrderT,swap,c_token,c_amount,min_block_number,maker,tx).
+     * Decides OrderT(OrderT,c_token,c_amount,min_block_number,maker,tx).
      */
     function decideOrderT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory quantifierInputs = new bytes[](1);
         quantifierInputs[0] = _witness[0];
         require(AtomicPredicate(SU).decide(quantifierInputs));
-        bytes[] memory childInputs = new bytes[](8);
+        bytes[] memory childInputs = new bytes[](7);
         childInputs[0] = OrderTA;
         childInputs[1] = witness[0];
         childInputs[2] = _inputs[1];
@@ -255,7 +258,6 @@ contract Order {
         childInputs[4] = _inputs[3];
         childInputs[5] = _inputs[4];
         childInputs[6] = _inputs[5];
-        childInputs[7] = _inputs[6];
         require(decideOrderTA(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         return true;
@@ -285,7 +287,10 @@ contract Withdraw {
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
 
-    constructor(address _adjudicationContractAddress, address _utilsAddress) {
+    constructor(
+        address _adjudicationContractAddress,
+        address _utilsAddress
+    ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
     }

@@ -10,6 +10,7 @@ import "./CompiledPredicate.sol";
 <%
   for(let c = 0;c < compiledPredicates.length;c++) {
     const claimDef = compiledPredicates[c]
+    const constants = claimDef.constants || []
 %>
 /**
  * <%= claimDef.name %>(<%= claimDef.inputDefs %>)
@@ -36,10 +37,22 @@ contract <%= claimDef.name %> {
     address notAddress = address(<%= getAddress('Not') %>);
     address andAddress = address(<%= getAddress('And') %>);
     address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
+<% constants.forEach(c => { -%>
+    bytes <%= c.name %>;
+<% }) -%>
 
-    constructor(address _adjudicationContractAddress, address _utilsAddress) {
+    constructor(
+        address _adjudicationContractAddress,
+        address _utilsAddress<% if(constants.length > 0){ %>,<% } %>
+<% constants.forEach((c, index) => { -%>
+        bytes _<%= c.name %><% if(index < constants.length - 1) { %>,<% } %>
+<% }) -%>
+    ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+<% constants.forEach((c, index) => { -%>
+        <%= c.name %> = _<%= c.name %>;
+<% }) -%>
     }
 
     /**

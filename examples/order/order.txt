@@ -1,6 +1,6 @@
 def order(maker, c_token, c_amount, min_block_number, tx) := 
   with SU() as c_su {
-    Equal(c_su.address, swap.address)
+    Equal(c_su.address, $swapAddress)
     and Equal(c_su.0, c_token)
     and CheckAmount(c_su.1, c_amount)
     and Gte(c_su.2, min_block_number)
