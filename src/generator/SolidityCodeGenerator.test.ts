@@ -202,11 +202,7 @@ describe('SolidityCodeGenerator', () => {
                 predicate: 'ThereExistsSuchThat',
                 inputDefs: ['ThereTestT'],
                 inputs: [
-                  {
-                    type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'A' },
-                    inputs: []
-                  },
+                  'hint:hint:hint',
                   'a',
                   {
                     type: 'AtomicProposition',

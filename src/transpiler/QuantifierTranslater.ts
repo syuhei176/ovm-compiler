@@ -14,11 +14,7 @@ const presetQuantifierTable: { [key: string]: Preset } = {
         type: 'PropertyNode',
         predicate: 'ThereExistsSuchThat',
         inputs: [
-          {
-            type: 'PropertyNode',
-            predicate: 'Bytes',
-            inputs: [`key:signatures:\${${p.inputs[0]}}`]
-          },
+          `key:signatures:\${${p.inputs[0]}}`,
           'sig',
           {
             type: 'PropertyNode',
@@ -36,13 +32,7 @@ const presetQuantifierTable: { [key: string]: Preset } = {
         type: 'PropertyNode',
         predicate: 'ThereExistsSuchThat',
         inputs: [
-          {
-            type: 'PropertyNode',
-            predicate: 'Bytes',
-            inputs: [
-              `range:block\${${p.inputs[3]}}_range\${${p.inputs[1]}}:\${${p.inputs[2]}}`
-            ]
-          },
+          `range:block\${${p.inputs[3]}}_range\${${p.inputs[1]}}:\${${p.inputs[2]}}`,
           'inclusionProof',
           {
             type: 'PropertyNode',

@@ -85,10 +85,7 @@ function searchInteractiveNode(
       property.predicate == 'ForAllSuchThat' ||
       property.predicate == 'ThereExistsSuchThat'
     ) {
-      if (
-        typeof property.inputs[0] == 'string' ||
-        property.inputs[0] == undefined
-      ) {
+      if (property.inputs[0] == undefined) {
         throw new Error('property.inputs[0] must not be string')
       }
       if (
@@ -97,18 +94,19 @@ function searchInteractiveNode(
       ) {
         throw new Error('property.inputs[2] must not be string')
       }
-      if (property.inputs[0].type != 'PropertyNode') {
-        throw new Error('property.inputs[0] must not be PropertyNode')
-      }
       if (property.inputs[2].type != 'PropertyNode') {
         throw new Error('property.inputs[2] must not be PropertyNode')
       }
       // quantifier
-      children[0] = searchInteractiveNode(
-        contracts,
-        property.inputs[0],
-        newContract.definition.inputDefs
-      )
+      if (typeof property.inputs[0] == 'string') {
+        children[0] = property.inputs[0]
+      } else {
+        children[0] = searchInteractiveNode(
+          contracts,
+          property.inputs[0],
+          newContract.definition.inputDefs
+        )
+      }
       // placeholder
       children[1] = property.inputs[1] as string
       // innerProperty
@@ -282,7 +280,10 @@ function getArguments(property: PropertyNode): string[] {
     property.predicate == 'ForAllSuchThat' ||
     property.predicate == 'ThereExistsSuchThat'
   ) {
-    args = args.concat(getArguments(property.inputs[0] as PropertyNode))
+    if (typeof property.inputs[0] !== 'string') {
+      // If inputs[0] is not hint string
+      args = args.concat(getArguments(property.inputs[0] as PropertyNode))
+    }
     const variable = property.inputs[1] as string
     const innerArgs = getArguments(property.inputs[2] as PropertyNode)
     args = args.concat(innerArgs.filter(a => a != variable))

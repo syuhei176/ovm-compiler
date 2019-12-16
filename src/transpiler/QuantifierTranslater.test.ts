@@ -25,11 +25,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ThereExistsSuchThat',
             inputs: [
-              {
-                type: 'PropertyNode',
-                predicate: 'Bytes',
-                inputs: ['key:signatures:${a}']
-              },
+              'key:signatures:${a}',
               'sig',
               {
                 type: 'PropertyNode',

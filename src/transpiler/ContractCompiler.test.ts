@@ -228,7 +228,7 @@ describe('ContractCompiler', () => {
               type: 'PropertyNode',
               predicate: 'ThereExistsSuchThat',
               inputs: [
-                { type: 'PropertyNode', predicate: 'A', inputs: [] },
+                'hint:hint:hint',
                 'a',
                 { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] }
               ]
@@ -252,11 +252,7 @@ describe('ContractCompiler', () => {
                   predicate: 'ThereExistsSuchThat',
                   inputDefs: ['ThereTestT'],
                   inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'A' },
-                      inputs: []
-                    },
+                    'hint:hint:hint',
                     'a',
                     {
                       type: 'AtomicProposition',

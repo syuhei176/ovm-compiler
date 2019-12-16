@@ -34,10 +34,6 @@
 const quantifier = property.definition.inputs[0]
 const innerProperty = property.definition.inputs[2]
 -%>
-        bytes[] memory quantifierInputs = new bytes[](<%= quantifier.inputs.length + 1 %>);
-<%- include('constructInputs', {property: quantifier, valName: 'quantifierInputs', witnessName: 'witness'}) -%>
-        quantifierInputs[<%= quantifier.inputs.length %>] = _witness[0];
-        require(AtomicPredicate(<%= quantifier.predicate.source %>).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
 <%- include('constructInputs', {property: innerProperty, valName: 'childInputs', witnessName: 'witness'}) -%>
 <%      if(innerProperty.isCompiled) { -%>
