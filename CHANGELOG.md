@@ -1,3 +1,22 @@
+## <small>0.1.6 (2019-12-16)</small>
+
+* 0.1.6 ([987b006](https://github.com/cryptoeconomicslab/ovm-compiler/commit/987b006))
+* update changelog ([8e21f77](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8e21f77))
+* feat: add .address syntax and self reserved word #20 ([41d3e3a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/41d3e3a)), closes [#20](https://github.com/cryptoeconomicslab/ovm-compiler/issues/20)
+* feat: add ovm-contracts path option #23 ([d609e54](https://github.com/cryptoeconomicslab/ovm-compiler/commit/d609e54)), closes [#23](https://github.com/cryptoeconomicslab/ovm-compiler/issues/23)
+* feat: support constant variable with $ prefix #24 ([324f628](https://github.com/cryptoeconomicslab/ovm-compiler/commit/324f628)), closes [#24](https://github.com/cryptoeconomicslab/ovm-compiler/issues/24)
+* feat: support hint data for LessThan and SU #4 ([8191c57](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8191c57)), closes [#4](https://github.com/cryptoeconomicslab/ovm-compiler/issues/4)
+* feat: support hint data for SignedBy and IncludedAt #4 ([73565fe](https://github.com/cryptoeconomicslab/ovm-compiler/commit/73565fe)), closes [#4](https://github.com/cryptoeconomicslab/ovm-compiler/issues/4)
+* fix: Fix bind syntax #18 ([814b1c2](https://github.com/cryptoeconomicslab/ovm-compiler/commit/814b1c2)), closes [#18](https://github.com/cryptoeconomicslab/ovm-compiler/issues/18)
+* fix: Fix decide of or ([4236186](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4236186))
+* fix: fix indentation #15 ([cd5b4cc](https://github.com/cryptoeconomicslab/ovm-compiler/commit/cd5b4cc)), closes [#15](https://github.com/cryptoeconomicslab/ovm-compiler/issues/15)
+* fix: there exists quantifier should have hint data directly #4 ([3661e01](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3661e01)), closes [#4](https://github.com/cryptoeconomicslab/ovm-compiler/issues/4)
+* fix: update examples ([5c4edea](https://github.com/cryptoeconomicslab/ovm-compiler/commit/5c4edea))
+* clean: clean code ([d6eadba](https://github.com/cryptoeconomicslab/ovm-compiler/commit/d6eadba))
+* clean: clean test case ([be86e9a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/be86e9a))
+
+
+
 ## <small>0.1.5 (2019-12-14)</small>
 
 * 0.1.5 ([76a0680](https://github.com/cryptoeconomicslab/ovm-compiler/commit/76a0680))
