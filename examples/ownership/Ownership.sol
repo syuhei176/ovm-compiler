@@ -87,8 +87,8 @@ contract Ownership {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[2];
-        childInputs[1] = _inputs[3];
+        childInputs[0] = _inputs[1];
+        childInputs[1] = _inputs[2];
         childInputs[2] = challengeInputs[0];
         notInputs[0] = abi.encode(type.Property({
             predicateAddress: IsValidSignature,
@@ -106,22 +106,18 @@ contract Ownership {
         });
     }
     /**
-     * Decides OwnershipT(OwnershipT,key:signatures:${tx},tx,owner).
+     * Decides OwnershipT(OwnershipT,tx,owner).
      */
     function decideOwnershipT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](2);
-        quantifierInputs[0] = _inputs[1];
-        quantifierInputs[1] = _witness[0];
-        require(AtomicPredicate(Bytes).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](3);
-        childInputs[0] = _inputs[2];
-        childInputs[1] = _inputs[3];
+        childInputs[0] = _inputs[1];
+        childInputs[1] = _inputs[2];
         childInputs[2] = witness[0];
 
         bytes[] memory childInputs = new bytes[](3);
-        childInputs[0] = _inputs[2];
-        childInputs[1] = _inputs[3];
+        childInputs[0] = _inputs[1];
+        childInputs[1] = _inputs[2];
         childInputs[2] = witness[0];
         require(IsValidSignature.decide(childInputs));
 
