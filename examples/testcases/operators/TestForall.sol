@@ -84,10 +84,6 @@ contract ForallTest {
      * Gets child of ForallTestF().
      */
     function getChildForallTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        bytes[] memory quantifierInputs = new bytes[](2);
-        quantifierInputs[0] = _inputs[1];
-        quantifierInputs[1] = challengeInputs[0];
-        require(AtomicPredicate(A).decide(quantifierInputs));
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = challengeInputs[0];

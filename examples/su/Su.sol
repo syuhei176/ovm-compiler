@@ -224,9 +224,6 @@ contract StateUpdate {
      */
     function decideStateUpdateT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](1);
-        quantifierInputs[0] = _witness[0];
-        require(AtomicPredicate(Bytes).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](7);
         childInputs[0] = StateUpdateTA;
         childInputs[1] = witness[0];

@@ -118,18 +118,25 @@ contract OrTest {
      */
     function decideOrTestO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        var result = false;
-        bytes[] memory childInputs0 = new bytes[](1);
-        childInputs0[0] = _inputs[1];
+        uint256 orIndex = abi.decode(witness[0], (uint256));
+        if(orIndex == 0) {
+            bytes[] memory childInputs0 = new bytes[](1);
+            childInputs0[0] = _inputs[1];
 
-        result = result | Foo.decide(childInputs);
+            bytes[] memory childInputs0 = new bytes[](1);
+            childInputs0[0] = _inputs[1];
+            require(Foo.decide(childInputs0));
 
-        bytes[] memory childInputs1 = new bytes[](1);
-        childInputs1[0] = _inputs[2];
+        }
+        if(orIndex == 1) {
+            bytes[] memory childInputs1 = new bytes[](1);
+            childInputs1[0] = _inputs[2];
 
-        result = result | Bar.decide(childInputs);
+            bytes[] memory childInputs1 = new bytes[](1);
+            childInputs1[0] = _inputs[2];
+            require(Bar.decide(childInputs1));
 
-        require(result);
+        }
         return true;
     }
 

@@ -195,21 +195,30 @@ contract LimboExit {
      */
     function decideLimboExitO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        var result = false;
-        bytes[] memory childInputs0 = new bytes[](1);
-        childInputs0[0] = _inputs[2];
+        uint256 orIndex = abi.decode(witness[0], (uint256));
+        if(orIndex == 0) {
+            bytes[] memory childInputs0 = new bytes[](1);
+            childInputs0[0] = _inputs[2];
 
-        result = result | [object Object].decide(childInputs);
+            types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
+            bytes[] memory childInputs0 = new bytes[](inputPredicateProperty.inputs.length + 1);
+            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+                childInputs0[i] = inputPredicateProperty.inputs[i];
+            }
+            childInputs0[stateObject.inputs.length] = _inputs[2];
+            require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs0, Utils.subArray(_witness, 1, _witness.length)));
 
-        bytes[] memory childInputs1 = new bytes[](5);
-        childInputs1[0] = LimboExitO2A;
-        childInputs1[1] = _inputs[2];
-        childInputs1[2] = _inputs[3];
-        childInputs1[3] = _inputs[4];
-        childInputs1[4] = _inputs[1];
-        result = result | decideLimboExitO2A(childInputs, Utils.subArray(_witness, 1, _witness.length));
+        }
+        if(orIndex == 1) {
+            bytes[] memory childInputs1 = new bytes[](5);
+            childInputs1[0] = LimboExitO2A;
+            childInputs1[1] = _inputs[2];
+            childInputs1[2] = _inputs[3];
+            childInputs1[3] = _inputs[4];
+            childInputs1[4] = _inputs[1];
+            require(decideLimboExitO2A(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
-        require(result);
+        }
         return true;
     }
 

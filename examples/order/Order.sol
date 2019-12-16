@@ -247,9 +247,6 @@ contract Order {
      */
     function decideOrderT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](1);
-        quantifierInputs[0] = _witness[0];
-        require(AtomicPredicate(SU).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](7);
         childInputs[0] = OrderTA;
         childInputs[1] = witness[0];
@@ -466,10 +463,6 @@ contract Withdraw {
     function decideWithdrawO2T(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](2);
-        quantifierInputs[0] = inputProperty1.inputs[1];
-        quantifierInputs[1] = _witness[0];
-        require(AtomicPredicate(Tx).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = witness[0];
         childInputs[1] = _inputs[2];
@@ -486,19 +479,22 @@ contract Withdraw {
      */
     function decideWithdrawO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        var result = false;
-        bytes[] memory childInputs0 = new bytes[](2);
-        childInputs0[0] = WithdrawO1A;
-        childInputs0[1] = _inputs[1];
-        result = result | decideWithdrawO1A(childInputs, Utils.subArray(_witness, 1, _witness.length));
+        uint256 orIndex = abi.decode(witness[0], (uint256));
+        if(orIndex == 0) {
+            bytes[] memory childInputs0 = new bytes[](2);
+            childInputs0[0] = WithdrawO1A;
+            childInputs0[1] = _inputs[1];
+            require(decideWithdrawO1A(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
-        bytes[] memory childInputs1 = new bytes[](3);
-        childInputs1[0] = WithdrawO2T;
-        childInputs1[1] = _inputs[1];
-        childInputs1[2] = _inputs[2];
-        result = result | decideWithdrawO2T(childInputs, Utils.subArray(_witness, 1, _witness.length));
+        }
+        if(orIndex == 1) {
+            bytes[] memory childInputs1 = new bytes[](3);
+            childInputs1[0] = WithdrawO2T;
+            childInputs1[1] = _inputs[1];
+            childInputs1[2] = _inputs[2];
+            require(decideWithdrawO2T(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
-        require(result);
+        }
         return true;
     }
 

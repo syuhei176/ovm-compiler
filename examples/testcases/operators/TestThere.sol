@@ -108,9 +108,6 @@ contract ThereTest {
      */
     function decideThereTestT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](1);
-        quantifierInputs[0] = _witness[0];
-        require(AtomicPredicate(A).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](1);
         childInputs[0] = witness[0];
 

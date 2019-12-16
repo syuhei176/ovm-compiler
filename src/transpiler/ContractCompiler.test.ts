@@ -1,9 +1,9 @@
-import { createCompiledPredicates } from './'
+import { createCompiledPredicates } from './ContractCompiler'
 import { PropertyDef } from '../parser/PropertyDef'
 
-describe('Transpiler', () => {
+describe('ContractCompiler', () => {
   beforeEach(async () => {})
-  describe('calculateInteractiveNodes', () => {
+  describe('createCompiledPredicates', () => {
     describe('operator', () => {
       test('and', () => {
         const input: PropertyDef[] = [
@@ -228,7 +228,7 @@ describe('Transpiler', () => {
               type: 'PropertyNode',
               predicate: 'ThereExistsSuchThat',
               inputs: [
-                { type: 'PropertyNode', predicate: 'A', inputs: [] },
+                'hint:hint:hint',
                 'a',
                 { type: 'PropertyNode', predicate: 'Foo', inputs: ['a'] }
               ]
@@ -252,11 +252,7 @@ describe('Transpiler', () => {
                   predicate: 'ThereExistsSuchThat',
                   inputDefs: ['ThereTestT'],
                   inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'A' },
-                      inputs: []
-                    },
+                    'hint:hint:hint',
                     'a',
                     {
                       type: 'AtomicProposition',

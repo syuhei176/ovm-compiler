@@ -9,11 +9,9 @@ import "./CompiledPredicate.sol";
 
 
 /**
- * Ownership(owner)
+ * Ownership(owner,tx)
  */
 contract Ownership {
-    bytes public OwnershipTA2T = bytes("OwnershipTA2T");
-    bytes public OwnershipTA = bytes("OwnershipTA");
     bytes public OwnershipT = bytes("OwnershipT");
 
     UniversalAdjudicationContract adjudicationContract;
@@ -58,12 +56,6 @@ contract Ownership {
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
         bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == OwnershipTA2T) {
-            return getChildOwnershipTA2T(inputs, challengeInput);
-        }
-        if(input0 == OwnershipTA) {
-            return getChildOwnershipTA(inputs, challengeInput);
-        }
         if(input0 == OwnershipT) {
             return getChildOwnershipT(inputs, challengeInput);
         }
@@ -74,12 +66,6 @@ contract Ownership {
      */
     function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
         bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == OwnershipTA2T) {
-            decideOwnershipTA2T(_inputs, _witness);
-        }
-        if(input0 == OwnershipTA) {
-            decideOwnershipTA(_inputs, _witness);
-        }
         if(input0 == OwnershipT) {
             decideOwnershipT(_inputs, _witness);
         }
@@ -95,9 +81,9 @@ contract Ownership {
     }
 
     /**
-     * Gets child of OwnershipTA2T().
+     * Gets child of OwnershipT().
      */
-    function getChildOwnershipTA2T(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+    function getChildOwnershipT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
@@ -109,7 +95,7 @@ contract Ownership {
             inputs: childInputs
         }));
         forAllSuchThatInputs[0] = bytes("");
-        forAllSuchThatInputs[1] = bytes("signature");
+        forAllSuchThatInputs[1] = bytes("sig");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
@@ -120,66 +106,10 @@ contract Ownership {
         });
     }
     /**
-     * Gets child of OwnershipTA().
+     * Decides OwnershipT(OwnershipT,tx,owner).
      */
-    function getChildOwnershipTA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
-        bytes[] memory notInputs = new bytes[](1);
-        if(challengeInput == 0) {
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
-            childInputs[1] = _inputs[2];
-            notInputs[0] = abi.encode(type.Property({
-                predicateAddress: StateUpdate,
-                inputs: childInputs
-            }));
-        }
-        if(challengeInput == 1) {
-            bytes[] memory childInputs = new bytes[](3);
-            childInputs[0] = OwnershipTA2T;
-            childInputs[1] = _inputs[1];
-            childInputs[2] = _inputs[3];
-            return getChildOwnershipTA2T(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
-        }
-        return type.Property({
-            predicateAddress: notAddress,
-            inputs: notInputs
-        });
-    }
-    /**
-     * Gets child of OwnershipT().
-     */
-    function getChildOwnershipT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        bytes[] memory forAllSuchThatInputs = new bytes[](3);
-        bytes[] memory notInputs = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = OwnershipTA;
-        childInputs[1] = challengeInputs[0];
-        childInputs[2] = _inputs[1];
-        childInputs[3] = _inputs[2];
-        notInputs[0] = abi.encode(type.Property({
-            predicateAddress: OwnershipTA,
-            inputs: childInputs
-        }));
-        forAllSuchThatInputs[0] = bytes("");
-        forAllSuchThatInputs[1] = bytes("tx");
-        forAllSuchThatInputs[2] = abi.encode(types.Property({
-            predicateAddress: notAddress,
-            inputs: notInputs
-        }));
-        return type.Property({
-            predicateAddress: forAllSuchThatAddress,
-            inputs: forAllSuchThatInputs
-        });
-    }
-    /**
-     * Decides OwnershipTA2T(OwnershipTA2T,tx,owner).
-     */
-    function decideOwnershipTA2T(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+    function decideOwnershipT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](1);
-        quantifierInputs[0] = _witness[0];
-        require(AtomicPredicate(Bytes).decide(quantifierInputs));
         bytes[] memory childInputs = new bytes[](3);
         childInputs[0] = _inputs[1];
         childInputs[1] = _inputs[2];
@@ -190,38 +120,6 @@ contract Ownership {
         childInputs[1] = _inputs[2];
         childInputs[2] = witness[0];
         require(IsValidSignature.decide(childInputs));
-
-        return true;
-    }
-    /**
-     * Decides OwnershipTA(OwnershipTA,tx,su,owner).
-     */
-    function decideOwnershipTA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
-        // And logical connective
-
-        bytes[] memory childInputs0 = new bytes[](2);
-        childInputs0[0] = _inputs[1];
-        childInputs0[1] = _inputs[2];
-        require(StateUpdate.decide(childInputs0));
-
-        require(decideOwnershipTA2T(childInputs1, Utils.subArray(_witness, 1, _witness.length)));
-
-        return true;
-    }
-    /**
-     * Decides OwnershipT(OwnershipT,su,owner).
-     */
-    function decideOwnershipT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
-        // check ThereExistsSuchThat
-        bytes[] memory quantifierInputs = new bytes[](1);
-        quantifierInputs[0] = _witness[0];
-        require(AtomicPredicate(Bytes).decide(quantifierInputs));
-        bytes[] memory childInputs = new bytes[](4);
-        childInputs[0] = OwnershipTA;
-        childInputs[1] = witness[0];
-        childInputs[2] = _inputs[1];
-        childInputs[3] = _inputs[2];
-        require(decideOwnershipTA(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         return true;
     }
