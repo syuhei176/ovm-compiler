@@ -18,11 +18,17 @@ const templates: { [key: string]: string } = {
 
 export interface SolidityCodeGeneratorOptions {
   addressTable: { [key: string]: string }
+  ovmPath?: string
 }
+
+const defaultOVMPath = 'ovm-contracts'
 
 export class SolidityCodeGenerator implements CodeGenerator {
   constructor(
-    readonly options: SolidityCodeGeneratorOptions = { addressTable: {} }
+    readonly options: SolidityCodeGeneratorOptions = {
+      addressTable: {},
+      ovmPath: defaultOVMPath
+    }
   ) {}
   generate(compiledPredicates: CompiledPredicate[]) {
     const template = ejs.compile(templateSource.toString(), { client: true })
@@ -48,6 +54,9 @@ export class SolidityCodeGenerator implements CodeGenerator {
     )
   }
 
+  getOVMPath = () => {
+    return this.options.ovmPath || defaultOVMPath
+  }
   getAddress = (predicateName: string) => {
     return (
       this.options.addressTable[predicateName] ||
@@ -70,7 +79,8 @@ export class SolidityCodeGenerator implements CodeGenerator {
   getHelpers = () => {
     return {
       getAddress: this.getAddress,
-      indent: this.indent
+      indent: this.indent,
+      getOVMPath: this.getOVMPath
     }
   }
 }
