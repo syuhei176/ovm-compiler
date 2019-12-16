@@ -1,9 +1,9 @@
-import { createCompiledPredicates } from './'
+import { createCompiledPredicates } from './ContractCompiler'
 import { PropertyDef } from '../parser/PropertyDef'
 
-describe('Transpiler', () => {
+describe('ContractCompiler', () => {
   beforeEach(async () => {})
-  describe('calculateInteractiveNodes', () => {
+  describe('createCompiledPredicates', () => {
     describe('operator', () => {
       test('and', () => {
         const input: PropertyDef[] = [

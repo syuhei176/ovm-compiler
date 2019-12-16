@@ -1,4 +1,4 @@
-export function isNotAtomicProposition(predicate: any) {
+export function isNotAtomicProposition(predicate: string) {
   return (
     predicate == 'ForAllSuchThat' ||
     predicate == 'ThereExistsSuchThat' ||
@@ -8,7 +8,7 @@ export function isNotAtomicProposition(predicate: any) {
   )
 }
 
-export function isAtomicProposition(predicate: any) {
+export function isAtomicProposition(predicate: string) {
   return !isNotAtomicProposition(predicate)
 }
 
