@@ -1,11 +1,11 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import {DataTypes as types} from "../DataTypes.sol";
-import "../UniversalAdjudicationContract.sol";
-import "../Utils.sol";
-import "./AtomicPredicate.sol";
-import "./CompiledPredicate.sol";
+import { DataTypes as types } from "../DataTypes.sol";
+import "ovm-contracts/UniversalAdjudicationContract.sol";
+import "ovm-contracts/Utils.sol";
+import "ovm-contracts/Predicate/AtomicPredicate.sol";
+import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
@@ -21,9 +21,9 @@ contract NotTest {
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
     address Bytes = address(0x0000000000000000000000000000000000000000);
     address SU = address(0x0000000000000000000000000000000000000000);
-    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
-    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IsContained = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
