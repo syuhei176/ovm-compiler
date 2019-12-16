@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import { DataTypes as types } from "../DataTypes.sol";
+import { DataTypes as types } from "ovm-contracts/DataTypes.sol";
 import "ovm-contracts/UniversalAdjudicationContract.sol";
 import "ovm-contracts/Utils.sol";
 import "ovm-contracts/Predicate/AtomicPredicate.sol";
