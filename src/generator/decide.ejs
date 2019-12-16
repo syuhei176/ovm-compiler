@@ -44,19 +44,20 @@ const innerProperty = property.definition.inputs[2]
         return true;
 <% } else if(property.definition.predicate == 'Or') { -%>
         // check Or
-        var result = false;
+        uint256 orIndex = abi.decode(witness[0], (uint256));
 <%
         property.definition.inputs.forEach((item, index) => {
 -%>
-        bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
-<%- include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: 'witness'}) -%>
-<%      if(item.isCompiled) { -%>
-        result = result | decide<%= item.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length));
-<%      } else { %>
-        result = result | <%= item.predicate.source %>.decide(childInputs);
-<%      } %>
+        if(orIndex == <%= index %>) {
+            bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
+<%- indent(include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: 'witness'}), 4) -%>
+<%        if(item.isCompiled) { -%>
+            require(decide<%= item.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+<%        } else { %>
+<%- indent(include('decideProperty', {property: item, valName: 'childInputs' + index}), 4) -%>
+<%        } %>
+        }
 <%      }) -%>
-        require(result);
         return true;
 <% } else { -%>
         return false;

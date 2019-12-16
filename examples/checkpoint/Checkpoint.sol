@@ -255,19 +255,22 @@ contract Checkpoint {
      */
     function decideCheckpointFO2FO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        var result = false;
-        bytes[] memory childInputs0 = new bytes[](4);
-        childInputs0[0] = CheckpointFO2FO1N;
-        childInputs0[1] = _inputs[1];
-        childInputs0[2] = _inputs[2];
-        childInputs0[3] = _inputs[3];
-        result = result | decideCheckpointFO2FO1N(childInputs, Utils.subArray(_witness, 1, _witness.length));
+        uint256 orIndex = abi.decode(witness[0], (uint256));
+        if(orIndex == 0) {
+            bytes[] memory childInputs0 = new bytes[](4);
+            childInputs0[0] = CheckpointFO2FO1N;
+            childInputs0[1] = _inputs[1];
+            childInputs0[2] = _inputs[2];
+            childInputs0[3] = _inputs[3];
+            require(decideCheckpointFO2FO1N(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
-        bytes[] memory childInputs1 = new bytes[](0);
+        }
+        if(orIndex == 1) {
+            bytes[] memory childInputs1 = new bytes[](0);
 
-        result = result | [object Object].decide(childInputs);
+            require(adjudicationContract.isDecided(_inputs[1]));
 
-        require(result);
+        }
         return true;
     }
     /**
@@ -281,20 +284,23 @@ contract Checkpoint {
      */
     function decideCheckpointFO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        var result = false;
-        bytes[] memory childInputs0 = new bytes[](3);
-        childInputs0[0] = CheckpointFO1N;
-        childInputs0[1] = _inputs[1];
-        childInputs0[2] = _inputs[2];
-        result = result | decideCheckpointFO1N(childInputs, Utils.subArray(_witness, 1, _witness.length));
+        uint256 orIndex = abi.decode(witness[0], (uint256));
+        if(orIndex == 0) {
+            bytes[] memory childInputs0 = new bytes[](3);
+            childInputs0[0] = CheckpointFO1N;
+            childInputs0[1] = _inputs[1];
+            childInputs0[2] = _inputs[2];
+            require(decideCheckpointFO1N(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
-        bytes[] memory childInputs1 = new bytes[](3);
-        childInputs1[0] = CheckpointFO2F;
-        childInputs1[1] = _inputs[2];
-        childInputs1[2] = _inputs[1];
-        result = result | decideCheckpointFO2F(childInputs, Utils.subArray(_witness, 1, _witness.length));
+        }
+        if(orIndex == 1) {
+            bytes[] memory childInputs1 = new bytes[](3);
+            childInputs1[0] = CheckpointFO2F;
+            childInputs1[1] = _inputs[2];
+            childInputs1[2] = _inputs[1];
+            require(decideCheckpointFO2F(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
-        require(result);
+        }
         return true;
     }
     /**
