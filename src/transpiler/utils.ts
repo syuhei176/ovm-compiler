@@ -12,9 +12,26 @@ export function isAtomicProposition(predicate: string) {
   return !isNotAtomicProposition(predicate)
 }
 
-export function isComparisonPredicate(predicate: any) {
+export function isCompiledPredicate(predicate: string) {
+  return !isAtomicPredicate(predicate) && isAtomicProposition(predicate)
+}
+
+export function isAtomicPredicate(predicate: string) {
   return (
-    predicate == 'assert' || predicate == 'gte' || predicate == 'checkAmount'
+    // These 4 predicates are for unit test
+    predicate == 'Foo' ||
+    predicate == 'Bar' ||
+    predicate == 'A' ||
+    predicate == 'B' ||
+    // end of predicates for unit test
+    predicate == 'Equal' ||
+    predicate == 'IsLessThan' ||
+    predicate == 'IsValidSignature' ||
+    predicate == 'IncludedWithin' ||
+    predicate == 'IsContained' ||
+    predicate == 'VerifyInclusion' ||
+    predicate == 'IsValidStateTransition' ||
+    predicate == 'IsSameAmount'
   )
 }
 

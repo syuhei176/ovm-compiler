@@ -1,11 +1,11 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import {DataTypes as types} from "../DataTypes.sol";
-import "../UniversalAdjudicationContract.sol";
-import "../Utils.sol";
-import "./AtomicPredicate.sol";
-import "./CompiledPredicate.sol";
+import { DataTypes as types } from "../DataTypes.sol";
+import "ovm-contracts/UniversalAdjudicationContract.sol";
+import "ovm-contracts/Utils.sol";
+import "ovm-contracts/Predicate/AtomicPredicate.sol";
+import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
@@ -17,27 +17,30 @@ contract Order {
 
     UniversalAdjudicationContract adjudicationContract;
     Utils utils;
-    address LessThan = address(0x0000000000000000000000000000000000000000);
+    address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address Bytes = address(0x0000000000000000000000000000000000000000);
-    address SU = address(0x0000000000000000000000000000000000000000);
-    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
-    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
+    address IsContained = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
+    address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
     bytes swapAddress;
+    bytes Withdraw;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
-        bytes _swapAddress
+        bytes _swapAddress,
+        bytes _Withdraw
     ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         swapAddress = _swapAddress;
+        Withdraw = _Withdraw;
     }
 
     /**
@@ -120,16 +123,16 @@ contract Order {
             childInputs[0] = inputProperty1.inputs[1];
             childInputs[1] = _inputs[3];
             notInputs[0] = abi.encode(type.Property({
-                predicateAddress: CheckAmount,
+                predicateAddress: IsSameAmount,
                 inputs: childInputs
             }));
         }
         if(challengeInput == 3) {
             bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = inputProperty1.inputs[2];
-            childInputs[1] = _inputs[4];
+            childInputs[0] = _inputs[4];
+            childInputs[1] = inputProperty1.inputs[2];
             notInputs[0] = abi.encode(type.Property({
-                predicateAddress: Gte,
+                predicateAddress: IsLessThan,
                 inputs: childInputs
             }));
         }
@@ -215,13 +218,13 @@ contract Order {
         bytes[] memory childInputs2 = new bytes[](2);
         childInputs2[0] = inputProperty1.inputs[1];
         childInputs2[1] = _inputs[3];
-        require(CheckAmount.decide(childInputs2));
+        require(IsSameAmount.decide(childInputs2));
 
 
         bytes[] memory childInputs3 = new bytes[](2);
-        childInputs3[0] = inputProperty1.inputs[2];
-        childInputs3[1] = _inputs[4];
-        require(Gte.decide(childInputs3));
+        childInputs3[0] = _inputs[4];
+        childInputs3[1] = inputProperty1.inputs[2];
+        require(IsLessThan.decide(childInputs3));
 
 
         bytes[] memory childInputs4 = new bytes[](2);
@@ -267,29 +270,39 @@ contract Order {
  */
 contract Withdraw {
     bytes public WithdrawO1A = bytes("WithdrawO1A");
+    bytes public WithdrawO2TA = bytes("WithdrawO2TA");
     bytes public WithdrawO2T = bytes("WithdrawO2T");
     bytes public WithdrawO = bytes("WithdrawO");
 
     UniversalAdjudicationContract adjudicationContract;
     Utils utils;
-    address LessThan = address(0x0000000000000000000000000000000000000000);
+    address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address Bytes = address(0x0000000000000000000000000000000000000000);
-    address SU = address(0x0000000000000000000000000000000000000000);
-    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
-    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
+    address IsContained = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
+    address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    bytes Exit;
+    bytes DepositExists;
+    bytes TransactionAddress;
 
     constructor(
         address _adjudicationContractAddress,
-        address _utilsAddress
+        address _utilsAddress,
+        bytes _Exit,
+        bytes _DepositExists,
+        bytes _TransactionAddress
     ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        Exit = _Exit;
+        DepositExists = _DepositExists;
+        TransactionAddress = _TransactionAddress;
     }
 
     /**
@@ -315,6 +328,9 @@ contract Withdraw {
         if(input0 == WithdrawO1A) {
             return getChildWithdrawO1A(inputs, challengeInput);
         }
+        if(input0 == WithdrawO2TA) {
+            return getChildWithdrawO2TA(inputs, challengeInput);
+        }
         if(input0 == WithdrawO2T) {
             return getChildWithdrawO2T(inputs, challengeInput);
         }
@@ -330,6 +346,9 @@ contract Withdraw {
         bytes32 input0 = bytesToBytes32(_inputs[0]);
         if(input0 == WithdrawO1A) {
             decideWithdrawO1A(_inputs, _witness);
+        }
+        if(input0 == WithdrawO2TA) {
+            decideWithdrawO2TA(_inputs, _witness);
         }
         if(input0 == WithdrawO2T) {
             decideWithdrawO2T(_inputs, _witness);
@@ -378,17 +397,76 @@ contract Withdraw {
         });
     }
     /**
+     * Gets child of WithdrawO2TA().
+     */
+    function getChildWithdrawO2TA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
+        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        bytes[] memory notInputs = new bytes[](1);
+        if(challengeInput == 0) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = abi.encodePacked(inputProperty1.predicateAddress);
+            childInputs[1] = TransactionAddress;
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Equal,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 1) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[0];
+            childInputs[1] = inputProperty2.inputs[0];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Equal,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 2) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[1];
+            childInputs[1] = inputProperty2.inputs[1];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: IsContained,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 3) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = inputProperty1.inputs[2];
+            childInputs[1] = inputProperty2.inputs[2];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Equal,
+                inputs: childInputs
+            }));
+        }
+        if(challengeInput == 4) {
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = _inputs[1];
+            childInputs[1] = _inputs[3];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: IsValidSignature,
+                inputs: childInputs
+            }));
+        }
+        return type.Property({
+            predicateAddress: notAddress,
+            inputs: notInputs
+        });
+    }
+    /**
      * Gets child of WithdrawO2T().
      */
     function getChildWithdrawO2T(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = challengeInputs[0];
-        childInputs[1] = _inputs[2];
+        childInputs[0] = WithdrawO2TA;
+        childInputs[1] = challengeInputs[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = _inputs[2];
         notInputs[0] = abi.encode(type.Property({
-            predicateAddress: IsValidSignature,
+            predicateAddress: WithdrawO2TA,
             inputs: childInputs
         }));
         forAllSuchThatInputs[0] = bytes("");
@@ -458,19 +536,55 @@ contract Withdraw {
         return true;
     }
     /**
+     * Decides WithdrawO2TA(WithdrawO2TA,tx,c_su,maker).
+     */
+    function decideWithdrawO2TA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
+        // And logical connective
+
+        bytes[] memory childInputs0 = new bytes[](2);
+        childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
+        childInputs0[1] = TransactionAddress;
+        require(Equal.decide(childInputs0));
+
+
+        bytes[] memory childInputs1 = new bytes[](2);
+        childInputs1[0] = inputProperty1.inputs[0];
+        childInputs1[1] = inputProperty2.inputs[0];
+        require(Equal.decide(childInputs1));
+
+
+        bytes[] memory childInputs2 = new bytes[](2);
+        childInputs2[0] = inputProperty1.inputs[1];
+        childInputs2[1] = inputProperty2.inputs[1];
+        require(IsContained.decide(childInputs2));
+
+
+        bytes[] memory childInputs3 = new bytes[](2);
+        childInputs3[0] = inputProperty1.inputs[2];
+        childInputs3[1] = inputProperty2.inputs[2];
+        require(Equal.decide(childInputs3));
+
+
+        bytes[] memory childInputs4 = new bytes[](2);
+        childInputs4[0] = _inputs[1];
+        childInputs4[1] = _inputs[3];
+        require(IsValidSignature.decide(childInputs4));
+
+        return true;
+    }
+    /**
      * Decides WithdrawO2T(WithdrawO2T,c_su,maker).
      */
     function decideWithdrawO2T(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
-        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         // check ThereExistsSuchThat
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = witness[0];
-        childInputs[1] = _inputs[2];
-
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = witness[0];
-        childInputs[1] = _inputs[2];
-        require(IsValidSignature.decide(childInputs));
+        bytes[] memory childInputs = new bytes[](4);
+        childInputs[0] = WithdrawO2TA;
+        childInputs[1] = witness[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = _inputs[2];
+        require(decideWithdrawO2TA(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         return true;
     }

@@ -396,7 +396,7 @@ describe('ContractCompiler', () => {
               type: 'PropertyNode',
               predicate: 'ThereExistsSuchThat',
               inputs: [
-                { type: 'PropertyNode', predicate: 'Bytes', inputs: [] },
+                { type: 'PropertyNode', predicate: 'B', inputs: [] },
                 'b',
                 { type: 'PropertyNode', predicate: 'Foo', inputs: ['b.0', 'a'] }
               ]
@@ -422,7 +422,7 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Bytes' },
+                      predicate: { type: 'AtomicPredicate', source: 'B' },
                       inputs: []
                     },
                     'b',

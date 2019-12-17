@@ -26,14 +26,14 @@ contract <%= claimDef.name %> {
 %>
     UniversalAdjudicationContract adjudicationContract;
     Utils utils;
-    address LessThan = address(<%= getAddress('LessThan') %>);
+    address IsLessThan = address(<%= getAddress('IsLessThan') %>);
     address Equal = address(<%= getAddress('Equal') %>);
     address IsValidSignature = address(<%= getAddress('IsValidSignature') %>);
-    address Bytes = address(<%= getAddress('Bytes') %>);
-    address SU = address(<%= getAddress('SU') %>);
+    address IncludedWithin = address(<%= getAddress('IncludedWithin') %>);
     address IsContained = address(<%= getAddress('IsContained') %>);
     address VerifyInclusion = address(<%= getAddress('VerifyInclusion') %>);
     address IsValidStateTransition = address(<%= getAddress('IsValidStateTransition') %>);
+    address IsSameAmount = address(<%= getAddress('IsSameAmount') %>);
     address notAddress = address(<%= getAddress('Not') %>);
     address andAddress = address(<%= getAddress('And') %>);
     address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
