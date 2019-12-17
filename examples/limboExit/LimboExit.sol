@@ -1,11 +1,11 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import {DataTypes as types} from "../DataTypes.sol";
-import "../UniversalAdjudicationContract.sol";
-import "../Utils.sol";
-import "./AtomicPredicate.sol";
-import "./CompiledPredicate.sol";
+import { DataTypes as types } from "../DataTypes.sol";
+import "ovm-contracts/UniversalAdjudicationContract.sol";
+import "ovm-contracts/Utils.sol";
+import "ovm-contracts/Predicate/AtomicPredicate.sol";
+import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
@@ -17,24 +17,27 @@ contract LimboExit {
 
     UniversalAdjudicationContract adjudicationContract;
     Utils utils;
-    address LessThan = address(0x0000000000000000000000000000000000000000);
+    address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address Bytes = address(0x0000000000000000000000000000000000000000);
-    address SU = address(0x0000000000000000000000000000000000000000);
-    address IsContainedPredicate = address(0x0000000000000000000000000000000000000000);
-    address VerifyInclusionPredicate = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransitionPredicate = address(0x0000000000000000000000000000000000000000);
+    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
+    address IsContained = address(0x0000000000000000000000000000000000000000);
+    address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
+    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
+    address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    bytes Exit;
 
     constructor(
         address _adjudicationContractAddress,
-        address _utilsAddress
+        address _utilsAddress,
+        bytes _Exit
     ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        Exit = _Exit;
     }
 
     /**
@@ -107,14 +110,10 @@ contract LimboExit {
             }));
         }
         if(challengeInput == 2) {
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[4], (types.Property));
-            bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                childInputs[i] = inputPredicateProperty.inputs[i];
-            }
-            childInputs[stateObject.inputs.length] = _inputs[3];
-            notInputs[0] = abi.encode(types.Property({
-                predicateAddress: inputPredicateProperty.predicateAddress,
+            bytes[] memory childInputs = new bytes[](2);
+            childInputs[0] = _inputs[3];
+            notInputs[0] = abi.encode(type.Property({
+                predicateAddress: Exit,
                 inputs: childInputs
             }));
         }
@@ -130,14 +129,10 @@ contract LimboExit {
 
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
-        types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
-        bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
-        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-            childInputs[i] = inputPredicateProperty.inputs[i];
-        }
-        childInputs[stateObject.inputs.length] = _inputs[2];
-        notInputs0[0] = abi.encode(types.Property({
-            predicateAddress: inputPredicateProperty.predicateAddress,
+        bytes[] memory childInputs = new bytes[](2);
+        childInputs[0] = _inputs[1];
+        notInputs0[0] = abi.encode(type.Property({
+            predicateAddress: Exit,
             inputs: childInputs
         }));
         andInputs[0] = abi.encode(type.Property({
@@ -147,10 +142,9 @@ contract LimboExit {
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = LimboExitO2A;
-        childInputs[1] = _inputs[2];
-        childInputs[2] = _inputs[3];
-        childInputs[3] = _inputs[4];
-        childInputs[4] = _inputs[1];
+        childInputs[1] = _inputs[1];
+        childInputs[2] = _inputs[2];
+        childInputs[3] = _inputs[3];
         notInputs1[0] = abi.encode(type.Property({
             predicateAddress: LimboExitO2A,
             inputs: childInputs
@@ -165,7 +159,7 @@ contract LimboExit {
         });
     }
     /**
-     * Decides LimboExitO2A(LimboExitO2A,prev_su,tx,su,exit).
+     * Decides LimboExitO2A(LimboExitO2A,prev_su,tx,su).
      */
     function decideLimboExitO2A(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // And logical connective
@@ -180,42 +174,33 @@ contract LimboExit {
         require(IsValidStateTransition.decide(childInputs1));
 
 
-        types.Property memory inputPredicateProperty = abi.decode(_inputs[4], (types.Property));
-        bytes[] memory childInputs2 = new bytes[](inputPredicateProperty.inputs.length + 1);
-        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-            childInputs2[i] = inputPredicateProperty.inputs[i];
-        }
-        childInputs2[stateObject.inputs.length] = _inputs[3];
-        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs2, Utils.subArray(_witness, 1, _witness.length)));
+        bytes[] memory childInputs2 = new bytes[](1);
+        childInputs2[0] = _inputs[3];
+        require(Exit.decide(childInputs2));
 
         return true;
     }
     /**
-     * Decides LimboExitO(LimboExitO,exit,prev_su,tx,su).
+     * Decides LimboExitO(LimboExitO,prev_su,tx,su).
      */
     function decideLimboExitO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
         uint256 orIndex = abi.decode(witness[0], (uint256));
         if(orIndex == 0) {
             bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[2];
+            childInputs0[0] = _inputs[1];
 
-            types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
-            bytes[] memory childInputs0 = new bytes[](inputPredicateProperty.inputs.length + 1);
-            for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-                childInputs0[i] = inputPredicateProperty.inputs[i];
-            }
-            childInputs0[stateObject.inputs.length] = _inputs[2];
-            require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs0, Utils.subArray(_witness, 1, _witness.length)));
+            bytes[] memory childInputs0 = new bytes[](1);
+            childInputs0[0] = _inputs[1];
+            require(Exit.decide(childInputs0));
 
         }
         if(orIndex == 1) {
-            bytes[] memory childInputs1 = new bytes[](5);
+            bytes[] memory childInputs1 = new bytes[](4);
             childInputs1[0] = LimboExitO2A;
-            childInputs1[1] = _inputs[2];
-            childInputs1[2] = _inputs[3];
-            childInputs1[3] = _inputs[4];
-            childInputs1[4] = _inputs[1];
+            childInputs1[1] = _inputs[1];
+            childInputs1[2] = _inputs[2];
+            childInputs1[3] = _inputs[3];
             require(decideLimboExitO2A(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         }

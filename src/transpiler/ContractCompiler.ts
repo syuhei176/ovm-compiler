@@ -330,10 +330,22 @@ function getConstants(
   predicates.forEach(p => {
     p.definition.inputs.forEach(i => {
       if (typeof i != 'string' && i.type == 'AtomicProposition') {
+        if (i.predicate.type == 'AtomicPredicate' && !i.isCompiled) {
+          const predicateName = i.predicate.source
+          if (
+            utils.isCompiledPredicate(predicateName) &&
+            !results.find(r => r.name == predicateName)
+          ) {
+            results.push({
+              type: 'ConstantInput',
+              name: predicateName
+            })
+          }
+        }
         i.inputs.forEach(i => {
           if (
             i.type == 'ConstantInput' &&
-            !results.find(r => r.type == i.name)
+            !results.find(r => r.name == i.name)
           ) {
             results.push(i)
           }

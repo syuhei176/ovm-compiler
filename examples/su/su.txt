@@ -1,8 +1,4 @@
 def stateUpdate(token, range, block_number, so) :=
-  with Bytes() as tx {
-    Equal(tx.address, Transaction.address)
-    and Equal(tx.0, token)
-    and Within(tx.1, range)
-    and Equal(tx.2, block_number)
-    and so(tx)
+  with Tx(token, range, block_number) as tx {
+    so(tx)
   }
