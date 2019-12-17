@@ -1,3 +1,12 @@
+## <small>0.1.7 (2019-12-17)</small>
+
+* 0.1.7 ([d5d9b6d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/d5d9b6d))
+* update changelog ([650b5d3](https://github.com/cryptoeconomicslab/ovm-compiler/commit/650b5d3))
+* fix: fix generated code ([fade011](https://github.com/cryptoeconomicslab/ovm-compiler/commit/fade011))
+* feat: support library ([cb7728e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/cb7728e))
+
+
+
 ## <small>0.1.6 (2019-12-16)</small>
 
 * 0.1.6 ([987b006](https://github.com/cryptoeconomicslab/ovm-compiler/commit/987b006))
