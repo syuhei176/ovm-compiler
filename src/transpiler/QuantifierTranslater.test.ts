@@ -25,7 +25,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ThereExistsSuchThat',
             inputs: [
-              'key:signatures:${a}',
+              'key,signatures,${a}',
               'sig',
               {
                 type: 'PropertyNode',
@@ -71,7 +71,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ForAllSuchThat',
             inputs: [
-              'lessthan::${b}',
+              'lessthan,number,${b}',
               'bb',
               {
                 type: 'PropertyNode',
@@ -130,7 +130,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ForAllSuchThat',
             inputs: [
-              'range:block${token}_range${range}:${block}',
+              'range,su.block${token}.range${range},${block}',
               'su',
               {
                 type: 'PropertyNode',
@@ -189,7 +189,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ThereExistsSuchThat',
             inputs: [
-              'range:tx_block${block}_range${range}:${token}',
+              'range,tx.block${block}.range${range},${token}',
               'tx',
               {
                 type: 'PropertyNode',
