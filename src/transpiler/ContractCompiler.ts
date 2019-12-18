@@ -30,7 +30,7 @@ function calculateInteractiveNodesPerProperty(
   if (p.body == null) {
     throw new Error('p.body must not be null')
   }
-  searchInteractiveNode(newContracts, p.body, p.inputDefs, name, '')
+  searchInteractiveNode(newContracts, p.body, p.inputDefs, name)
   const constants = getConstants(newContracts)
   let result: CompiledPredicate = {
     type: 'CompiledPredicate',
@@ -50,39 +50,32 @@ function calculateInteractiveNodesPerProperty(
  * @param {*} contracts
  * @param {*} property
  * @param {*} parent
- * @param {*} name
+ * @param {*} originalPredicateName
  * @param {*} parentSuffix
  */
 function searchInteractiveNode(
   contracts: IntermediateCompiledPredicate[],
   property: PropertyNode,
   parentInputDefs: string[],
-  name?: string,
+  originalPredicateName: string,
   parentSuffix?: string
 ): AtomicProposition {
-  if (
-    utils.isNotAtomicProposition(property.predicate) &&
-    name !== undefined &&
-    parentSuffix !== undefined
-  ) {
-    let suffix = parentSuffix + property.predicate[0]
+  if (utils.isNotAtomicProposition(property.predicate)) {
+    let suffix = (parentSuffix || '') + property.predicate[0]
     let newInputDefs = getArguments(property)
-    if (parentSuffix === '') {
-      if (
-        parentInputDefs.sort().toString() !== newInputDefs.sort().toString()
-      ) {
-        throw new Error('invalid input definition of entry predicate')
-      }
+    if (parentSuffix === undefined) {
       newInputDefs = parentInputDefs
     }
-    newInputDefs = [makeContractName(name, suffix)].concat(newInputDefs)
+    newInputDefs = [makeContractName(originalPredicateName, suffix)].concat(
+      newInputDefs
+    )
     const newContract: IntermediateCompiledPredicate = {
       type: 'IntermediateCompiledPredicate',
       isCompiled: true,
-      originalPredicateName: name,
+      originalPredicateName,
       definition: {
         type: 'IntermediateCompiledPredicateDef',
-        name: makeContractName(name, suffix),
+        name: makeContractName(originalPredicateName, suffix),
         predicate: property.predicate,
         inputDefs: newInputDefs,
         inputs: [],
@@ -113,7 +106,8 @@ function searchInteractiveNode(
         children[0] = searchInteractiveNode(
           contracts,
           property.inputs[0],
-          newContract.definition.inputDefs
+          newContract.definition.inputDefs,
+          originalPredicateName
         )
       }
       // placeholder
@@ -123,7 +117,7 @@ function searchInteractiveNode(
         contracts,
         property.inputs[2],
         newContract.definition.inputDefs,
-        name,
+        originalPredicateName,
         suffix
       )
     } else if (
@@ -143,7 +137,7 @@ function searchInteractiveNode(
             contracts,
             p,
             newContract.definition.inputDefs,
-            name,
+            originalPredicateName,
             suffix + (i + 1)
           )
         }

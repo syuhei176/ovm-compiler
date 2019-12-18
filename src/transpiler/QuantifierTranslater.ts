@@ -110,7 +110,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       const quantifier = p.inputs[0] as PropertyNode
       const variable = p.inputs[1]
       return {
-        hint: `range,tx.block\${${quantifier.inputs[2]}}.range\${${quantifier.inputs[1]}},\${${quantifier.inputs[0]}}`,
+        hint: `range,tx.block\${${quantifier.inputs[2]}}.range\${${quantifier.inputs[0]}},\${${quantifier.inputs[1]}}`,
         properties: [
           {
             type: 'PropertyNode',
