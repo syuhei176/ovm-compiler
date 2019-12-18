@@ -30,7 +30,7 @@ describe('QuantifierTranslater', () => {
               {
                 type: 'PropertyNode',
                 predicate: 'IsValidSignature',
-                inputs: ['a', 'b', 'sig']
+                inputs: ['a', 'sig', 'b', '$secp256k1']
               }
             ]
           }
