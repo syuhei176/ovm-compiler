@@ -1,3 +1,13 @@
+## <small>0.1.8 (2019-12-18)</small>
+
+* 0.1.8 ([a182a90](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a182a90))
+* update changelog ([65d99dc](https://github.com/cryptoeconomicslab/ovm-compiler/commit/65d99dc))
+* fix: fix hint format ([3556f7e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3556f7e))
+* fix: fix order of entry point predicate ([12e1672](https://github.com/cryptoeconomicslab/ovm-compiler/commit/12e1672))
+* fix: fix Tx quantifier ([db0f2cf](https://github.com/cryptoeconomicslab/ovm-compiler/commit/db0f2cf))
+
+
+
 ## <small>0.1.7 (2019-12-17)</small>
 
 * 0.1.7 ([d5d9b6d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/d5d9b6d))
