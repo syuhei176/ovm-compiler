@@ -1,3 +1,11 @@
+## <small>0.1.10 (2019-12-18)</small>
+
+* 0.1.10 ([e5747e9](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e5747e9))
+* update changelog ([32a26d2](https://github.com/cryptoeconomicslab/ovm-compiler/commit/32a26d2))
+* fix: fix signedby ([4a183e2](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4a183e2))
+
+
+
 ## <small>0.1.9 (2019-12-18)</small>
 
 * 0.1.9 ([2a88896](https://github.com/cryptoeconomicslab/ovm-compiler/commit/2a88896))
