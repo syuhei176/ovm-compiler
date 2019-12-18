@@ -1,3 +1,11 @@
+## <small>0.1.9 (2019-12-18)</small>
+
+* 0.1.9 ([2a88896](https://github.com/cryptoeconomicslab/ovm-compiler/commit/2a88896))
+* Fix hint format. type is upper case and bucket,type,param ([7933d04](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7933d04))
+* update changelog ([8f77d34](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8f77d34))
+
+
+
 ## <small>0.1.8 (2019-12-18)</small>
 
 * 0.1.8 ([a182a90](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a182a90))
