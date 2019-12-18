@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import { DataTypes as types } from "../DataTypes.sol";
+import { DataTypes as types } from "ovm-contracts/DataTypes.sol";
 import "ovm-contracts/UniversalAdjudicationContract.sol";
 import "ovm-contracts/Utils.sol";
 import "ovm-contracts/Predicate/AtomicPredicate.sol";
@@ -9,7 +9,7 @@ import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
- * LimboExit(prev_su,tx,su)
+ * LimboExit(prev_su,su,tx)
  */
 contract LimboExit {
     bytes public LimboExitO2A = bytes("LimboExitO2A");
@@ -143,8 +143,8 @@ contract LimboExit {
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = LimboExitO2A;
         childInputs[1] = _inputs[1];
-        childInputs[2] = _inputs[2];
-        childInputs[3] = _inputs[3];
+        childInputs[2] = _inputs[3];
+        childInputs[3] = _inputs[2];
         notInputs1[0] = abi.encode(type.Property({
             predicateAddress: LimboExitO2A,
             inputs: childInputs
@@ -181,7 +181,7 @@ contract LimboExit {
         return true;
     }
     /**
-     * Decides LimboExitO(LimboExitO,prev_su,tx,su).
+     * Decides LimboExitO(LimboExitO,prev_su,su,tx).
      */
     function decideLimboExitO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
@@ -199,8 +199,8 @@ contract LimboExit {
             bytes[] memory childInputs1 = new bytes[](4);
             childInputs1[0] = LimboExitO2A;
             childInputs1[1] = _inputs[1];
-            childInputs1[2] = _inputs[2];
-            childInputs1[3] = _inputs[3];
+            childInputs1[2] = _inputs[3];
+            childInputs1[3] = _inputs[2];
             require(decideLimboExitO2A(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         }

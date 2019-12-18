@@ -189,7 +189,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ThereExistsSuchThat',
             inputs: [
-              'range,tx.block${block}.range${range},${token}',
+              'range,tx.block${block}.range${token},${range}',
               'tx',
               {
                 type: 'PropertyNode',

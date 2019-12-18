@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import { DataTypes as types } from "../DataTypes.sol";
+import { DataTypes as types } from "ovm-contracts/DataTypes.sol";
 import "ovm-contracts/UniversalAdjudicationContract.sol";
 import "ovm-contracts/Utils.sol";
 import "ovm-contracts/Predicate/AtomicPredicate.sol";
@@ -9,7 +9,7 @@ import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
- * Order(maker,c_token,c_amount,min_block_number,tx)
+ * Order(c_amount,c_token,maker,min_block_number,tx)
  */
 contract Order {
     bytes public OrderTA = bytes("OrderTA");
@@ -176,10 +176,10 @@ contract Order {
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = OrderTA;
         childInputs[1] = challengeInputs[0];
-        childInputs[2] = _inputs[1];
-        childInputs[3] = _inputs[2];
-        childInputs[4] = _inputs[3];
-        childInputs[5] = _inputs[4];
+        childInputs[2] = _inputs[2];
+        childInputs[3] = _inputs[1];
+        childInputs[4] = _inputs[4];
+        childInputs[5] = _inputs[3];
         childInputs[6] = _inputs[5];
         notInputs[0] = abi.encode(type.Property({
             predicateAddress: OrderTA,
@@ -246,17 +246,17 @@ contract Order {
         return true;
     }
     /**
-     * Decides OrderT(OrderT,c_token,c_amount,min_block_number,maker,tx).
+     * Decides OrderT(OrderT,c_amount,c_token,maker,min_block_number,tx).
      */
     function decideOrderT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](7);
         childInputs[0] = OrderTA;
         childInputs[1] = witness[0];
-        childInputs[2] = _inputs[1];
-        childInputs[3] = _inputs[2];
-        childInputs[4] = _inputs[3];
-        childInputs[5] = _inputs[4];
+        childInputs[2] = _inputs[2];
+        childInputs[3] = _inputs[1];
+        childInputs[4] = _inputs[4];
+        childInputs[5] = _inputs[3];
         childInputs[6] = _inputs[5];
         require(decideOrderTA(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 

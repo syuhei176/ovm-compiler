@@ -43,7 +43,8 @@ describe('SolidityCodeGenerator', () => {
                 propertyInputs: []
               }
             }
-          ]
+          ],
+          entryPoint: 'AndTestA'
         }
       ]
       const output = generator.generate(input)
@@ -87,7 +88,8 @@ describe('SolidityCodeGenerator', () => {
                 propertyInputs: []
               }
             }
-          ]
+          ],
+          entryPoint: 'OrTestO'
         }
       ]
       const output = generator.generate(input)
@@ -124,7 +126,8 @@ describe('SolidityCodeGenerator', () => {
                 propertyInputs: []
               }
             }
-          ]
+          ],
+          entryPoint: 'NotTestN'
         }
       ]
       const output = generator.generate(input)
@@ -173,7 +176,8 @@ describe('SolidityCodeGenerator', () => {
                 propertyInputs: []
               }
             }
-          ]
+          ],
+          entryPoint: 'ForallTestF'
         }
       ]
       const output = generator.generate(input)
@@ -219,7 +223,8 @@ describe('SolidityCodeGenerator', () => {
                 propertyInputs: []
               }
             }
-          ]
+          ],
+          entryPoint: 'ThereTestT'
         }
       ]
       const output = generator.generate(input)

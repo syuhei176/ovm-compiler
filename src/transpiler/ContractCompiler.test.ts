@@ -55,7 +55,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'AndTestA'
           }
         ])
       })
@@ -109,7 +110,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'OrTestO'
           }
         ])
       })
@@ -155,7 +157,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'NotTestN'
           }
         ])
       })
@@ -215,7 +218,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'ForallTestF'
           }
         ])
       })
@@ -269,7 +273,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'ThereTestT'
           }
         ])
       })
@@ -327,7 +332,8 @@ describe('ContractCompiler', () => {
                   ]
                 }
               }
-            ]
+            ],
+            entryPoint: 'BindAndTestA'
           }
         ])
       })
@@ -383,7 +389,8 @@ describe('ContractCompiler', () => {
                   ]
                 }
               }
-            ]
+            ],
+            entryPoint: 'Bind2TestA'
           }
         ])
       })
@@ -442,7 +449,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'BindValTestT'
           }
         ])
       })
@@ -508,7 +516,8 @@ describe('ContractCompiler', () => {
                   ]
                 }
               }
-            ]
+            ],
+            entryPoint: 'BindAddrTestA'
           }
         ])
       })
@@ -569,7 +578,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'EvalTestA'
           }
         ])
       })
@@ -623,7 +633,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'ForValTestF'
           }
         ])
       })
@@ -675,7 +686,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'ThereValTestT'
           }
         ])
       })
@@ -740,7 +752,8 @@ describe('ContractCompiler', () => {
                   propertyInputs: []
                 }
               }
-            ]
+            ],
+            entryPoint: 'ThereValTestT'
           }
         ])
       })
