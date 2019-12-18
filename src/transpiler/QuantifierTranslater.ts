@@ -24,7 +24,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
           {
             type: 'PropertyNode',
             predicate: 'IsValidSignature',
-            inputs: [p.inputs[0], p.inputs[1], 'sig']
+            inputs: [p.inputs[0], 'sig', p.inputs[1], '$secp256k1']
           }
         ]
       }
