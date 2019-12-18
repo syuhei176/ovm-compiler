@@ -71,7 +71,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ForAllSuchThat',
             inputs: [
-              'number,LESSTHAN,${b}',
+              'range,NUMBER,0x00-${b}',
               'bb',
               {
                 type: 'PropertyNode',
