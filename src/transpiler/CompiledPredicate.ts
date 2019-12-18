@@ -7,6 +7,7 @@ export interface CompiledPredicate {
   inputDefs: string[]
   contracts: IntermediateCompiledPredicate[]
   constants?: ConstantInput[]
+  entryPoint: string
 }
 
 export interface IntermediateCompiledPredicate {

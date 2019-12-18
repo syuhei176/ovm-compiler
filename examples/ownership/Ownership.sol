@@ -1,7 +1,7 @@
 pragma solidity ^0.5.0;
 pragma experimental ABIEncoderV2;
 
-import { DataTypes as types } from "../DataTypes.sol";
+import { DataTypes as types } from "ovm-contracts/DataTypes.sol";
 import "ovm-contracts/UniversalAdjudicationContract.sol";
 import "ovm-contracts/Utils.sol";
 import "ovm-contracts/Predicate/AtomicPredicate.sol";
@@ -87,8 +87,8 @@ contract Ownership {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[1];
-        childInputs[1] = _inputs[2];
+        childInputs[0] = _inputs[2];
+        childInputs[1] = _inputs[1];
         childInputs[2] = challengeInputs[0];
         notInputs[0] = abi.encode(type.Property({
             predicateAddress: IsValidSignature,
@@ -106,18 +106,18 @@ contract Ownership {
         });
     }
     /**
-     * Decides OwnershipT(OwnershipT,tx,owner).
+     * Decides OwnershipT(OwnershipT,owner,tx).
      */
     function decideOwnershipT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](3);
-        childInputs[0] = _inputs[1];
-        childInputs[1] = _inputs[2];
+        childInputs[0] = _inputs[2];
+        childInputs[1] = _inputs[1];
         childInputs[2] = witness[0];
 
         bytes[] memory childInputs = new bytes[](3);
-        childInputs[0] = _inputs[1];
-        childInputs[1] = _inputs[2];
+        childInputs[0] = _inputs[2];
+        childInputs[1] = _inputs[1];
         childInputs[2] = witness[0];
         require(IsValidSignature.decide(childInputs));
 

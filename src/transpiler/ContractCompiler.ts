@@ -10,6 +10,7 @@ import {
   ConstantInput
 } from './CompiledPredicate'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
+import { AssertionError } from 'assert'
 
 /**
  *
@@ -35,7 +36,8 @@ function calculateInteractiveNodesPerProperty(
     type: 'CompiledPredicate',
     name,
     inputDefs: p.inputDefs,
-    contracts: newContracts
+    contracts: newContracts,
+    entryPoint: newContracts[0].definition.name
   }
   if (constants.length > 0) {
     result.constants = constants
@@ -64,9 +66,16 @@ function searchInteractiveNode(
     parentSuffix !== undefined
   ) {
     let suffix = parentSuffix + property.predicate[0]
-    const newInputDefs = [makeContractName(name, suffix)].concat(
-      getArguments(property)
-    )
+    let newInputDefs = getArguments(property)
+    if (parentSuffix === '') {
+      if (
+        parentInputDefs.sort().toString() !== newInputDefs.sort().toString()
+      ) {
+        throw new Error('invalid input definition of entry predicate')
+      }
+      newInputDefs = parentInputDefs
+    }
+    newInputDefs = [makeContractName(name, suffix)].concat(newInputDefs)
     const newContract: IntermediateCompiledPredicate = {
       type: 'IntermediateCompiledPredicate',
       isCompiled: true,
