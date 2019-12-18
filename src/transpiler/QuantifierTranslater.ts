@@ -19,7 +19,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
         type: 'PropertyNode',
         predicate: 'ThereExistsSuchThat',
         inputs: [
-          `key,signatures,\${${p.inputs[0]}}`,
+          `signatures,KEY,\${${p.inputs[0]}}`,
           'sig',
           {
             type: 'PropertyNode',
@@ -37,7 +37,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
         type: 'PropertyNode',
         predicate: 'ThereExistsSuchThat',
         inputs: [
-          `range,su.block\${${p.inputs[3]}}.range\${${p.inputs[1]}},\${${p.inputs[2]}}`,
+          `su.block\${${p.inputs[3]}}.range\${${p.inputs[1]}},RANGE,\${${p.inputs[2]}}`,
           'inclusionProof',
           {
             type: 'PropertyNode',
@@ -62,7 +62,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       const quantifier = p.inputs[0] as PropertyNode
       const variable = p.inputs[1]
       return {
-        hint: `lessthan,number,\${${quantifier.inputs[0]}}`,
+        hint: `number,LESSTHAN,\${${quantifier.inputs[0]}}`,
         properties: [
           {
             type: 'PropertyNode',
@@ -80,12 +80,12 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       const variable = p.inputs[1]
       if (quantifier.inputs.length == 0) {
         return {
-          hint: 'range,su.*.*,*',
+          hint: 'su.*.*,RANGE,*',
           properties: []
         }
       } else if (quantifier.inputs.length == 3) {
         return {
-          hint: `range,su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},\${${quantifier.inputs[2]}}`,
+          hint: `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},RANGE,\${${quantifier.inputs[2]}}`,
           properties: [
             {
               type: 'PropertyNode',
@@ -110,7 +110,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       const quantifier = p.inputs[0] as PropertyNode
       const variable = p.inputs[1]
       return {
-        hint: `range,tx.block\${${quantifier.inputs[2]}}.range\${${quantifier.inputs[0]}},\${${quantifier.inputs[1]}}`,
+        hint: `tx.block\${${quantifier.inputs[2]}}.range\${${quantifier.inputs[0]}},RANGE,\${${quantifier.inputs[1]}}`,
         properties: [
           {
             type: 'PropertyNode',
