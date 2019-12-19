@@ -1,3 +1,12 @@
+## <small>0.1.12 (2019-12-19)</small>
+
+* 0.1.12 ([4067e85](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4067e85))
+* fix var name ([3249ede](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3249ede))
+* fix var name ([cc3abe6](https://github.com/cryptoeconomicslab/ovm-compiler/commit/cc3abe6))
+* update changelog ([73b5075](https://github.com/cryptoeconomicslab/ovm-compiler/commit/73b5075))
+
+
+
 ## <small>0.1.11 (2019-12-19)</small>
 
 * 0.1.11 ([3a49af6](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3a49af6))
