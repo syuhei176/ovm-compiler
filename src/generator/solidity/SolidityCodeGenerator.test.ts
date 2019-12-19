@@ -1,14 +1,18 @@
 import { SolidityCodeGenerator } from './'
-import { CompiledPredicate, IntermediateCompiledPredicate } from '../transpiler'
+import {
+  CompiledPredicate,
+  IntermediateCompiledPredicate
+} from '../../transpiler'
 import fs from 'fs'
 import path from 'path'
 
-const doWrite = false
+const doWrite = true
+const testcasePath = '../../../examples/testcases'
 function readFile(filePath: string, output: string) {
   if (doWrite) {
-    fs.writeFileSync(path.join(__dirname, filePath), output)
+    fs.writeFileSync(path.join(__dirname, testcasePath, filePath), output)
   }
-  return fs.readFileSync(path.join(__dirname, filePath))
+  return fs.readFileSync(path.join(__dirname, testcasePath, filePath))
 }
 
 describe('SolidityCodeGenerator', () => {
@@ -56,10 +60,7 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      const testOutput = readFile(
-        '../../examples/testcases/operators/TestAnd.sol',
-        output
-      )
+      const testOutput = readFile('operators/TestAnd.sol', output)
       expect(output).toBe(testOutput.toString())
     })
     test('or', () => {
@@ -102,10 +103,7 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      const testOutput = readFile(
-        '../../examples/testcases/operators/TestOr.sol',
-        output
-      )
+      const testOutput = readFile('operators/TestOr.sol', output)
       expect(output).toBe(testOutput.toString())
     })
     test('not', () => {
@@ -141,10 +139,7 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      const testOutput = readFile(
-        '../../examples/testcases/operators/TestNot.sol',
-        output
-      )
+      const testOutput = readFile('operators/TestNot.sol', output)
       expect(output).toBe(testOutput.toString())
     })
     test('forall', () => {
@@ -192,10 +187,7 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      const testOutput = readFile(
-        '../../examples/testcases/operators/TestForall.sol',
-        output
-      )
+      const testOutput = readFile('operators/TestForall.sol', output)
       expect(output).toBe(testOutput.toString())
     })
     test('there', () => {
@@ -237,10 +229,7 @@ describe('SolidityCodeGenerator', () => {
         }
       ]
       const output = generator.generate(input)
-      const testOutput = readFile(
-        '../../examples/testcases/operators/TestThere.sol',
-        output
-      )
+      const testOutput = readFile('operators/TestThere.sol', output)
       expect(output).toBe(testOutput.toString())
     })
   })
@@ -278,11 +267,11 @@ describe('SolidityCodeGenerator', () => {
         property: input
       })
       const testOutputOfGetChild = readFile(
-        '../../examples/testcases/bind/BindAndGetChild.sol',
+        'bind/BindAndGetChild.sol',
         outputOfGetChild
       )
       const testOutputOfDecide = readFile(
-        '../../examples/testcases/bind/BindAndDecide.sol',
+        'bind/BindAndDecide.sol',
         outputOfDecide
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
@@ -317,10 +306,7 @@ describe('SolidityCodeGenerator', () => {
         }
       }
       const output = generator.includeCallback('getChild', { property: input })
-      const testOutput = readFile(
-        '../../examples/testcases/bind/Bind2.sol',
-        output
-      )
+      const testOutput = readFile('bind/Bind2.sol', output)
       expect(output).toBe(testOutput.toString())
     })
 
@@ -358,10 +344,7 @@ describe('SolidityCodeGenerator', () => {
         }
       }
       const output = generator.includeCallback('getChild', { property: input })
-      const testOutput = readFile(
-        '../../examples/testcases/bind/BindVal.sol',
-        output
-      )
+      const testOutput = readFile('bind/BindVal.sol', output)
       expect(output).toBe(testOutput.toString())
     })
 
@@ -398,10 +381,7 @@ describe('SolidityCodeGenerator', () => {
         }
       }
       const output = generator.includeCallback('getChild', { property: input })
-      const testOutput = readFile(
-        '../../examples/testcases/bind/BindAddr.sol',
-        output
-      )
+      const testOutput = readFile('bind/BindAddr.sol', output)
       expect(output).toBe(testOutput.toString())
     })
   })
@@ -446,11 +426,11 @@ describe('SolidityCodeGenerator', () => {
         property: input
       })
       const testOutputOfGetChild = readFile(
-        '../../examples/testcases/variable/EvalGetChild.sol',
+        'variable/EvalGetChild.sol',
         outputOfGetChild
       )
       const testOutputOfDecide = readFile(
-        '../../examples/testcases/variable/EvalDecide.sol',
+        'variable/EvalDecide.sol',
         outputOfDecide
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
@@ -486,7 +466,7 @@ describe('SolidityCodeGenerator', () => {
         property: input
       })
       const testOutputOfGetChild = readFile(
-        '../../examples/testcases/variable/ForValGetChild.sol',
+        'variable/ForValGetChild.sol',
         outputOfGetChild
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
@@ -524,11 +504,11 @@ describe('SolidityCodeGenerator', () => {
         property: input
       })
       const testOutputOfGetChild = readFile(
-        '../../examples/testcases/variable/ThereValGetChild.sol',
+        'variable/ThereValGetChild.sol',
         outputOfGetChild
       )
       const testOutputOfDecide = readFile(
-        '../../examples/testcases/variable/ThereValDecide.sol',
+        'variable/ThereValDecide.sol',
         outputOfDecide
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
@@ -580,11 +560,11 @@ describe('SolidityCodeGenerator', () => {
         property: input
       })
       const testOutputOfGetChild = readFile(
-        '../../examples/testcases/variable/ThereVal2GetChild.sol',
+        'variable/ThereVal2GetChild.sol',
         outputOfGetChild
       )
       const testOutputOfDecide = readFile(
-        '../../examples/testcases/variable/ThereVal2Decide.sol',
+        'variable/ThereVal2Decide.sol',
         outputOfDecide
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())

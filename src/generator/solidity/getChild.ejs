@@ -7,7 +7,7 @@
 -%>
         types.Property memory inputProperty<%=propertyInput.inputIndex%> = abi.decode(_inputs[<%=propertyInput.inputIndex%>], (types.Property));
 <%
-        if(propertyInput.children > 0) {
+        if(propertyInput.children.length > 0) {
 -%>
         types.Property memory inputProperty<%=propertyInput.inputIndex%>Child<%=propertyInput.children[0]%> = abi.decode(inputProperty<%=propertyInput.inputIndex%>.inputs[<%= propertyInput.children[0] %>], (types.Property));
 <%

@@ -1,4 +1,4 @@
-const { generateSolidityCode } = require('./')
+const { generateSolidityCode, generateEVMByteCode } = require('./')
 const fs = require('fs')
 const path = require('path')
 
@@ -17,6 +17,11 @@ function generate(name) {
   fs.writeFileSync(
     path.join(__dirname, `./examples/${name}/${getContractName(name)}.sol`),
     output
+  )
+  const evmOutput = generateEVMByteCode(source.toString())
+  fs.writeFileSync(
+    path.join(__dirname, `./examples/${name}/${getContractName(name)}.json`),
+    evmOutput
   )
   console.log(`compiled ${name}`)
 }

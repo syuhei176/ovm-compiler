@@ -32,12 +32,6 @@ contract LimboExit {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
-        address _isLessThan,
-        address _equal,
-        address _isValidSignature,
-        address _isContained,
-        address _verifyInclusion,
-        address _isSameAmount,
         address _notAddress,
         address _andAddress,
         address _forAllSuchThatAddress,
@@ -46,16 +40,26 @@ contract LimboExit {
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
+        IsValidStateTransition = _IsValidStateTransition;
+        Exit = _Exit;
+    }
+
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount
+    ) public {
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        notAddress = _notAddress;
-        forAllSuchThatAddress = _forAllSuchThatAddress;
-        IsValidStateTransition = _IsValidStateTransition;
-        Exit = _Exit;
     }
 
     /**
@@ -213,8 +217,6 @@ contract LimboExit {
         // check Or
         uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
-            bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
 
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];

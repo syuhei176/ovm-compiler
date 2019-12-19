@@ -26,3 +26,15 @@ export function generateSolidityCode(
   const codeGenerator = new generator.SolidityCodeGenerator(options)
   return codeGenerator.generate(compiledPredicates)
 }
+
+export function generateEVMByteCode(
+  source: string,
+  options?: generator.SolidityCodeGeneratorOptions
+): string {
+  const chamberParser = new parser.Parser()
+  const compiledPredicates = transpiler.transpilePropertyDefsToCompiledPredicate(
+    chamberParser.parse(source)
+  )
+  const codeGenerator = new generator.EthereumCodeGenerator(options)
+  return codeGenerator.generate(compiledPredicates)
+}

@@ -7,7 +7,7 @@
 -%>
         types.Property memory inputProperty<%=propertyInput.inputIndex%> = abi.decode(_inputs[<%=propertyInput.inputIndex%>], (types.Property));
 <%
-        if(propertyInput.children > 0) {
+        if(propertyInput.children.length > 0) {
 -%>
         types.Property memory inputProperty<%=propertyInput.inputIndex%>Child<%=propertyInput.children[0]%> = abi.decode(inputProperty<%=propertyInput.inputIndex%>.inputs[<%= propertyInput.children[0] %>], (types.Property));
 <%
@@ -22,6 +22,7 @@
         property.definition.inputs.forEach((item, index) => {
 -%>
 <%      if(item.isCompiled) { -%>
+            bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
 <%- include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: '_witness'}) -%>
         require(decide<%= item.predicate.source %>(childInputs<%= index %>,  utils.subArray(_witness, 1, _witness.length)));
 <%      } else { %>
@@ -50,9 +51,9 @@ const innerProperty = property.definition.inputs[2]
         property.definition.inputs.forEach((item, index) => {
 -%>
         if(orIndex == <%= index %>) {
+<%        if(item.isCompiled) { -%>
             bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
 <%- indent(include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: '_witness'}), 4) -%>
-<%        if(item.isCompiled) { -%>
             require(decide<%= item.predicate.source %>(childInputs<%= index %>,  utils.subArray(_witness, 1, _witness.length)));
 <%        } else { %>
 <%- indent(include('decideProperty', {property: item, valName: 'childInputs' + index}), 4) -%>

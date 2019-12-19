@@ -1,2 +1,3 @@
 export * from './CodeGenerator'
-export * from './SolidityCodeGenerator'
+export * from './ethereum'
+export * from './solidity'

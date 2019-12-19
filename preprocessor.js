@@ -3,12 +3,12 @@ const path = require('path')
 
 const list = [
   './src/parser/chamber.peg',
-  './src/generator/sol.ejs',
-  './src/generator/decide.ejs',
-  './src/generator/getChild.ejs',
-  './src/generator/constructProperty.ejs',
-  './src/generator/constructInputs.ejs',
-  './src/generator/decideProperty.ejs'
+  './src/generator/solidity/sol.ejs',
+  './src/generator/solidity/decide.ejs',
+  './src/generator/solidity/getChild.ejs',
+  './src/generator/solidity/constructProperty.ejs',
+  './src/generator/solidity/constructInputs.ejs',
+  './src/generator/solidity/decideProperty.ejs'
 ]
 
 list.forEach(file => {

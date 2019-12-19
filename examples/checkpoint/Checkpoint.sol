@@ -30,30 +30,37 @@ contract Checkpoint {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    address IncludedWithin;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
+        address  _IncludedWithin
+    ) public {
+        adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
+        utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
+        IncludedWithin = _IncludedWithin;
+    }
+
+    function setPredicateAddresses(
         address _isLessThan,
         address _equal,
         address _isValidSignature,
         address _isContained,
         address _verifyInclusion,
-        address _isSameAmount,
-        address _notAddress,
-        address _andAddress,
-        address _forAllSuchThatAddress
+        address _isSameAmount
     ) public {
-        adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
-        utils = Utils(_utilsAddress);
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        notAddress = _notAddress;
-        forAllSuchThatAddress = _forAllSuchThatAddress;
     }
 
     /**
@@ -291,7 +298,6 @@ contract Checkpoint {
 
         }
         if(orIndex == 1) {
-            bytes[] memory childInputs1 = new bytes[](0);
 
             require(adjudicationContract.isDecidedById(keccak256(_inputs[1])));
 
