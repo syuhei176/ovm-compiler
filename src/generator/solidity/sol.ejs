@@ -52,6 +52,7 @@ contract <%= claimDef.name %> {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         notAddress = _notAddress;
+        andAddress = _andAddress;
         forAllSuchThatAddress = _forAllSuchThatAddress;
 <% constants.forEach((c, index) => { -%>
         <%= c.name %> = _<%= c.name %>;
@@ -103,6 +104,7 @@ contract <%= claimDef.name %> {
 <%
   })
 -%>
+        return getChild<%= claimDef.entryPoint %>(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -119,7 +121,7 @@ contract <%= claimDef.name %> {
 <%
   })
 -%>
-        return false;
+        return decide<%= claimDef.entryPoint %>(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {

@@ -41,6 +41,7 @@ contract LimboExit {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         notAddress = _notAddress;
+        andAddress = _andAddress;
         forAllSuchThatAddress = _forAllSuchThatAddress;
         IsValidStateTransition = _IsValidStateTransition;
         Exit = _Exit;
@@ -88,6 +89,7 @@ contract LimboExit {
         if(input0 == keccak256(LimboExitO)) {
             return getChildLimboExitO(inputs, challengeInput);
         }
+        return getChildLimboExitO2A(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -96,11 +98,12 @@ contract LimboExit {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(LimboExitO2A)) {
-            decideLimboExitO2A(_inputs, _witness);
+            return decideLimboExitO2A(_inputs, _witness);
         }
         if(input0 == keccak256(LimboExitO)) {
-            decideLimboExitO(_inputs, _witness);
+            return decideLimboExitO(_inputs, _witness);
         }
+        return decideLimboExitO2A(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {

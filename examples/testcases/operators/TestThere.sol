@@ -36,6 +36,7 @@ contract ThereTest {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         notAddress = _notAddress;
+        andAddress = _andAddress;
         forAllSuchThatAddress = _forAllSuchThatAddress;
     }
 
@@ -78,6 +79,7 @@ contract ThereTest {
         if(input0 == keccak256(ThereTestT)) {
             return getChildThereTestT(inputs, challengeInput);
         }
+        return getChildThereTestT(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -88,7 +90,7 @@ contract ThereTest {
         if(input0 == keccak256(ThereTestT)) {
             return decideThereTestT(_inputs, _witness);
         }
-        return false;
+        return decideThereTestT(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {

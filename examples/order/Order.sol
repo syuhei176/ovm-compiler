@@ -48,6 +48,7 @@ contract Order {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         notAddress = _notAddress;
+        andAddress = _andAddress;
         forAllSuchThatAddress = _forAllSuchThatAddress;
         TransactionAddress = _TransactionAddress;
         Withdraw = _Withdraw;
@@ -111,6 +112,7 @@ contract Order {
         if(input0 == keccak256(OrderT)) {
             return getChildOrderT(inputs, challengeInput);
         }
+        return getChildOrderTA3TA4O2TA(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -119,26 +121,27 @@ contract Order {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(OrderTA3TA4O2TA)) {
-            decideOrderTA3TA4O2TA(_inputs, _witness);
+            return decideOrderTA3TA4O2TA(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3TA4O2T)) {
-            decideOrderTA3TA4O2T(_inputs, _witness);
+            return decideOrderTA3TA4O2T(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3TA4O)) {
-            decideOrderTA3TA4O(_inputs, _witness);
+            return decideOrderTA3TA4O(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3TA)) {
-            decideOrderTA3TA(_inputs, _witness);
+            return decideOrderTA3TA(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3T)) {
-            decideOrderTA3T(_inputs, _witness);
+            return decideOrderTA3T(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA)) {
-            decideOrderTA(_inputs, _witness);
+            return decideOrderTA(_inputs, _witness);
         }
         if(input0 == keccak256(OrderT)) {
-            decideOrderT(_inputs, _witness);
+            return decideOrderT(_inputs, _witness);
         }
+        return decideOrderTA3TA4O2TA(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -226,7 +229,7 @@ contract Order {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](4);
         childInputsOf[0] = OrderTA3TA4O2TA;
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__tx");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
 
@@ -357,7 +360,7 @@ contract Order {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](5);
         childInputsOf[0] = OrderTA3TA;
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__c_su");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
         childInputsOf[4] = _inputs[3];
@@ -428,7 +431,7 @@ contract Order {
         bytes[] memory childInputsOf = new bytes[](7);
         childInputsOf[0] = OrderTA;
         childInputsOf[1] = _inputs[4];
-        childInputsOf[2] = challengeInputs[0];
+        childInputsOf[2] = bytes("__VARIABLE__b");
         childInputsOf[3] = _inputs[5];
         childInputsOf[4] = _inputs[3];
         childInputsOf[5] = _inputs[1];

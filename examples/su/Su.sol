@@ -39,6 +39,7 @@ contract StateUpdate {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         notAddress = _notAddress;
+        andAddress = _andAddress;
         forAllSuchThatAddress = _forAllSuchThatAddress;
         TransactionAddress = _TransactionAddress;
     }
@@ -85,6 +86,7 @@ contract StateUpdate {
         if(input0 == keccak256(StateUpdateT)) {
             return getChildStateUpdateT(inputs, challengeInput);
         }
+        return getChildStateUpdateTA(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -93,11 +95,12 @@ contract StateUpdate {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(StateUpdateTA)) {
-            decideStateUpdateTA(_inputs, _witness);
+            return decideStateUpdateTA(_inputs, _witness);
         }
         if(input0 == keccak256(StateUpdateT)) {
-            decideStateUpdateT(_inputs, _witness);
+            return decideStateUpdateT(_inputs, _witness);
         }
+        return decideStateUpdateTA(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -185,7 +188,7 @@ contract StateUpdate {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](6);
         childInputsOf[0] = StateUpdateTA;
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__tx");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
         childInputsOf[4] = _inputs[3];

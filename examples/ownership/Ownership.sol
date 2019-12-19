@@ -38,6 +38,7 @@ contract Ownership {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         notAddress = _notAddress;
+        andAddress = _andAddress;
         forAllSuchThatAddress = _forAllSuchThatAddress;
         secp256k1 = _secp256k1;
     }
@@ -81,6 +82,7 @@ contract Ownership {
         if(input0 == keccak256(OwnershipT)) {
             return getChildOwnershipT(inputs, challengeInput);
         }
+        return getChildOwnershipT(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -89,8 +91,9 @@ contract Ownership {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(OwnershipT)) {
-            decideOwnershipT(_inputs, _witness);
+            return decideOwnershipT(_inputs, _witness);
         }
+        return decideOwnershipT(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -110,7 +113,7 @@ contract Ownership {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](4);
         childInputsOf[0] = _inputs[2];
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__sig");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = secp256k1;
 
