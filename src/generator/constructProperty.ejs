@@ -7,7 +7,7 @@
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
             childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];
         }
-        childInputsOf<%=propIndex %>[stateObject.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
+        childInputsOf<%=propIndex %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
         <%= valName %> = abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
             inputs: childInputsOf<%=propIndex %>
@@ -22,7 +22,7 @@
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
             childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];
         }
-        childInputsOf<%=propIndex %>[stateObject.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
+        childInputsOf<%=propIndex %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
         <%= valName %> = abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
             inputs: childInputsOf<%=propIndex %>
