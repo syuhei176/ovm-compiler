@@ -1,5 +1,5 @@
     /**
-     * Gets child of <%= property.definition.name %>(<%= property.inputDefs %>).
+     * Gets child of <%= property.definition.name %>(<%= property.definition.inputDefs %>).
      */
     function getChild<%= property.definition.name %>(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
 <%
@@ -27,13 +27,13 @@
 <%      if(item.isCompiled) { -%>
             bytes[] memory childInputs = new bytes[](<%= item.inputs.length %>);
 <%- indent(include('constructInputs', {property: item, valName: 'childInputs', witnessName: 'challengeInputs'}), 4) -%>
-            return getChild<%= item.predicate.source %>(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
+            return getChild<%= item.predicate.source %>(childInputs, utils.subArray(challengeInputs, 1, challengeInputs.length));
 <%      } else { -%>
-<%-  indent(include('constructProperty', {property: item, valName: 'notInputs[0]'}), 4) -%>
+<%-  indent(include('constructProperty', {property: item, valName: 'notInputs[0]', propIndex: j}), 4) -%>
 <%      } -%>
         }
 <%    } -%>
-        return type.Property({
+        return types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         });
@@ -44,11 +44,11 @@
 <%    if(innerProperty.isCompiled) { -%>
         bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
 <%- include('constructInputs', {property: innerProperty, valName: 'childInputs', witnessName: 'challengeInputs'}) -%>
-        return getChild<%= innerProperty.predicate.source %>(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
+        return getChild<%= innerProperty.predicate.source %>(childInputs, utils.subArray(challengeInputs, 1, challengeInputs.length));
 <%    } else { -%>
         bytes[] memory notInputs = new bytes[](1);
-<%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]'}) -%>
-        return type.Property({
+<%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]', propIndex: ''}) -%>
+        return types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         });
@@ -57,22 +57,22 @@
         const innerProperty = property.definition.inputs[0];
 -%>
         bytes memory property;
-<%-  include('constructProperty', {property: innerProperty, valName: 'property'}) -%>
-        return property;
+<%-  include('constructProperty', {property: innerProperty, valName: 'property', propIndex: ''}) -%>
+        return abi.decode(property, (types.Property));
 <%  } else if(property.definition.predicate == 'ThereExistsSuchThat') {
         const quantifier = property.definition.inputs[0];
         const innerProperty = property.definition.inputs[2];
 -%>
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-<%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]'}) -%>
+<%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]', propIndex: ''}) -%>
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("<%= property.definition.inputs[1] %>");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: forAllSuchThatAddress,
             inputs: forAllSuchThatInputs
         });
@@ -82,13 +82,13 @@
         property.definition.inputs.forEach((item, index) => {
 -%>
         bytes[] memory notInputs<%= index %> = new bytes[](1);
-<%-  include('constructProperty', {property: item, valName: 'notInputs' + index + '[0]'}) -%>
-        andInputs[<%= index %>] = abi.encode(type.Property({
+<%-  include('constructProperty', {property: item, valName: 'notInputs' + index + '[0]', propIndex: index}) -%>
+        andInputs[<%= index %>] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs<%= index %>
         }));
 <%      }) -%>
-        return type.Property({
+        return types.Property({
             predicateAddress: andAddress,
             inputs: andInputs
         });

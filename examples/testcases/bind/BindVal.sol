@@ -1,23 +1,25 @@
     /**
-     * Gets child of BindValTestT().
+     * Gets child of BindValTestT(BindValTestT,a).
      */
     function getChildBindValTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = challengeInputs[0];
-        childInputs[1] = _inputs[1];
-        notInputs[0] = abi.encode(type.Property({
+        bytes[] memory childInputsOf = new bytes[](2);
+        childInputsOf[0] = challengeInputs[0];
+        childInputsOf[1] = _inputs[1];
+
+        notInputs[0] = abi.encode(types.Property({
             predicateAddress: Foo,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
+
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("b");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: forAllSuchThatAddress,
             inputs: forAllSuchThatInputs
         });

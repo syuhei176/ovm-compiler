@@ -31,7 +31,7 @@ contract AndTest {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress
-    ) {
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
     }
@@ -55,8 +55,8 @@ contract AndTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == AndTestA) {
+        bytes32 input0 = keccak256(inputs[0]);
+        if(input0 == keccak256(AndTestA)) {
             return getChildAndTestA(inputs, challengeInput);
         }
     }
@@ -64,9 +64,9 @@ contract AndTest {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == AndTestA) {
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
+        if(input0 == keccak256(AndTestA)) {
             decideAndTestA(_inputs, _witness);
         }
     }
@@ -81,28 +81,32 @@ contract AndTest {
     }
 
     /**
-     * Gets child of AndTestA().
+     * Gets child of AndTestA(AndTestA,a,b).
      */
     function getChildAndTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
-            notInputs[0] = abi.encode(type.Property({
+            bytes[] memory childInputsOf0 = new bytes[](1);
+            childInputsOf0[0] = _inputs[1];
+
+            notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Foo,
-                inputs: childInputs
+                inputs: childInputsOf0
             }));
+
         }
         if(challengeInput == 1) {
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[2];
-            notInputs[0] = abi.encode(type.Property({
+            bytes[] memory childInputsOf1 = new bytes[](1);
+            childInputsOf1[0] = _inputs[2];
+
+            notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Bar,
-                inputs: childInputs
+                inputs: childInputsOf1
             }));
+
         }
-        return type.Property({
+        return types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         });
@@ -115,12 +119,12 @@ contract AndTest {
 
         bytes[] memory childInputs0 = new bytes[](1);
         childInputs0[0] = _inputs[1];
-        require(Foo.decide(childInputs0));
+        require(AtomicPredicate(Foo).decide(childInputs0));
 
 
         bytes[] memory childInputs1 = new bytes[](1);
         childInputs1[0] = _inputs[2];
-        require(Bar.decide(childInputs1));
+        require(AtomicPredicate(Bar).decide(childInputs1));
 
         return true;
     }

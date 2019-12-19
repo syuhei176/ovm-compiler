@@ -7,12 +7,12 @@
 
         bytes[] memory childInputs0 = new bytes[](1);
         childInputs0[0] = inputProperty1.inputs[0];
-        require(Foo.decide(childInputs0));
+        require(AtomicPredicate(Foo).decide(childInputs0));
 
 
         bytes[] memory childInputs1 = new bytes[](1);
         childInputs1[0] = inputProperty1.inputs[1];
-        require(Bar.decide(childInputs1));
+        require(AtomicPredicate(Bar).decide(childInputs1));
 
         return true;
     }

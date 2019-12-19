@@ -1,18 +1,18 @@
     /**
-     * Gets child of ThereValTestT().
+     * Gets child of ThereValTestT(ThereValTestT,a).
      */
     function getChildThereValTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         types.Property memory inputPredicateProperty = abi.decode(_inputs[1], (types.Property));
-        bytes[] memory childInputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+        bytes[] memory childInputsOf = new bytes[](inputPredicateProperty.inputs.length + 1);
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-            childInputs[i] = inputPredicateProperty.inputs[i];
+            childInputsOf[i] = inputPredicateProperty.inputs[i];
         }
-        childInputs[stateObject.inputs.length] = _inputs[];
+        childInputsOf[stateObject.inputs.length] = _inputs[];
         notInputs[0] = abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("b");
@@ -20,7 +20,7 @@
             predicateAddress: notAddress,
             inputs: notInputs
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: forAllSuchThatAddress,
             inputs: forAllSuchThatInputs
         });

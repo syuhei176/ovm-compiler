@@ -6,10 +6,10 @@
 
         bytes[] memory childInputs0 = new bytes[](1);
         childInputs0[0] = _inputs[1];
-        require(Foo.decide(childInputs0));
+        require(AtomicPredicate(Foo).decide(childInputs0));
 
 
-        require(adjudicationContract.isDecided(_inputs[2]));
+        require(adjudicationContract.isDecidedById(keccak256(_inputs[2])));
 
         return true;
     }

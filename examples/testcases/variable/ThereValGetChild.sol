@@ -1,5 +1,5 @@
     /**
-     * Gets child of ThereValTestT().
+     * Gets child of ThereValTestT(ThereValTestT).
      */
     function getChildThereValTestT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
@@ -11,7 +11,7 @@
             predicateAddress: notAddress,
             inputs: notInputs
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: forAllSuchThatAddress,
             inputs: forAllSuchThatInputs
         });
