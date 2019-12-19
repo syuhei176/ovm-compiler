@@ -1,3 +1,13 @@
+## <small>0.1.11 (2019-12-19)</small>
+
+* 0.1.11 ([3a49af6](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3a49af6))
+* update changelog ([e9572cb](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e9572cb))
+* fix: fix generator ([4a94dd1](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4a94dd1))
+* fix: fix order property and add Range quantifier ([be3a73d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/be3a73d))
+* fix: remove withdraw property from order property definition ([2ebd3ff](https://github.com/cryptoeconomicslab/ovm-compiler/commit/2ebd3ff))
+
+
+
 ## <small>0.1.10 (2019-12-18)</small>
 
 * 0.1.10 ([e5747e9](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e5747e9))
