@@ -9,7 +9,7 @@
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
             childInputsOf[i] = inputPredicateProperty.inputs[i];
         }
-        childInputsOf[stateObject.inputs.length] = _inputs[];
+        childInputsOf[inputPredicateProperty.inputs.length] = _inputs[];
         notInputs[0] = abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
             inputs: childInputsOf
