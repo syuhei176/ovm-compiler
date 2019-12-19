@@ -22,7 +22,8 @@
         property.definition.inputs.forEach((item, index) => {
 -%>
 <%      if(item.isCompiled) { -%>
-        require(decide<%= item.predicate.source %>(childInputs<%= index %>, Utils.subArray(_witness, 1, _witness.length)));
+<%- include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: '_witness'}) -%>
+        require(decide<%= item.predicate.source %>(childInputs<%= index %>,  utils.subArray(_witness, 1, _witness.length)));
 <%      } else { %>
 <%- include('decideProperty', {property: item, valName: 'childInputs' + index}) -%>
 <%      } %>
@@ -34,25 +35,25 @@
 const quantifier = property.definition.inputs[0]
 const innerProperty = property.definition.inputs[2]
 -%>
-        bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
-<%- include('constructInputs', {property: innerProperty, valName: 'childInputs', witnessName: 'witness'}) -%>
 <%      if(innerProperty.isCompiled) { -%>
-        require(decide<%= innerProperty.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+        bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
+<%- include('constructInputs', {property: innerProperty, valName: 'childInputs', witnessName: '_witness'}) -%>
+        require(decide<%= innerProperty.predicate.source %>(childInputs,  utils.subArray(_witness, 1, _witness.length)));
 <%      } else { %>
 <%- include('decideProperty', {property: innerProperty, valName: 'childInputs'}) -%>
 <%      } %>
         return true;
 <% } else if(property.definition.predicate == 'Or') { -%>
         // check Or
-        uint256 orIndex = abi.decode(witness[0], (uint256));
+        uint256 orIndex = abi.decode(_witness[0], (uint256));
 <%
         property.definition.inputs.forEach((item, index) => {
 -%>
         if(orIndex == <%= index %>) {
             bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
-<%- indent(include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: 'witness'}), 4) -%>
+<%- indent(include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: '_witness'}), 4) -%>
 <%        if(item.isCompiled) { -%>
-            require(decide<%= item.predicate.source %>(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+            require(decide<%= item.predicate.source %>(childInputs<%= index %>,  utils.subArray(_witness, 1, _witness.length)));
 <%        } else { %>
 <%- indent(include('decideProperty', {property: item, valName: 'childInputs' + index}), 4) -%>
 <%        } %>

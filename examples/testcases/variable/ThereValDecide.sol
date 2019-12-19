@@ -3,9 +3,8 @@
      */
     function decideThereValTestT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory childInputs = new bytes[](0);
 
-        require(adjudicationContract.isDecided(challengeInput));
+        require(adjudicationContract.isDecidedById(keccak256(challengeInput)));
 
         return true;
     }

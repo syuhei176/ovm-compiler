@@ -31,7 +31,7 @@ contract NotTest {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress
-    ) {
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
     }
@@ -55,8 +55,8 @@ contract NotTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == NotTestN) {
+        bytes32 input0 = keccak256(inputs[0]);
+        if(input0 == keccak256(NotTestN)) {
             return getChildNotTestN(inputs, challengeInput);
         }
     }
@@ -64,9 +64,9 @@ contract NotTest {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == NotTestN) {
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
+        if(input0 == keccak256(NotTestN)) {
             decideNotTestN(_inputs, _witness);
         }
     }
@@ -81,17 +81,19 @@ contract NotTest {
     }
 
     /**
-     * Gets child of NotTestN().
+     * Gets child of NotTestN(NotTestN,a).
      */
     function getChildNotTestN(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes memory property;
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[1];
-        property = abi.encode(type.Property({
+        bytes[] memory childInputsOf = new bytes[](1);
+        childInputsOf[0] = _inputs[1];
+
+        property = abi.encode(types.Property({
             predicateAddress: Foo,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
-        return property;
+
+        return abi.decode(property, (types.Property));
     }
     /**
      * Decides NotTestN(NotTestN,a).

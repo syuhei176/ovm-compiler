@@ -45,9 +45,9 @@ contract <%= claimDef.name %> {
         address _adjudicationContractAddress,
         address _utilsAddress<% if(constants.length > 0){ %>,<% } %>
 <% constants.forEach((c, index) => { -%>
-        bytes _<%= c.name %><% if(index < constants.length - 1) { %>,<% } %>
+        bytes memory _<%= c.name %><% if(index < constants.length - 1) { %>,<% } %>
 <% }) -%>
-    ) {
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
 <% constants.forEach((c, index) => { -%>
@@ -74,11 +74,11 @@ contract <%= claimDef.name %> {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
+        bytes32 input0 = keccak256(inputs[0]);
 <%
   claimDef.contracts.forEach((property) => {
 -%>
-        if(input0 == <%= property.definition.name %>) {
+        if(input0 == keccak256(<%= property.definition.name %>)) {
             return getChild<%= property.definition.name %>(inputs, challengeInput);
         }
 <%
@@ -89,12 +89,12 @@ contract <%= claimDef.name %> {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
 <%
   claimDef.contracts.forEach((property) => {
 -%>
-        if(input0 == <%= property.definition.name %>) {
+        if(input0 == keccak256(<%= property.definition.name %>)) {
             decide<%= property.definition.name %>(_inputs, _witness);
         }
 <%

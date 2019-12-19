@@ -32,8 +32,8 @@ contract Ownership {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
-        bytes _secp256k1
-    ) {
+        bytes memory _secp256k1
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         secp256k1 = _secp256k1;
@@ -58,8 +58,8 @@ contract Ownership {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == OwnershipT) {
+        bytes32 input0 = keccak256(inputs[0]);
+        if(input0 == keccak256(OwnershipT)) {
             return getChildOwnershipT(inputs, challengeInput);
         }
     }
@@ -67,9 +67,9 @@ contract Ownership {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == OwnershipT) {
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
+        if(input0 == keccak256(OwnershipT)) {
             decideOwnershipT(_inputs, _witness);
         }
     }
@@ -84,27 +84,29 @@ contract Ownership {
     }
 
     /**
-     * Gets child of OwnershipT().
+     * Gets child of OwnershipT(OwnershipT,owner,tx).
      */
     function getChildOwnershipT(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[2];
-        childInputs[1] = challengeInputs[0];
-        childInputs[2] = _inputs[1];
-        childInputs[3] = secp256k1;
-        notInputs[0] = abi.encode(type.Property({
+        bytes[] memory childInputsOf = new bytes[](4);
+        childInputsOf[0] = _inputs[2];
+        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[2] = _inputs[1];
+        childInputsOf[3] = secp256k1;
+
+        notInputs[0] = abi.encode(types.Property({
             predicateAddress: IsValidSignature,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
+
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("sig");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: forAllSuchThatAddress,
             inputs: forAllSuchThatInputs
         });
@@ -114,18 +116,13 @@ contract Ownership {
      */
     function decideOwnershipT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory childInputs = new bytes[](4);
-        childInputs[0] = _inputs[2];
-        childInputs[1] = witness[0];
-        childInputs[2] = _inputs[1];
-        childInputs[3] = secp256k1;
 
         bytes[] memory childInputs = new bytes[](4);
         childInputs[0] = _inputs[2];
-        childInputs[1] = witness[0];
+        childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = secp256k1;
-        require(IsValidSignature.decide(childInputs));
+        require(AtomicPredicate(IsValidSignature).decide(childInputs));
 
         return true;
     }

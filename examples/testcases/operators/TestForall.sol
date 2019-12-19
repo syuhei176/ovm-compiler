@@ -31,7 +31,7 @@ contract ForallTest {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress
-    ) {
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
     }
@@ -55,8 +55,8 @@ contract ForallTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == ForallTestF) {
+        bytes32 input0 = keccak256(inputs[0]);
+        if(input0 == keccak256(ForallTestF)) {
             return getChildForallTestF(inputs, challengeInput);
         }
     }
@@ -64,9 +64,9 @@ contract ForallTest {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == ForallTestF) {
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
+        if(input0 == keccak256(ForallTestF)) {
             decideForallTestF(_inputs, _witness);
         }
     }
@@ -81,17 +81,19 @@ contract ForallTest {
     }
 
     /**
-     * Gets child of ForallTestF().
+     * Gets child of ForallTestF(ForallTestF,a).
      */
     function getChildForallTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory notInputs = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = challengeInputs[0];
-        notInputs[0] = abi.encode(type.Property({
+        bytes[] memory childInputsOf = new bytes[](1);
+        childInputsOf[0] = challengeInputs[0];
+
+        notInputs[0] = abi.encode(types.Property({
             predicateAddress: Foo,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
-        return type.Property({
+
+        return types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         });

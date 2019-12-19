@@ -36,7 +36,7 @@ contract Checkpoint {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress
-    ) {
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
     }
@@ -60,23 +60,23 @@ contract Checkpoint {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == CheckpointFO1N) {
+        bytes32 input0 = keccak256(inputs[0]);
+        if(input0 == keccak256(CheckpointFO1N)) {
             return getChildCheckpointFO1N(inputs, challengeInput);
         }
-        if(input0 == CheckpointFO2FO1N) {
+        if(input0 == keccak256(CheckpointFO2FO1N)) {
             return getChildCheckpointFO2FO1N(inputs, challengeInput);
         }
-        if(input0 == CheckpointFO2FO) {
+        if(input0 == keccak256(CheckpointFO2FO)) {
             return getChildCheckpointFO2FO(inputs, challengeInput);
         }
-        if(input0 == CheckpointFO2F) {
+        if(input0 == keccak256(CheckpointFO2F)) {
             return getChildCheckpointFO2F(inputs, challengeInput);
         }
-        if(input0 == CheckpointFO) {
+        if(input0 == keccak256(CheckpointFO)) {
             return getChildCheckpointFO(inputs, challengeInput);
         }
-        if(input0 == CheckpointF) {
+        if(input0 == keccak256(CheckpointF)) {
             return getChildCheckpointF(inputs, challengeInput);
         }
     }
@@ -84,24 +84,24 @@ contract Checkpoint {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == CheckpointFO1N) {
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
+        if(input0 == keccak256(CheckpointFO1N)) {
             decideCheckpointFO1N(_inputs, _witness);
         }
-        if(input0 == CheckpointFO2FO1N) {
+        if(input0 == keccak256(CheckpointFO2FO1N)) {
             decideCheckpointFO2FO1N(_inputs, _witness);
         }
-        if(input0 == CheckpointFO2FO) {
+        if(input0 == keccak256(CheckpointFO2FO)) {
             decideCheckpointFO2FO(_inputs, _witness);
         }
-        if(input0 == CheckpointFO2F) {
+        if(input0 == keccak256(CheckpointFO2F)) {
             decideCheckpointFO2F(_inputs, _witness);
         }
-        if(input0 == CheckpointFO) {
+        if(input0 == keccak256(CheckpointFO)) {
             decideCheckpointFO(_inputs, _witness);
         }
-        if(input0 == CheckpointF) {
+        if(input0 == keccak256(CheckpointF)) {
             decideCheckpointF(_inputs, _witness);
         }
     }
@@ -116,70 +116,76 @@ contract Checkpoint {
     }
 
     /**
-     * Gets child of CheckpointFO1N().
+     * Gets child of CheckpointFO1N(CheckpointFO1N,b,su).
      */
     function getChildCheckpointFO1N(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
         bytes memory property;
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[1];
-        childInputs[1] = inputProperty2.inputs[2];
-        property = abi.encode(type.Property({
+        bytes[] memory childInputsOf = new bytes[](2);
+        childInputsOf[0] = _inputs[1];
+        childInputsOf[1] = inputProperty2.inputs[2];
+
+        property = abi.encode(types.Property({
             predicateAddress: IsLessThan,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
-        return property;
+
+        return abi.decode(property, (types.Property));
     }
     /**
-     * Gets child of CheckpointFO2FO1N().
+     * Gets child of CheckpointFO2FO1N(CheckpointFO2FO1N,old_su,su,b).
      */
     function getChildCheckpointFO2FO1N(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
         bytes memory property;
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[1];
-        childInputs[1] = inputProperty2.inputs[0];
-        childInputs[2] = inputProperty2.inputs[1];
-        childInputs[3] = _inputs[3];
-        property = abi.encode(type.Property({
+        bytes[] memory childInputsOf = new bytes[](4);
+        childInputsOf[0] = _inputs[1];
+        childInputsOf[1] = inputProperty2.inputs[0];
+        childInputsOf[2] = inputProperty2.inputs[1];
+        childInputsOf[3] = _inputs[3];
+
+        property = abi.encode(types.Property({
             predicateAddress: IncludedWithin,
-            inputs: childInputs
+            inputs: childInputsOf
         }));
-        return property;
+
+        return abi.decode(property, (types.Property));
     }
     /**
-     * Gets child of CheckpointFO2FO().
+     * Gets child of CheckpointFO2FO(CheckpointFO2FO,old_su,su,b).
      */
     function getChildCheckpointFO2FO(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
 
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = CheckpointFO2FO1N;
-        childInputs[1] = _inputs[1];
-        childInputs[2] = _inputs[2];
-        childInputs[3] = _inputs[3];
-        notInputs0[0] = abi.encode(type.Property({
-            predicateAddress: CheckpointFO2FO1N,
-            inputs: childInputs
+        bytes[] memory childInputsOf0 = new bytes[](4);
+        childInputsOf0[0] = CheckpointFO2FO1N;
+        childInputsOf0[1] = _inputs[1];
+        childInputsOf0[2] = _inputs[2];
+        childInputsOf0[3] = _inputs[3];
+
+        notInputs0[0] = abi.encode(types.Property({
+            predicateAddress: address(this),
+            inputs: childInputsOf0
         }));
-        andInputs[0] = abi.encode(type.Property({
+
+        andInputs[0] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
         }));
         bytes[] memory notInputs1 = new bytes[](1);
         notInputs1[0] = _inputs[1];
-        andInputs[1] = abi.encode(type.Property({
+        andInputs[1] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: andAddress,
             inputs: andInputs
         });
     }
     /**
-     * Gets child of CheckpointFO2F().
+     * Gets child of CheckpointFO2F(CheckpointFO2F,su,b).
      */
     function getChildCheckpointFO2F(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory childInputs = new bytes[](4);
@@ -187,54 +193,58 @@ contract Checkpoint {
         childInputs[1] = challengeInputs[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];
-        return getChildCheckpointFO2FO(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
+        return getChildCheckpointFO2FO(childInputs, utils.subArray(challengeInputs, 1, challengeInputs.length));
     }
     /**
-     * Gets child of CheckpointFO().
+     * Gets child of CheckpointFO(CheckpointFO,b,su).
      */
     function getChildCheckpointFO(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
 
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = CheckpointFO1N;
-        childInputs[1] = _inputs[1];
-        childInputs[2] = _inputs[2];
-        notInputs0[0] = abi.encode(type.Property({
-            predicateAddress: CheckpointFO1N,
-            inputs: childInputs
+        bytes[] memory childInputsOf0 = new bytes[](3);
+        childInputsOf0[0] = CheckpointFO1N;
+        childInputsOf0[1] = _inputs[1];
+        childInputsOf0[2] = _inputs[2];
+
+        notInputs0[0] = abi.encode(types.Property({
+            predicateAddress: address(this),
+            inputs: childInputsOf0
         }));
-        andInputs[0] = abi.encode(type.Property({
+
+        andInputs[0] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
         }));
         bytes[] memory notInputs1 = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = CheckpointFO2F;
-        childInputs[1] = _inputs[2];
-        childInputs[2] = _inputs[1];
-        notInputs1[0] = abi.encode(type.Property({
-            predicateAddress: CheckpointFO2F,
-            inputs: childInputs
+        bytes[] memory childInputsOf1 = new bytes[](3);
+        childInputsOf1[0] = CheckpointFO2F;
+        childInputsOf1[1] = _inputs[2];
+        childInputsOf1[2] = _inputs[1];
+
+        notInputs1[0] = abi.encode(types.Property({
+            predicateAddress: address(this),
+            inputs: childInputsOf1
         }));
-        andInputs[1] = abi.encode(type.Property({
+
+        andInputs[1] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: andAddress,
             inputs: andInputs
         });
     }
     /**
-     * Gets child of CheckpointF().
+     * Gets child of CheckpointF(CheckpointF,su).
      */
     function getChildCheckpointF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory childInputs = new bytes[](3);
         childInputs[0] = CheckpointFO;
         childInputs[1] = challengeInputs[0];
         childInputs[2] = _inputs[1];
-        return getChildCheckpointFO(childInputs, Utils.subArray(challengeInputs, 1, challengeInputs.length));
+        return getChildCheckpointFO(childInputs, utils.subArray(challengeInputs, 1, challengeInputs.length));
     }
     /**
      * Decides CheckpointFO1N(CheckpointFO1N,b,su).
@@ -255,20 +265,20 @@ contract Checkpoint {
      */
     function decideCheckpointFO2FO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(witness[0], (uint256));
+        uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
             bytes[] memory childInputs0 = new bytes[](4);
             childInputs0[0] = CheckpointFO2FO1N;
             childInputs0[1] = _inputs[1];
             childInputs0[2] = _inputs[2];
             childInputs0[3] = _inputs[3];
-            require(decideCheckpointFO2FO1N(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+            require(decideCheckpointFO2FO1N(childInputs0,  utils.subArray(_witness, 1, _witness.length)));
 
         }
         if(orIndex == 1) {
             bytes[] memory childInputs1 = new bytes[](0);
 
-            require(adjudicationContract.isDecided(_inputs[1]));
+            require(adjudicationContract.isDecidedById(keccak256(_inputs[1])));
 
         }
         return true;
@@ -284,13 +294,13 @@ contract Checkpoint {
      */
     function decideCheckpointFO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(witness[0], (uint256));
+        uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
             bytes[] memory childInputs0 = new bytes[](3);
             childInputs0[0] = CheckpointFO1N;
             childInputs0[1] = _inputs[1];
             childInputs0[2] = _inputs[2];
-            require(decideCheckpointFO1N(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+            require(decideCheckpointFO1N(childInputs0,  utils.subArray(_witness, 1, _witness.length)));
 
         }
         if(orIndex == 1) {
@@ -298,7 +308,7 @@ contract Checkpoint {
             childInputs1[0] = CheckpointFO2F;
             childInputs1[1] = _inputs[2];
             childInputs1[2] = _inputs[1];
-            require(decideCheckpointFO2F(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+            require(decideCheckpointFO2F(childInputs1,  utils.subArray(_witness, 1, _witness.length)));
 
         }
         return true;

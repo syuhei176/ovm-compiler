@@ -33,8 +33,8 @@ contract LimboExit {
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
-        bytes _Exit
-    ) {
+        bytes memory _Exit
+    ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
         Exit = _Exit;
@@ -59,11 +59,11 @@ contract LimboExit {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = bytesToBytes32(inputs[0]);
-        if(input0 == LimboExitO2A) {
+        bytes32 input0 = keccak256(inputs[0]);
+        if(input0 == keccak256(LimboExitO2A)) {
             return getChildLimboExitO2A(inputs, challengeInput);
         }
-        if(input0 == LimboExitO) {
+        if(input0 == keccak256(LimboExitO)) {
             return getChildLimboExitO(inputs, challengeInput);
         }
     }
@@ -71,12 +71,12 @@ contract LimboExit {
     /**
      * @dev check the property is true
      */
-    function decide(bytes[] memory _inputs, bytes memory _witness) public view returns(bool) {
-        bytes32 input0 = bytesToBytes32(_inputs[0]);
-        if(input0 == LimboExitO2A) {
+    function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
+        bytes32 input0 = keccak256(_inputs[0]);
+        if(input0 == keccak256(LimboExitO2A)) {
             decideLimboExitO2A(_inputs, _witness);
         }
-        if(input0 == LimboExitO) {
+        if(input0 == keccak256(LimboExitO)) {
             decideLimboExitO(_inputs, _witness);
         }
     }
@@ -91,7 +91,7 @@ contract LimboExit {
     }
 
     /**
-     * Gets child of LimboExitO2A().
+     * Gets child of LimboExitO2A(LimboExitO2A,prev_su,tx,su).
      */
     function getChildLimboExitO2A(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
@@ -100,60 +100,68 @@ contract LimboExit {
             notInputs[0] = _inputs[1];
         }
         if(challengeInput == 1) {
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[1];
-            childInputs[1] = _inputs[2];
-            childInputs[2] = _inputs[3];
-            notInputs[0] = abi.encode(type.Property({
+            bytes[] memory childInputsOf1 = new bytes[](3);
+            childInputsOf1[0] = _inputs[1];
+            childInputsOf1[1] = _inputs[2];
+            childInputsOf1[2] = _inputs[3];
+
+            notInputs[0] = abi.encode(types.Property({
                 predicateAddress: IsValidStateTransition,
-                inputs: childInputs
+                inputs: childInputsOf1
             }));
+
         }
         if(challengeInput == 2) {
-            bytes[] memory childInputs = new bytes[](2);
-            childInputs[0] = _inputs[3];
-            notInputs[0] = abi.encode(type.Property({
+            bytes[] memory childInputsOf2 = new bytes[](1);
+            childInputsOf2[0] = _inputs[3];
+
+            notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Exit,
-                inputs: childInputs
+                inputs: childInputsOf2
             }));
+
         }
-        return type.Property({
+        return types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         });
     }
     /**
-     * Gets child of LimboExitO().
+     * Gets child of LimboExitO(LimboExitO,prev_su,tx,su).
      */
     function getChildLimboExitO(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
 
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = _inputs[1];
-        notInputs0[0] = abi.encode(type.Property({
+        bytes[] memory childInputsOf0 = new bytes[](1);
+        childInputsOf0[0] = _inputs[1];
+
+        notInputs0[0] = abi.encode(types.Property({
             predicateAddress: Exit,
-            inputs: childInputs
+            inputs: childInputsOf0
         }));
-        andInputs[0] = abi.encode(type.Property({
+
+        andInputs[0] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
         }));
         bytes[] memory notInputs1 = new bytes[](1);
-        bytes[] memory childInputs = new bytes[](2);
-        childInputs[0] = LimboExitO2A;
-        childInputs[1] = _inputs[1];
-        childInputs[2] = _inputs[2];
-        childInputs[3] = _inputs[3];
-        notInputs1[0] = abi.encode(type.Property({
-            predicateAddress: LimboExitO2A,
-            inputs: childInputs
+        bytes[] memory childInputsOf1 = new bytes[](4);
+        childInputsOf1[0] = LimboExitO2A;
+        childInputsOf1[1] = _inputs[1];
+        childInputsOf1[2] = _inputs[2];
+        childInputsOf1[3] = _inputs[3];
+
+        notInputs1[0] = abi.encode(types.Property({
+            predicateAddress: address(this),
+            inputs: childInputsOf1
         }));
-        andInputs[1] = abi.encode(type.Property({
+
+        andInputs[1] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
         }));
-        return type.Property({
+        return types.Property({
             predicateAddress: andAddress,
             inputs: andInputs
         });
@@ -164,19 +172,19 @@ contract LimboExit {
     function decideLimboExitO2A(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // And logical connective
 
-        require(adjudicationContract.isDecided(_inputs[1]));
+        require(adjudicationContract.isDecidedById(keccak256(_inputs[1])));
 
 
         bytes[] memory childInputs1 = new bytes[](3);
         childInputs1[0] = _inputs[1];
         childInputs1[1] = _inputs[2];
         childInputs1[2] = _inputs[3];
-        require(IsValidStateTransition.decide(childInputs1));
+        require(AtomicPredicate(IsValidStateTransition).decide(childInputs1));
 
 
         bytes[] memory childInputs2 = new bytes[](1);
         childInputs2[0] = _inputs[3];
-        require(Exit.decide(childInputs2));
+        require(AtomicPredicate(Exit).decide(childInputs2));
 
         return true;
     }
@@ -185,14 +193,14 @@ contract LimboExit {
      */
     function decideLimboExitO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(witness[0], (uint256));
+        uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
 
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
-            require(Exit.decide(childInputs0));
+            require(AtomicPredicate(Exit).decide(childInputs0));
 
         }
         if(orIndex == 1) {
@@ -201,7 +209,7 @@ contract LimboExit {
             childInputs1[1] = _inputs[1];
             childInputs1[2] = _inputs[2];
             childInputs1[3] = _inputs[3];
-            require(decideLimboExitO2A(childInputs, Utils.subArray(_witness, 1, _witness.length)));
+            require(decideLimboExitO2A(childInputs1,  utils.subArray(_witness, 1, _witness.length)));
 
         }
         return true;
