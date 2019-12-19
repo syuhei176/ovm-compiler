@@ -27,13 +27,16 @@ contract Ownership {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    bytes secp256k1;
 
     constructor(
         address _adjudicationContractAddress,
-        address _utilsAddress
+        address _utilsAddress,
+        bytes _secp256k1
     ) {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        secp256k1 = _secp256k1;
     }
 
     /**
@@ -88,8 +91,9 @@ contract Ownership {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = _inputs[2];
-        childInputs[1] = _inputs[1];
-        childInputs[2] = challengeInputs[0];
+        childInputs[1] = challengeInputs[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = secp256k1;
         notInputs[0] = abi.encode(type.Property({
             predicateAddress: IsValidSignature,
             inputs: childInputs
@@ -110,15 +114,17 @@ contract Ownership {
      */
     function decideOwnershipT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
-        bytes[] memory childInputs = new bytes[](3);
+        bytes[] memory childInputs = new bytes[](4);
         childInputs[0] = _inputs[2];
-        childInputs[1] = _inputs[1];
-        childInputs[2] = witness[0];
+        childInputs[1] = witness[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = secp256k1;
 
-        bytes[] memory childInputs = new bytes[](3);
+        bytes[] memory childInputs = new bytes[](4);
         childInputs[0] = _inputs[2];
-        childInputs[1] = _inputs[1];
-        childInputs[2] = witness[0];
+        childInputs[1] = witness[0];
+        childInputs[2] = _inputs[1];
+        childInputs[3] = secp256k1;
         require(IsValidSignature.decide(childInputs));
 
         return true;

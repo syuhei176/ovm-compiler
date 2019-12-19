@@ -9,7 +9,7 @@ import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
- * LimboExit(prev_su,su,tx)
+ * LimboExit(prev_su,tx,su)
  */
 contract LimboExit {
     bytes public LimboExitO2A = bytes("LimboExitO2A");
@@ -143,8 +143,8 @@ contract LimboExit {
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = LimboExitO2A;
         childInputs[1] = _inputs[1];
-        childInputs[2] = _inputs[3];
-        childInputs[3] = _inputs[2];
+        childInputs[2] = _inputs[2];
+        childInputs[3] = _inputs[3];
         notInputs1[0] = abi.encode(type.Property({
             predicateAddress: LimboExitO2A,
             inputs: childInputs
@@ -181,7 +181,7 @@ contract LimboExit {
         return true;
     }
     /**
-     * Decides LimboExitO(LimboExitO,prev_su,su,tx).
+     * Decides LimboExitO(LimboExitO,prev_su,tx,su).
      */
     function decideLimboExitO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
@@ -199,8 +199,8 @@ contract LimboExit {
             bytes[] memory childInputs1 = new bytes[](4);
             childInputs1[0] = LimboExitO2A;
             childInputs1[1] = _inputs[1];
-            childInputs1[2] = _inputs[3];
-            childInputs1[3] = _inputs[2];
+            childInputs1[2] = _inputs[2];
+            childInputs1[3] = _inputs[3];
             require(decideLimboExitO2A(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         }

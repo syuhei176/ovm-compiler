@@ -9,7 +9,7 @@ import "ovm-contracts/Predicate/CompiledPredicate.sol";
 
 
 /**
- * StateUpdate(block_number,range,so,token)
+ * StateUpdate(token,range,block_number,so)
  */
 contract StateUpdate {
     bytes public StateUpdateTA = bytes("StateUpdateTA");
@@ -159,10 +159,10 @@ contract StateUpdate {
         bytes[] memory childInputs = new bytes[](2);
         childInputs[0] = StateUpdateTA;
         childInputs[1] = challengeInputs[0];
-        childInputs[2] = _inputs[4];
+        childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];
-        childInputs[4] = _inputs[1];
-        childInputs[5] = _inputs[3];
+        childInputs[4] = _inputs[3];
+        childInputs[5] = _inputs[4];
         notInputs[0] = abi.encode(type.Property({
             predicateAddress: StateUpdateTA,
             inputs: childInputs
@@ -220,17 +220,17 @@ contract StateUpdate {
         return true;
     }
     /**
-     * Decides StateUpdateT(StateUpdateT,block_number,range,so,token).
+     * Decides StateUpdateT(StateUpdateT,token,range,block_number,so).
      */
     function decideStateUpdateT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](6);
         childInputs[0] = StateUpdateTA;
         childInputs[1] = witness[0];
-        childInputs[2] = _inputs[4];
+        childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];
-        childInputs[4] = _inputs[1];
-        childInputs[5] = _inputs[3];
+        childInputs[4] = _inputs[3];
+        childInputs[5] = _inputs[4];
         require(decideStateUpdateTA(childInputs, Utils.subArray(_witness, 1, _witness.length)));
 
         return true;
