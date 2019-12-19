@@ -30,7 +30,7 @@
 <%    } -%>
 <%  } else { -%>
         bytes[] memory childInputsOf<%=propIndex %> = new bytes[](<%= property.inputs.length %>);
-<%- include('constructInputs', {property: property, valName: 'childInputsOf' + propIndex, witnessName: 'challengeInputs'}) -%>
+<%- include('constructInputs', {property: property, valName: 'childInputsOf' + propIndex, witnessName: freeVariable?freeVariable:'challengeInputs[0]'}) -%>
 <%      if(property.isCompiled) { %>
         <%= valName %> = abi.encode(types.Property({
             predicateAddress: address(this),

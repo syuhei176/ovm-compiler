@@ -14,6 +14,6 @@
         require(adjudicationContract.isDecidedById(keccak256(challengeInput)));
 <%  } else { -%>
         bytes[] memory <%= valName %> = new bytes[](<%= property.inputs.length %>);
-<%- include('constructInputs', {property: property, valName: valName, witnessName: '_witness'}) -%>
+<%- include('constructInputs', {property: property, valName: valName, witnessName: '_witness[0]'}) -%>
         require(AtomicPredicate(<%= property.predicate.source %>).decide(<%= valName %>));
 <%  } -%>
