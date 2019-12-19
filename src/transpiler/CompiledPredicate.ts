@@ -6,8 +6,13 @@ export interface CompiledPredicate {
   name: string
   inputDefs: string[]
   contracts: IntermediateCompiledPredicate[]
-  constants?: ConstantInput[]
+  constants?: ConstantVariable[]
   entryPoint: string
+}
+
+export interface ConstantVariable {
+  varType: 'address' | 'bytes'
+  name: string
 }
 
 export interface IntermediateCompiledPredicate {

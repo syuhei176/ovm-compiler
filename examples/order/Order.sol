@@ -25,27 +25,42 @@ contract Order {
     address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
     bytes TransactionAddress;
-    bytes Withdraw;
+    address Withdraw;
     bytes swapAddress;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
         bytes memory _TransactionAddress,
-        bytes memory _Withdraw,
+        address  _Withdraw,
         bytes memory _swapAddress
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        notAddress = _notAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
         TransactionAddress = _TransactionAddress;
         Withdraw = _Withdraw;
         swapAddress = _swapAddress;

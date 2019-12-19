@@ -7,7 +7,8 @@ import {
   Placeholder,
   Predicate,
   NormalInput,
-  ConstantInput
+  ConstantInput,
+  ConstantVariable
 } from './CompiledPredicate'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 import { AssertionError } from 'assert'
@@ -328,8 +329,8 @@ function makeContractName(name: string, suffix: string) {
 
 function getConstants(
   predicates: IntermediateCompiledPredicate[]
-): ConstantInput[] {
-  const results: ConstantInput[] = []
+): ConstantVariable[] {
+  const results: ConstantVariable[] = []
   predicates.forEach(p => {
     p.definition.inputs.forEach(i => {
       if (typeof i != 'string' && i.type == 'AtomicProposition') {
@@ -340,7 +341,7 @@ function getConstants(
             !results.find(r => r.name == predicateName)
           ) {
             results.push({
-              type: 'ConstantInput',
+              varType: 'address',
               name: predicateName
             })
           }
@@ -350,7 +351,10 @@ function getConstants(
             i.type == 'ConstantInput' &&
             !results.find(r => r.name == i.name)
           ) {
-            results.push(i)
+            results.push({
+              varType: 'bytes',
+              name: i.name
+            })
           }
         })
       }

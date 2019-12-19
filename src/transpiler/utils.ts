@@ -30,7 +30,6 @@ export function isAtomicPredicate(predicate: string) {
     predicate == 'IncludedWithin' ||
     predicate == 'IsContained' ||
     predicate == 'VerifyInclusion' ||
-    predicate == 'IsValidStateTransition' ||
     predicate == 'IsSameAmount'
   )
 }
