@@ -62,7 +62,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       const quantifier = p.inputs[0] as PropertyNode
       const variable = p.inputs[1]
       return {
-        hint: `number,LESSTHAN,\${${quantifier.inputs[0]}}`,
+        hint: `range,NUMBER,0x00-\${${quantifier.inputs[0]}}`,
         properties: [
           {
             type: 'PropertyNode',
@@ -73,14 +73,36 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       }
     }
   },
+  Range: {
+    name: 'Range',
+    translate: (p: PropertyNode) => {
+      const quantifier = p.inputs[0] as PropertyNode
+      const variable = p.inputs[1]
+      return {
+        hint: `range,NUMBER,\${${quantifier.inputs[0]}}-\${${quantifier.inputs[1]}}`,
+        properties: [
+          {
+            type: 'PropertyNode',
+            predicate: 'IsLessThan',
+            inputs: [quantifier.inputs[0], variable]
+          },
+          {
+            type: 'PropertyNode',
+            predicate: 'IsLessThan',
+            inputs: [variable, quantifier.inputs[1]]
+          }
+        ]
+      }
+    }
+  },
   SU: {
     name: 'SU',
     translate: (p: PropertyNode) => {
       const quantifier = p.inputs[0] as PropertyNode
       const variable = p.inputs[1]
-      if (quantifier.inputs.length == 0) {
+      if (quantifier.inputs.length == 2) {
         return {
-          hint: 'su.*.*,RANGE,*',
+          hint: `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},ITER,0x00`,
           properties: []
         }
       } else if (quantifier.inputs.length == 3) {
