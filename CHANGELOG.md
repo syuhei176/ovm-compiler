@@ -1,3 +1,11 @@
+## <small>0.1.14 (2019-12-20)</small>
+
+* 0.1.14 ([1cc18cf](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1cc18cf))
+* update changelog ([8e3b46f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8e3b46f))
+* feat: use dynamic import for solc ([38ebd97](https://github.com/cryptoeconomicslab/ovm-compiler/commit/38ebd97))
+
+
+
 ## <small>0.1.13 (2019-12-20)</small>
 
 * 0.1.13 ([3903750](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3903750))
