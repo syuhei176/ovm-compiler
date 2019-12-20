@@ -3,16 +3,15 @@ import {
   SolidityCodeGenerator
 } from '../solidity'
 import { CompiledPredicate } from '../../transpiler'
-import solc from 'solc'
 import { CodeGenerator } from '../CodeGenerator'
 import { basename } from 'path'
 import template from './template'
 
 export class EthereumCodeGenerator implements CodeGenerator {
   constructor(readonly options?: SolidityCodeGeneratorOptions) {}
-  generate(compiledPredicates: CompiledPredicate[]): string {
+  async generate(compiledPredicates: CompiledPredicate[]): Promise<string> {
     const solidityGenerator = new SolidityCodeGenerator(this.options)
-    const source = solidityGenerator.generate(compiledPredicates)
+    const source = await solidityGenerator.generate(compiledPredicates)
 
     const input = {
       language: 'Solidity',
@@ -31,13 +30,18 @@ export class EthereumCodeGenerator implements CodeGenerator {
               'evm.bytecode.sourceMap',
               'evm.deployedBytecode.sourceMap'
             ],
-
             '': ['ast']
           }
         }
       }
     }
 
+    /*
+     * When importing solc in jest or for client, an exception thrown.
+     * https://github.com/ethereum/solc-js/issues/226
+     * using dynamic import to avoid this problem.
+     */
+    const solc = await import('solc')
     const outputString = solc.compile(JSON.stringify(input), (path: string) => {
       return { contents: template[basename(path, '.sol')] }
     })

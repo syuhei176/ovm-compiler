@@ -2,23 +2,28 @@ const { generateSolidityCode, generateEVMByteCode } = require('./')
 const fs = require('fs')
 const path = require('path')
 
-generate('checkpoint')
-generate('limboExit')
-generate('order')
-generate('ownership')
-generate('su')
+compileAllExamples().then(console.log)
 
-function generate(name) {
+async function compileAllExamples() {
+  await generate('checkpoint')
+  await generate('limboExit')
+  await generate('order')
+  await generate('ownership')
+  await generate('su')
+  return 'all examples compiled'
+}
+
+async function generate(name) {
   console.log(`compiling ${name}`)
   const source = fs.readFileSync(
     path.join(__dirname, `./examples/${name}/${name}.txt`)
   )
-  const output = generateSolidityCode(source.toString())
+  const output = await generateSolidityCode(source.toString())
   fs.writeFileSync(
     path.join(__dirname, `./examples/${name}/${getContractName(name)}.sol`),
     output
   )
-  const evmOutput = generateEVMByteCode(source.toString())
+  const evmOutput = await generateEVMByteCode(source.toString())
   fs.writeFileSync(
     path.join(__dirname, `./examples/${name}/${getContractName(name)}.json`),
     evmOutput

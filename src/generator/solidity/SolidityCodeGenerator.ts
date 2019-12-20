@@ -30,7 +30,7 @@ export class SolidityCodeGenerator implements CodeGenerator {
       ovmPath: defaultOVMPath
     }
   ) {}
-  generate(compiledPredicates: CompiledPredicate[]) {
+  async generate(compiledPredicates: CompiledPredicate[]): Promise<string> {
     const template = ejs.compile(templateSource.toString(), { client: true })
     const output = template(
       {
