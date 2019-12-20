@@ -26,7 +26,7 @@ contract NotTest {
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
     address payoutCountractAddress;
-    bool didInitialized = false;
+    bool isInitialized = false;
 
     constructor(
         address _adjudicationContractAddress,
@@ -51,7 +51,7 @@ contract NotTest {
         address _isSameAmount,
         address _payoutCountractAddress
     ) public {
-        require(!didInitialized, "didInitialized must be false");
+        require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
@@ -59,7 +59,7 @@ contract NotTest {
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
         payoutCountractAddress = _payoutCountractAddress;
-        didInitialized = true;
+        isInitialized = true;
     }
 
     /**

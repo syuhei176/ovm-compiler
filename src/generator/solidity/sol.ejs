@@ -36,7 +36,7 @@ contract <%= claimDef.name %> {
     address andAddress = address(<%= getAddress('And') %>);
     address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
     address payoutCountractAddress;
-    bool didInitialized = false;
+    bool isInitialized = false;
 <% constants.forEach(c => { -%>
     <%= c.varType %> <%= c.name %>;
 <% }) -%>
@@ -70,7 +70,7 @@ contract <%= claimDef.name %> {
         address _isSameAmount,
         address _payoutCountractAddress
     ) public {
-        require(!didInitialized, "didInitialized must be false");
+        require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
@@ -78,7 +78,7 @@ contract <%= claimDef.name %> {
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
         payoutCountractAddress = _payoutCountractAddress;
-        didInitialized = true;
+        isInitialized = true;
     }
 
     /**
