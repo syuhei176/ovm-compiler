@@ -26,8 +26,8 @@ contract LimboExit {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
-    address payoutCountractAddress;
-    bool didInitialized = false;
+    address public payoutContractAddress;
+    bool isInitialized = false;
     address IsValidStateTransition;
     address Exit;
 
@@ -56,19 +56,19 @@ contract LimboExit {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
-        address _payoutCountractAddress
+        address _payoutContractAddress
     ) public {
-        require(!didInitialized, "didInitialized must be false");
+        require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        payoutCountractAddress = _payoutCountractAddress;
-        didInitialized = true;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
     }
-
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -83,7 +83,7 @@ contract LimboExit {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -210,12 +210,18 @@ contract LimboExit {
         childInputs1[0] = _inputs[1];
         childInputs1[1] = _inputs[2];
         childInputs1[2] = _inputs[3];
-        require(AtomicPredicate(IsValidStateTransition).decide(childInputs1));
+        require(
+            AtomicPredicate(IsValidStateTransition).decide(childInputs1),
+            "IsValidStateTransition must be true"
+        );
 
 
         bytes[] memory childInputs2 = new bytes[](1);
         childInputs2[0] = _inputs[3];
-        require(AtomicPredicate(Exit).decide(childInputs2));
+        require(
+            AtomicPredicate(Exit).decide(childInputs2),
+            "Exit must be true"
+        );
 
         return true;
     }
@@ -229,7 +235,10 @@ contract LimboExit {
 
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
-            require(AtomicPredicate(Exit).decide(childInputs0));
+            require(
+                AtomicPredicate(Exit).decide(childInputs0),
+                "Exit must be true"
+            );
 
         }
         if(orIndex == 1) {

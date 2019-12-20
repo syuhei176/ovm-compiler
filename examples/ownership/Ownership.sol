@@ -25,8 +25,8 @@ contract Ownership {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
-    address payoutCountractAddress;
-    bool didInitialized = false;
+    address public payoutContractAddress;
+    bool isInitialized = false;
     bytes secp256k1;
 
     constructor(
@@ -52,19 +52,19 @@ contract Ownership {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
-        address _payoutCountractAddress
+        address _payoutContractAddress
     ) public {
-        require(!didInitialized, "didInitialized must be false");
+        require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        payoutCountractAddress = _payoutCountractAddress;
-        didInitialized = true;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
     }
-
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -79,7 +79,7 @@ contract Ownership {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -150,7 +150,10 @@ contract Ownership {
         childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = secp256k1;
-        require(AtomicPredicate(IsValidSignature).decide(childInputs));
+        require(
+            AtomicPredicate(IsValidSignature).decide(childInputs),
+            "IsValidSignature must be true"
+        );
 
         return true;
     }
