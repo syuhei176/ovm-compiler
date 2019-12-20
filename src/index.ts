@@ -15,10 +15,10 @@ import * as transpiler from './transpiler'
 
 export { parser, generator, transpiler }
 
-export function generateSolidityCode(
+export async function generateSolidityCode(
   source: string,
   options?: generator.SolidityCodeGeneratorOptions
-): string {
+): Promise<string> {
   const chamberParser = new parser.Parser()
   const compiledPredicates = transpiler.transpilePropertyDefsToCompiledPredicate(
     chamberParser.parse(source)
@@ -27,10 +27,10 @@ export function generateSolidityCode(
   return codeGenerator.generate(compiledPredicates)
 }
 
-export function generateEVMByteCode(
+export async function generateEVMByteCode(
   source: string,
   options?: generator.SolidityCodeGeneratorOptions
-): string {
+): Promise<string> {
   const chamberParser = new parser.Parser()
   const compiledPredicates = transpiler.transpilePropertyDefsToCompiledPredicate(
     chamberParser.parse(source)

@@ -21,7 +21,7 @@ describe('SolidityCodeGenerator', () => {
   beforeEach(async () => {})
 
   describe('operator', () => {
-    test('and', () => {
+    test('and', async () => {
       const input: CompiledPredicate[] = [
         {
           type: 'CompiledPredicate',
@@ -52,11 +52,11 @@ describe('SolidityCodeGenerator', () => {
           entryPoint: 'AndTestA'
         }
       ]
-      const output = generator.generate(input)
+      const output = await generator.generate(input)
       const testOutput = readFile('operators/TestAnd.sol', output)
       expect(output).toBe(testOutput.toString())
     })
-    test('or', () => {
+    test('or', async () => {
       const input: CompiledPredicate[] = [
         {
           type: 'CompiledPredicate',
@@ -87,11 +87,11 @@ describe('SolidityCodeGenerator', () => {
           entryPoint: 'OrTestO'
         }
       ]
-      const output = generator.generate(input)
+      const output = await generator.generate(input)
       const testOutput = readFile('operators/TestOr.sol', output)
       expect(output).toBe(testOutput.toString())
     })
-    test('not', () => {
+    test('not', async () => {
       const input: CompiledPredicate[] = [
         {
           type: 'CompiledPredicate',
@@ -117,11 +117,11 @@ describe('SolidityCodeGenerator', () => {
           entryPoint: 'NotTestN'
         }
       ]
-      const output = generator.generate(input)
+      const output = await generator.generate(input)
       const testOutput = readFile('operators/TestNot.sol', output)
       expect(output).toBe(testOutput.toString())
     })
-    test('forall', () => {
+    test('forall', async () => {
       const input: CompiledPredicate[] = [
         {
           type: 'CompiledPredicate',
@@ -159,11 +159,11 @@ describe('SolidityCodeGenerator', () => {
           entryPoint: 'ForallTestF'
         }
       ]
-      const output = generator.generate(input)
+      const output = await generator.generate(input)
       const testOutput = readFile('operators/TestForall.sol', output)
       expect(output).toBe(testOutput.toString())
     })
-    test('there', () => {
+    test('there', async () => {
       const input: CompiledPredicate[] = [
         {
           type: 'CompiledPredicate',
@@ -197,14 +197,14 @@ describe('SolidityCodeGenerator', () => {
           entryPoint: 'ThereTestT'
         }
       ]
-      const output = generator.generate(input)
+      const output = await generator.generate(input)
       const testOutput = readFile('operators/TestThere.sol', output)
       expect(output).toBe(testOutput.toString())
     })
   })
 
   describe('bind', () => {
-    test('bindand', () => {
+    test('bindand', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'BindAndTest',
@@ -243,7 +243,7 @@ describe('SolidityCodeGenerator', () => {
       expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
 
-    test('bind2', () => {
+    test('bind2', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'Bind2Test',
@@ -269,7 +269,7 @@ describe('SolidityCodeGenerator', () => {
       expect(output).toBe(testOutput.toString())
     })
 
-    test('bindval', () => {
+    test('bindval', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'BindValTest',
@@ -303,7 +303,7 @@ describe('SolidityCodeGenerator', () => {
       expect(output).toBe(testOutput.toString())
     })
 
-    test('bindaddr', () => {
+    test('bindaddr', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'BindAddrTest',
@@ -338,7 +338,7 @@ describe('SolidityCodeGenerator', () => {
   })
 
   describe('variable', () => {
-    test('eval1', () => {
+    test('eval1', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'EvalTest',
@@ -383,7 +383,7 @@ describe('SolidityCodeGenerator', () => {
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
       expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
-    test('forval', () => {
+    test('forval', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'ForValTest',
@@ -414,7 +414,7 @@ describe('SolidityCodeGenerator', () => {
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
     })
-    test('thereval', () => {
+    test('thereval', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'ThereValTest',
@@ -453,7 +453,7 @@ describe('SolidityCodeGenerator', () => {
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
       expect(outputOfDecide).toBe(testOutputOfDecide.toString())
     })
-    test('thereval2', () => {
+    test('thereval2', async () => {
       const input: IntermediateCompiledPredicate = {
         type: 'IntermediateCompiledPredicate',
         originalPredicateName: 'ThereValTest',
