@@ -16,7 +16,7 @@
 <%
         })
 -%>
-<% if(property.definition.predicate == 'And') { -%>
+<% if(property.definition.connective == 'And') { -%>
         // And logical connective
 <%
         property.definition.inputs.forEach((item, index) => {
@@ -30,7 +30,7 @@
 <%      } %>
 <%      }) -%>
         return true;
-<% } else if(property.definition.predicate == 'ThereExistsSuchThat') { -%>
+<% } else if(property.definition.connective == 'ThereExistsSuchThat') { -%>
         // check ThereExistsSuchThat
 <%
 const quantifier = property.definition.inputs[0]
@@ -44,7 +44,7 @@ const innerProperty = property.definition.inputs[2]
 <%- include('decideProperty', {property: innerProperty, valName: 'childInputs'}) -%>
 <%      } %>
         return true;
-<% } else if(property.definition.predicate == 'Or') { -%>
+<% } else if(property.definition.connective == 'Or') { -%>
         // check Or
         uint256 orIndex = abi.decode(_witness[0], (uint256));
 <%

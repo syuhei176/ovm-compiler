@@ -26,7 +26,7 @@ export interface IntermediateCompiledPredicateDef {
   type: 'IntermediateCompiledPredicateDef'
   name: string
   // logical connective
-  predicate: string
+  connective: LogicalConnective
   inputDefs: string[]
   inputs: (AtomicProposition | Placeholder)[]
   propertyInputs: NormalInput[]
@@ -94,4 +94,21 @@ export interface VariableInput {
 export interface SelfInput {
   type: 'SelfInput'
   children: number[]
+}
+
+// LogicalConnective
+export enum LogicalConnective {
+  And = 'And',
+  ForAllSuchThat = 'ForAllSuchThat',
+  Not = 'Not',
+  Or = 'Or',
+  ThereExistsSuchThat = 'ThereExistsSuchThat'
+}
+
+export type LogicalConnectiveStrings = keyof typeof LogicalConnective
+
+export function convertStringToLogicalConnective(
+  name: LogicalConnectiveStrings
+): LogicalConnective {
+  return LogicalConnective[name]
 }

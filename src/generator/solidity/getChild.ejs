@@ -16,7 +16,7 @@
 <%
         })
 -%>
-<%  if(property.definition.predicate == 'And') { -%>
+<%  if(property.definition.connective == 'And') { -%>
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
 <%
@@ -37,7 +37,7 @@
             predicateAddress: notAddress,
             inputs: notInputs
         });
-<%  } else if(property.definition.predicate == 'ForAllSuchThat') {
+<%  } else if(property.definition.connective == 'ForAllSuchThat') {
       const quantifier = property.definition.inputs[0];
       const innerProperty = property.definition.inputs[2];
 -%>
@@ -53,13 +53,13 @@
             inputs: notInputs
         });
 <%    } -%>
-<%  } else if(property.definition.predicate == 'Not') {
+<%  } else if(property.definition.connective == 'Not') {
         const innerProperty = property.definition.inputs[0];
 -%>
         bytes memory property;
 <%-  include('constructProperty', {property: innerProperty, valName: 'property', propIndex: '', freeVariable: false}) -%>
         return abi.decode(property, (types.Property));
-<%  } else if(property.definition.predicate == 'ThereExistsSuchThat') {
+<%  } else if(property.definition.connective == 'ThereExistsSuchThat') {
         const quantifier = property.definition.inputs[0];
         const innerProperty = property.definition.inputs[2];
 -%>
@@ -76,7 +76,7 @@
             predicateAddress: forAllSuchThatAddress,
             inputs: forAllSuchThatInputs
         });
-<%  } else if(property.definition.predicate == 'Or') {  %>
+<%  } else if(property.definition.connective == 'Or') {  %>
         bytes[] memory andInputs = new bytes[](<%= property.definition.inputs.length %>);
 <%
         property.definition.inputs.forEach((item, index) => {

@@ -8,7 +8,9 @@ import {
   Predicate,
   NormalInput,
   ConstantInput,
-  ConstantVariable
+  ConstantVariable,
+  convertStringToLogicalConnective,
+  LogicalConnectiveStrings
 } from './CompiledPredicate'
 import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
 import { AssertionError } from 'assert'
@@ -77,7 +79,9 @@ function searchInteractiveNode(
       definition: {
         type: 'IntermediateCompiledPredicateDef',
         name: makeContractName(originalPredicateName, suffix),
-        predicate: property.predicate,
+        connective: convertStringToLogicalConnective(
+          property.predicate as LogicalConnectiveStrings
+        ),
         inputDefs: newInputDefs,
         inputs: [],
         propertyInputs: []

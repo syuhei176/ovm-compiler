@@ -1,7 +1,8 @@
 import { SolidityCodeGenerator } from './'
 import {
   CompiledPredicate,
-  IntermediateCompiledPredicate
+  IntermediateCompiledPredicate,
+  LogicalConnective
 } from '../../transpiler'
 import fs from 'fs'
 import path from 'path'
@@ -34,7 +35,7 @@ describe('SolidityCodeGenerator', () => {
               definition: {
                 type: 'IntermediateCompiledPredicateDef',
                 name: 'AndTestA',
-                predicate: 'And',
+                connective: LogicalConnective.And,
                 inputDefs: ['AndTestA', 'a', 'b'],
                 inputs: [
                   {
@@ -77,7 +78,7 @@ describe('SolidityCodeGenerator', () => {
               definition: {
                 type: 'IntermediateCompiledPredicateDef',
                 name: 'OrTestO',
-                predicate: 'Or',
+                connective: LogicalConnective.Or,
                 inputDefs: ['OrTestO', 'a', 'b'],
                 inputs: [
                   {
@@ -120,7 +121,7 @@ describe('SolidityCodeGenerator', () => {
               definition: {
                 type: 'IntermediateCompiledPredicateDef',
                 name: 'NotTestN',
-                predicate: 'Not',
+                connective: LogicalConnective.Not,
                 inputDefs: ['NotTestN', 'a'],
                 inputs: [
                   {
@@ -156,7 +157,7 @@ describe('SolidityCodeGenerator', () => {
               definition: {
                 type: 'IntermediateCompiledPredicateDef',
                 name: 'ForallTestF',
-                predicate: 'ForAllSuchThat',
+                connective: LogicalConnective.ForAllSuchThat,
                 inputDefs: ['ForallTestF', 'a'],
                 inputs: [
                   {
@@ -204,7 +205,7 @@ describe('SolidityCodeGenerator', () => {
               definition: {
                 type: 'IntermediateCompiledPredicateDef',
                 name: 'ThereTestT',
-                predicate: 'ThereExistsSuchThat',
+                connective: LogicalConnective.ThereExistsSuchThat,
                 inputDefs: ['ThereTestT'],
                 inputs: [
                   'hint:hint:hint',
@@ -243,7 +244,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'BindAndTestA',
-          predicate: 'And',
+          connective: LogicalConnective.And,
           inputDefs: ['BindAndTestA', 'a'],
           inputs: [
             {
@@ -286,7 +287,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'Bind2TestA',
-          predicate: 'And',
+          connective: LogicalConnective.And,
           inputDefs: ['Bind2TestA', 'a'],
           inputs: [
             {
@@ -318,7 +319,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'BindValTestT',
-          predicate: 'ThereExistsSuchThat',
+          connective: LogicalConnective.ThereExistsSuchThat,
           inputDefs: ['BindValTestT', 'a'],
           inputs: [
             {
@@ -356,7 +357,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'BindAddrTestA',
-          predicate: 'And',
+          connective: LogicalConnective.And,
           inputDefs: ['BindAddrTestA', 'a'],
           inputs: [
             {
@@ -395,7 +396,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'EvalTestA',
-          predicate: 'And',
+          connective: LogicalConnective.And,
           inputDefs: ['EvalTestA', 'a', 'b'],
           inputs: [
             {
@@ -444,7 +445,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'ForValTestF',
-          predicate: 'ForAllSuchThat',
+          connective: LogicalConnective.ForAllSuchThat,
           inputDefs: ['ForValTestF', 'a'],
           inputs: [
             {
@@ -479,7 +480,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'ThereValTestT',
-          predicate: 'ThereExistsSuchThat',
+          connective: LogicalConnective.ThereExistsSuchThat,
           inputDefs: ['ThereValTestT'],
           inputs: [
             {
@@ -522,7 +523,7 @@ describe('SolidityCodeGenerator', () => {
         definition: {
           type: 'IntermediateCompiledPredicateDef',
           name: 'ThereValTestT',
-          predicate: 'ThereExistsSuchThat',
+          connective: LogicalConnective.ThereExistsSuchThat,
           inputDefs: ['ThereValTestT', 'a'],
           inputs: [
             {
