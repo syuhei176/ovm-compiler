@@ -25,7 +25,7 @@ contract ThereTest {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
-    address public payoutCountractAddress;
+    address public payoutContractAddress;
     bool isInitialized = false;
 
     constructor(
@@ -49,7 +49,7 @@ contract ThereTest {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
-        address _payoutCountractAddress
+        address _payoutContractAddress
     ) public {
         require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
@@ -58,10 +58,10 @@ contract ThereTest {
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        payoutCountractAddress = _payoutCountractAddress;
+        payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
     }
-
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -76,7 +76,7 @@ contract ThereTest {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -141,7 +141,10 @@ contract ThereTest {
 
         bytes[] memory childInputs = new bytes[](1);
         childInputs[0] = _witness[0];
-        require(AtomicPredicate(Foo).decide(childInputs));
+        require(
+            AtomicPredicate(Foo).decide(childInputs),
+            "Foo must be true"
+        );
 
         return true;
     }

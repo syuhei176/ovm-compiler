@@ -8,12 +8,21 @@
             <%= valName %>[i] = inputPredicateProperty.inputs[i];
         }
         <%= valName %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
-        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(<%= valName %>, utils.subArray(_witness, 1, _witness.length)));
+        require(
+            CompiledPredicate(inputPredicateProperty.predicateAddress).decide(<%= valName %>, utils.subArray(_witness, 1, _witness.length)),
+            "InputPredicate must be true"
+        );
 <%    } -%>
 <%  } else if(property.predicate.type == 'VariablePredicate') { -%>
-        require(adjudicationContract.isDecidedById(keccak256(challengeInput)));
+        require(
+            adjudicationContract.isDecidedById(keccak256(challengeInput)),
+            "VariablePredicate must be true"
+        );
 <%  } else { -%>
         bytes[] memory <%= valName %> = new bytes[](<%= property.inputs.length %>);
 <%- include('constructInputs', {property: property, valName: valName, witnessName: '_witness[0]'}) -%>
-        require(AtomicPredicate(<%= property.predicate.source %>).decide(<%= valName %>));
+        require(
+            AtomicPredicate(<%= property.predicate.source %>).decide(<%= valName %>),
+            "<%= property.predicate.source %> must be true"
+        );
 <%  } -%>

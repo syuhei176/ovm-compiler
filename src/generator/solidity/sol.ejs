@@ -35,7 +35,7 @@ contract <%= claimDef.name %> {
     address notAddress = address(<%= getAddress('Not') %>);
     address andAddress = address(<%= getAddress('And') %>);
     address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
-    address public payoutCountractAddress;
+    address public payoutContractAddress;
     bool isInitialized = false;
 <% constants.forEach(c => { -%>
     <%= c.varType %> <%= c.name %>;
@@ -68,7 +68,7 @@ contract <%= claimDef.name %> {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
-        address _payoutCountractAddress
+        address _payoutContractAddress
     ) public {
         require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
@@ -77,10 +77,10 @@ contract <%= claimDef.name %> {
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        payoutCountractAddress = _payoutCountractAddress;
+        payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
     }
-
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -95,7 +95,7 @@ contract <%= claimDef.name %> {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput

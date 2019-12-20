@@ -25,7 +25,7 @@ contract OrTest {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
-    address public payoutCountractAddress;
+    address public payoutContractAddress;
     bool isInitialized = false;
 
     constructor(
@@ -49,7 +49,7 @@ contract OrTest {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
-        address _payoutCountractAddress
+        address _payoutContractAddress
     ) public {
         require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
@@ -58,10 +58,10 @@ contract OrTest {
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        payoutCountractAddress = _payoutCountractAddress;
+        payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
     }
-
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -76,7 +76,7 @@ contract OrTest {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -155,14 +155,20 @@ contract OrTest {
 
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
-            require(AtomicPredicate(Foo).decide(childInputs0));
+            require(
+                AtomicPredicate(Foo).decide(childInputs0),
+                "Foo must be true"
+            );
 
         }
         if(orIndex == 1) {
 
             bytes[] memory childInputs1 = new bytes[](1);
             childInputs1[0] = _inputs[2];
-            require(AtomicPredicate(Bar).decide(childInputs1));
+            require(
+                AtomicPredicate(Bar).decide(childInputs1),
+                "Bar must be true"
+            );
 
         }
         return true;

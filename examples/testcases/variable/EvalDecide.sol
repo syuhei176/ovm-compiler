@@ -6,7 +6,10 @@
 
         bytes[] memory childInputs0 = new bytes[](1);
         childInputs0[0] = _inputs[1];
-        require(AtomicPredicate(Foo).decide(childInputs0));
+        require(
+            AtomicPredicate(Foo).decide(childInputs0),
+            "Foo must be true"
+        );
 
 
         require(adjudicationContract.isDecidedById(keccak256(_inputs[2])));

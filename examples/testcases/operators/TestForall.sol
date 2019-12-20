@@ -25,7 +25,7 @@ contract ForallTest {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
-    address public payoutCountractAddress;
+    address public payoutContractAddress;
     bool isInitialized = false;
 
     constructor(
@@ -49,7 +49,7 @@ contract ForallTest {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
-        address _payoutCountractAddress
+        address _payoutContractAddress
     ) public {
         require(!isInitialized, "isInitialized must be false");
         IsLessThan = _isLessThan;
@@ -58,10 +58,10 @@ contract ForallTest {
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
-        payoutCountractAddress = _payoutCountractAddress;
+        payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
     }
-
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -76,7 +76,7 @@ contract ForallTest {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
