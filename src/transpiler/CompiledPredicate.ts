@@ -34,27 +34,30 @@ export interface IntermediateCompiledPredicateDef {
 
 export interface AtomicProposition {
   type: 'AtomicProposition'
-  predicate: Predicate
+  predicate: PredicateCall
   inputs: CompiledInput[]
   isCompiled?: boolean
 }
 
 export type Placeholder = string
 
-export type Predicate = AtomicPredicate | InputPredicate | VariablePredicate
+export type PredicateCall =
+  | AtomicPredicateCall
+  | InputPredicateCall
+  | VariablePredicateCall
 
-export interface AtomicPredicate {
-  type: 'AtomicPredicate'
+export interface AtomicPredicateCall {
+  type: 'AtomicPredicateCall'
   source: string
 }
 
-export interface InputPredicate {
-  type: 'InputPredicate'
+export interface InputPredicateCall {
+  type: 'InputPredicateCall'
   source: NormalInput
 }
 
-export interface VariablePredicate {
-  type: 'VariablePredicate'
+export interface VariablePredicateCall {
+  type: 'VariablePredicateCall'
 }
 
 /**

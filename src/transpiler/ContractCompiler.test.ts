@@ -40,14 +40,14 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
                     },
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 2, children: [] }
                       ]
@@ -95,14 +95,14 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
                     },
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 2, children: [] }
                       ]
@@ -149,7 +149,7 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
@@ -198,7 +198,7 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'A' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'A' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
@@ -206,7 +206,7 @@ describe('ContractCompiler', () => {
                     'b',
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         {
                           type: 'VariableInput',
@@ -261,7 +261,7 @@ describe('ContractCompiler', () => {
                     'a',
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         {
                           type: 'VariableInput',
@@ -315,14 +315,14 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [0] }
                       ]
                     },
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [1] }
                       ]
@@ -372,14 +372,14 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [0] }
                       ]
                     },
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [1, 2] }
                       ]
@@ -430,13 +430,13 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'B' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'B' },
                       inputs: []
                     },
                     'b',
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         {
                           type: 'VariableInput',
@@ -494,7 +494,10 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Equal' },
+                      predicate: {
+                        type: 'AtomicPredicateCall',
+                        source: 'Equal'
+                      },
                       inputs: [
                         {
                           type: 'NormalInput',
@@ -506,7 +509,7 @@ describe('ContractCompiler', () => {
                     },
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [0] }
                       ]
@@ -558,7 +561,7 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
@@ -566,7 +569,7 @@ describe('ContractCompiler', () => {
                     {
                       type: 'AtomicProposition',
                       predicate: {
-                        type: 'InputPredicate',
+                        type: 'InputPredicateCall',
                         source: {
                           type: 'NormalInput',
                           inputIndex: 2,
@@ -619,7 +622,7 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'A' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'A' },
                       inputs: [
                         { type: 'NormalInput', inputIndex: 1, children: [] }
                       ]
@@ -627,7 +630,7 @@ describe('ContractCompiler', () => {
                     'b',
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'VariablePredicate' },
+                      predicate: { type: 'VariablePredicateCall' },
                       inputs: []
                     }
                   ],
@@ -674,13 +677,13 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'A' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'A' },
                       inputs: []
                     },
                     'a',
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'VariablePredicate' },
+                      predicate: { type: 'VariablePredicateCall' },
                       inputs: []
                     }
                   ],
@@ -727,14 +730,14 @@ describe('ContractCompiler', () => {
                   inputs: [
                     {
                       type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicate', source: 'B' },
+                      predicate: { type: 'AtomicPredicateCall', source: 'B' },
                       inputs: []
                     },
                     'b',
                     {
                       type: 'AtomicProposition',
                       predicate: {
-                        type: 'InputPredicate',
+                        type: 'InputPredicateCall',
                         source: {
                           type: 'NormalInput',
                           inputIndex: 1,

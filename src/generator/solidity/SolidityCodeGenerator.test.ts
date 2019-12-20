@@ -40,14 +40,14 @@ describe('SolidityCodeGenerator', () => {
                 inputs: [
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                     inputs: [
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
                   },
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                     inputs: [
                       { type: 'NormalInput', inputIndex: 2, children: [] }
                     ]
@@ -83,14 +83,14 @@ describe('SolidityCodeGenerator', () => {
                 inputs: [
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                     inputs: [
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
                   },
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Bar' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
                     inputs: [
                       { type: 'NormalInput', inputIndex: 2, children: [] }
                     ]
@@ -126,7 +126,7 @@ describe('SolidityCodeGenerator', () => {
                 inputs: [
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                     inputs: [
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
@@ -162,7 +162,7 @@ describe('SolidityCodeGenerator', () => {
                 inputs: [
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'A' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'A' },
                     inputs: [
                       { type: 'NormalInput', inputIndex: 1, children: [] }
                     ]
@@ -170,7 +170,7 @@ describe('SolidityCodeGenerator', () => {
                   'b',
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                     inputs: [
                       {
                         type: 'VariableInput',
@@ -212,7 +212,7 @@ describe('SolidityCodeGenerator', () => {
                   'a',
                   {
                     type: 'AtomicProposition',
-                    predicate: { type: 'AtomicPredicate', source: 'Foo' },
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
                     inputs: [
                       {
                         type: 'VariableInput',
@@ -249,12 +249,12 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [0] }]
             },
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Bar' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [1] }]
             }
           ],
@@ -292,12 +292,12 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [0] }]
             },
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Bar' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [1, 2] }]
             }
           ],
@@ -324,13 +324,13 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Bytes' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Bytes' },
               inputs: []
             },
             'b',
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
               inputs: [
                 {
                   type: 'VariableInput',
@@ -362,7 +362,7 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Equal' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Equal' },
               inputs: [
                 {
                   type: 'NormalInput',
@@ -374,7 +374,7 @@ describe('SolidityCodeGenerator', () => {
             },
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Bar' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [0] }]
             }
           ],
@@ -401,13 +401,13 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'Foo' },
+              predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [] }]
             },
             {
               type: 'AtomicProposition',
               predicate: {
-                type: 'InputPredicate',
+                type: 'InputPredicateCall',
                 source: {
                   type: 'NormalInput',
                   inputIndex: 2,
@@ -450,13 +450,13 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'A' },
+              predicate: { type: 'AtomicPredicateCall', source: 'A' },
               inputs: [{ type: 'NormalInput', inputIndex: 1, children: [] }]
             },
             'b',
             {
               type: 'AtomicProposition',
-              predicate: { type: 'VariablePredicate' },
+              predicate: { type: 'VariablePredicateCall' },
               inputs: []
             }
           ],
@@ -485,13 +485,13 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'A' },
+              predicate: { type: 'AtomicPredicateCall', source: 'A' },
               inputs: []
             },
             'a',
             {
               type: 'AtomicProposition',
-              predicate: { type: 'VariablePredicate' },
+              predicate: { type: 'VariablePredicateCall' },
               inputs: []
             }
           ],
@@ -528,14 +528,14 @@ describe('SolidityCodeGenerator', () => {
           inputs: [
             {
               type: 'AtomicProposition',
-              predicate: { type: 'AtomicPredicate', source: 'B' },
+              predicate: { type: 'AtomicPredicateCall', source: 'B' },
               inputs: []
             },
             'b',
             {
               type: 'AtomicProposition',
               predicate: {
-                type: 'InputPredicate',
+                type: 'InputPredicateCall',
                 source: {
                   type: 'NormalInput',
                   inputIndex: 1,

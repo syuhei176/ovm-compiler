@@ -1,4 +1,4 @@
-<%  if(property.predicate.type == 'InputPredicate') { -%>
+<%  if(property.predicate.type == 'InputPredicateCall') { -%>
 <%    if(property.inputs.length == 0) { -%>
         <%= valName %> = _inputs[<%= property.predicate.source.inputIndex %>];
 <%    } else { -%>
@@ -13,7 +13,7 @@
             inputs: childInputsOf<%=propIndex %>
         }));
 <%    } -%>
-<%  } else if(property.predicate.type == 'VariablePredicate') { -%>
+<%  } else if(property.predicate.type == 'VariablePredicateCall') { -%>
 <%    if(property.inputs.length == 0) { -%>
         <%= valName %> = challengeInput
 <%    } else { -%>

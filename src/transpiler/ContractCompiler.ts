@@ -5,7 +5,7 @@ import {
   IntermediateCompiledPredicate,
   AtomicProposition,
   Placeholder,
-  Predicate,
+  PredicateCall,
   NormalInput,
   ConstantInput,
   ConstantVariable,
@@ -155,7 +155,7 @@ function searchInteractiveNode(
     return {
       type: 'AtomicProposition',
       predicate: {
-        type: 'AtomicPredicate',
+        type: 'AtomicPredicateCall',
         source: newContract.definition.name
       },
       inputs: getInputIndex(parentInputDefs, newInputDefs, true),
@@ -170,11 +170,11 @@ function searchInteractiveNode(
   }
 }
 
-function getPredicate(inputDefs: string[], name: string): Predicate {
+function getPredicate(inputDefs: string[], name: string): PredicateCall {
   const inputIndex = inputDefs.indexOf(name)
   if (inputIndex >= 0) {
     return {
-      type: 'InputPredicate',
+      type: 'InputPredicateCall',
       source: {
         type: 'NormalInput',
         inputIndex: inputIndex,
@@ -183,12 +183,12 @@ function getPredicate(inputDefs: string[], name: string): Predicate {
     }
   } else if (utils.isUpperCase(name[0])) {
     return {
-      type: 'AtomicPredicate',
+      type: 'AtomicPredicateCall',
       source: name
     }
   } else {
     return {
-      type: 'VariablePredicate'
+      type: 'VariablePredicateCall'
     }
   }
 }
@@ -338,7 +338,7 @@ function getConstants(
   predicates.forEach(p => {
     p.definition.inputs.forEach(i => {
       if (typeof i != 'string' && i.type == 'AtomicProposition') {
-        if (i.predicate.type == 'AtomicPredicate' && !i.isCompiled) {
+        if (i.predicate.type == 'AtomicPredicateCall' && !i.isCompiled) {
           const predicateName = i.predicate.source
           if (
             utils.isCompiledPredicate(predicateName) &&
