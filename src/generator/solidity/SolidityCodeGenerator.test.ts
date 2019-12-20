@@ -6,7 +6,7 @@ import {
 import fs from 'fs'
 import path from 'path'
 
-const doWrite = true
+const doWrite = false
 const testcasePath = '../../../examples/testcases'
 function readFile(filePath: string, output: string) {
   if (doWrite) {
