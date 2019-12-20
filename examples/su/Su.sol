@@ -20,26 +20,52 @@ contract StateUpdate {
     address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    address public payoutContractAddress;
+    bool isInitialized = false;
     bytes TransactionAddress;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
         bytes memory _TransactionAddress
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        andAddress = _andAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
         TransactionAddress = _TransactionAddress;
     }
 
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _payoutContractAddress
+    ) public {
+        require(!isInitialized, "isInitialized must be false");
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
+    }
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -54,7 +80,7 @@ contract StateUpdate {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -66,6 +92,7 @@ contract StateUpdate {
         if(input0 == keccak256(StateUpdateT)) {
             return getChildStateUpdateT(inputs, challengeInput);
         }
+        return getChildStateUpdateTA(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -74,11 +101,12 @@ contract StateUpdate {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(StateUpdateTA)) {
-            decideStateUpdateTA(_inputs, _witness);
+            return decideStateUpdateTA(_inputs, _witness);
         }
         if(input0 == keccak256(StateUpdateT)) {
-            decideStateUpdateT(_inputs, _witness);
+            return decideStateUpdateT(_inputs, _witness);
         }
+        return decideStateUpdateTA(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -147,7 +175,7 @@ contract StateUpdate {
             for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
                 childInputsOf4[i] = inputPredicateProperty.inputs[i];
             }
-            childInputsOf4[stateObject.inputs.length] = _inputs[1];
+            childInputsOf4[inputPredicateProperty.inputs.length] = _inputs[1];
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: inputPredicateProperty.predicateAddress,
                 inputs: childInputsOf4
@@ -166,7 +194,7 @@ contract StateUpdate {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](6);
         childInputsOf[0] = StateUpdateTA;
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__tx");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
         childInputsOf[4] = _inputs[3];
@@ -198,25 +226,37 @@ contract StateUpdate {
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
         childInputs0[1] = TransactionAddress;
-        require(AtomicPredicate(Equal).decide(childInputs0));
+        require(
+            AtomicPredicate(Equal).decide(childInputs0),
+            "Equal must be true"
+        );
 
 
         bytes[] memory childInputs1 = new bytes[](2);
         childInputs1[0] = inputProperty1.inputs[0];
         childInputs1[1] = _inputs[2];
-        require(AtomicPredicate(Equal).decide(childInputs1));
+        require(
+            AtomicPredicate(Equal).decide(childInputs1),
+            "Equal must be true"
+        );
 
 
         bytes[] memory childInputs2 = new bytes[](2);
         childInputs2[0] = inputProperty1.inputs[1];
         childInputs2[1] = _inputs[3];
-        require(AtomicPredicate(IsContained).decide(childInputs2));
+        require(
+            AtomicPredicate(IsContained).decide(childInputs2),
+            "IsContained must be true"
+        );
 
 
         bytes[] memory childInputs3 = new bytes[](2);
         childInputs3[0] = inputProperty1.inputs[2];
         childInputs3[1] = _inputs[4];
-        require(AtomicPredicate(Equal).decide(childInputs3));
+        require(
+            AtomicPredicate(Equal).decide(childInputs3),
+            "Equal must be true"
+        );
 
 
         types.Property memory inputPredicateProperty = abi.decode(_inputs[5], (types.Property));
@@ -224,8 +264,11 @@ contract StateUpdate {
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
             childInputs4[i] = inputPredicateProperty.inputs[i];
         }
-        childInputs4[stateObject.inputs.length] = _inputs[1];
-        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs4, utils.subArray(_witness, 1, _witness.length)));
+        childInputs4[inputPredicateProperty.inputs.length] = _inputs[1];
+        require(
+            CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs4, utils.subArray(_witness, 1, _witness.length)),
+            "InputPredicate must be true"
+        );
 
         return true;
     }

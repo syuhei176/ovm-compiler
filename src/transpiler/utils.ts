@@ -27,10 +27,8 @@ export function isAtomicPredicate(predicate: string) {
     predicate == 'Equal' ||
     predicate == 'IsLessThan' ||
     predicate == 'IsValidSignature' ||
-    predicate == 'IncludedWithin' ||
     predicate == 'IsContained' ||
     predicate == 'VerifyInclusion' ||
-    predicate == 'IsValidStateTransition' ||
     predicate == 'IsSameAmount'
   )
 }

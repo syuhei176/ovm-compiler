@@ -20,7 +20,7 @@
         <%= valName %>[<%=index%>] = _inputs[<%=input.inputIndex%>];
 <%        } -%>
 <%      } else if(input.type == 'VariableInput') { -%>
-        <%= valName %>[<%=index%>] = <%= witnessName %>[0];
+        <%= valName %>[<%=index%>] = <%- witnessName %>;
 <%      } else if(input.type == 'SelfInput') { -%>
         <%= valName %>[<%=index%>] = abi.encodePacked(address(self));
 <%      } else { -%>

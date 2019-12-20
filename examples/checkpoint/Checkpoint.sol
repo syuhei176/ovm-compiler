@@ -24,23 +24,52 @@ contract Checkpoint {
     address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    address public payoutContractAddress;
+    bool isInitialized = false;
+    address IncludedWithin;
 
     constructor(
         address _adjudicationContractAddress,
-        address _utilsAddress
+        address _utilsAddress,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
+        address  _IncludedWithin
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        andAddress = _andAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
+        IncludedWithin = _IncludedWithin;
     }
 
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _payoutContractAddress
+    ) public {
+        require(!isInitialized, "isInitialized must be false");
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
+    }
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -55,7 +84,7 @@ contract Checkpoint {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -79,6 +108,7 @@ contract Checkpoint {
         if(input0 == keccak256(CheckpointF)) {
             return getChildCheckpointF(inputs, challengeInput);
         }
+        return getChildCheckpointFO1N(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -87,23 +117,24 @@ contract Checkpoint {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(CheckpointFO1N)) {
-            decideCheckpointFO1N(_inputs, _witness);
+            return decideCheckpointFO1N(_inputs, _witness);
         }
         if(input0 == keccak256(CheckpointFO2FO1N)) {
-            decideCheckpointFO2FO1N(_inputs, _witness);
+            return decideCheckpointFO2FO1N(_inputs, _witness);
         }
         if(input0 == keccak256(CheckpointFO2FO)) {
-            decideCheckpointFO2FO(_inputs, _witness);
+            return decideCheckpointFO2FO(_inputs, _witness);
         }
         if(input0 == keccak256(CheckpointFO2F)) {
-            decideCheckpointFO2F(_inputs, _witness);
+            return decideCheckpointFO2F(_inputs, _witness);
         }
         if(input0 == keccak256(CheckpointFO)) {
-            decideCheckpointFO(_inputs, _witness);
+            return decideCheckpointFO(_inputs, _witness);
         }
         if(input0 == keccak256(CheckpointF)) {
-            decideCheckpointF(_inputs, _witness);
+            return decideCheckpointF(_inputs, _witness);
         }
+        return decideCheckpointFO1N(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -276,7 +307,6 @@ contract Checkpoint {
 
         }
         if(orIndex == 1) {
-            bytes[] memory childInputs1 = new bytes[](0);
 
             require(adjudicationContract.isDecidedById(keccak256(_inputs[1])));
 

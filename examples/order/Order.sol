@@ -25,32 +25,58 @@ contract Order {
     address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    address public payoutContractAddress;
+    bool isInitialized = false;
     bytes TransactionAddress;
-    bytes Withdraw;
+    address Withdraw;
     bytes swapAddress;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
         bytes memory _TransactionAddress,
-        bytes memory _Withdraw,
+        address  _Withdraw,
         bytes memory _swapAddress
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        andAddress = _andAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
         TransactionAddress = _TransactionAddress;
         Withdraw = _Withdraw;
         swapAddress = _swapAddress;
     }
 
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _payoutContractAddress
+    ) public {
+        require(!isInitialized, "isInitialized must be false");
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
+    }
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -65,7 +91,7 @@ contract Order {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -92,6 +118,7 @@ contract Order {
         if(input0 == keccak256(OrderT)) {
             return getChildOrderT(inputs, challengeInput);
         }
+        return getChildOrderTA3TA4O2TA(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -100,26 +127,27 @@ contract Order {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(OrderTA3TA4O2TA)) {
-            decideOrderTA3TA4O2TA(_inputs, _witness);
+            return decideOrderTA3TA4O2TA(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3TA4O2T)) {
-            decideOrderTA3TA4O2T(_inputs, _witness);
+            return decideOrderTA3TA4O2T(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3TA4O)) {
-            decideOrderTA3TA4O(_inputs, _witness);
+            return decideOrderTA3TA4O(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3TA)) {
-            decideOrderTA3TA(_inputs, _witness);
+            return decideOrderTA3TA(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA3T)) {
-            decideOrderTA3T(_inputs, _witness);
+            return decideOrderTA3T(_inputs, _witness);
         }
         if(input0 == keccak256(OrderTA)) {
-            decideOrderTA(_inputs, _witness);
+            return decideOrderTA(_inputs, _witness);
         }
         if(input0 == keccak256(OrderT)) {
-            decideOrderT(_inputs, _witness);
+            return decideOrderT(_inputs, _witness);
         }
+        return decideOrderTA3TA4O2TA(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -207,7 +235,7 @@ contract Order {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](4);
         childInputsOf[0] = OrderTA3TA4O2TA;
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__tx");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
 
@@ -271,6 +299,7 @@ contract Order {
      */
     function getChildOrderTA3TA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        types.Property memory inputProperty1Child3 = abi.decode(inputProperty1.inputs[3], (types.Property));
         uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
@@ -337,7 +366,7 @@ contract Order {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](5);
         childInputsOf[0] = OrderTA3TA;
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__c_su");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
         childInputsOf[4] = _inputs[3];
@@ -408,7 +437,7 @@ contract Order {
         bytes[] memory childInputsOf = new bytes[](7);
         childInputsOf[0] = OrderTA;
         childInputsOf[1] = _inputs[4];
-        childInputsOf[2] = challengeInputs[0];
+        childInputsOf[2] = bytes("__VARIABLE__b");
         childInputsOf[3] = _inputs[5];
         childInputsOf[4] = _inputs[3];
         childInputsOf[5] = _inputs[1];
@@ -441,31 +470,46 @@ contract Order {
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
         childInputs0[1] = TransactionAddress;
-        require(AtomicPredicate(Equal).decide(childInputs0));
+        require(
+            AtomicPredicate(Equal).decide(childInputs0),
+            "Equal must be true"
+        );
 
 
         bytes[] memory childInputs1 = new bytes[](2);
         childInputs1[0] = inputProperty1.inputs[0];
         childInputs1[1] = inputProperty2.inputs[0];
-        require(AtomicPredicate(Equal).decide(childInputs1));
+        require(
+            AtomicPredicate(Equal).decide(childInputs1),
+            "Equal must be true"
+        );
 
 
         bytes[] memory childInputs2 = new bytes[](2);
         childInputs2[0] = inputProperty1.inputs[1];
         childInputs2[1] = inputProperty2.inputs[1];
-        require(AtomicPredicate(IsContained).decide(childInputs2));
+        require(
+            AtomicPredicate(IsContained).decide(childInputs2),
+            "IsContained must be true"
+        );
 
 
         bytes[] memory childInputs3 = new bytes[](2);
         childInputs3[0] = inputProperty1.inputs[2];
         childInputs3[1] = inputProperty2.inputs[2];
-        require(AtomicPredicate(Equal).decide(childInputs3));
+        require(
+            AtomicPredicate(Equal).decide(childInputs3),
+            "Equal must be true"
+        );
 
 
         bytes[] memory childInputs4 = new bytes[](2);
         childInputs4[0] = _inputs[1];
         childInputs4[1] = _inputs[3];
-        require(AtomicPredicate(IsValidSignature).decide(childInputs4));
+        require(
+            AtomicPredicate(IsValidSignature).decide(childInputs4),
+            "IsValidSignature must be true"
+        );
 
         return true;
     }
@@ -490,12 +534,13 @@ contract Order {
         // check Or
         uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
-            bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
 
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
-            require(AtomicPredicate(Withdraw).decide(childInputs0));
+            require(
+                AtomicPredicate(Withdraw).decide(childInputs0),
+                "Withdraw must be true"
+            );
 
         }
         if(orIndex == 1) {
@@ -513,25 +558,36 @@ contract Order {
      */
     function decideOrderTA3TA(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
+        types.Property memory inputProperty1Child3 = abi.decode(inputProperty1.inputs[3], (types.Property));
         // And logical connective
 
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
         childInputs0[1] = swapAddress;
-        require(AtomicPredicate(Equal).decide(childInputs0));
+        require(
+            AtomicPredicate(Equal).decide(childInputs0),
+            "Equal must be true"
+        );
 
 
         bytes[] memory childInputs1 = new bytes[](2);
         childInputs1[0] = inputProperty1.inputs[1];
         childInputs1[1] = _inputs[2];
-        require(AtomicPredicate(IsSameAmount).decide(childInputs1));
+        require(
+            AtomicPredicate(IsSameAmount).decide(childInputs1),
+            "IsSameAmount must be true"
+        );
 
 
         bytes[] memory childInputs2 = new bytes[](2);
         childInputs2[0] = inputProperty1Child3.inputs[1];
         childInputs2[1] = _inputs[3];
-        require(AtomicPredicate(Equal).decide(childInputs2));
+        require(
+            AtomicPredicate(Equal).decide(childInputs2),
+            "Equal must be true"
+        );
 
+            bytes[] memory childInputs3 = new bytes[](3);
         childInputs3[0] = OrderTA3TA4O;
         childInputs3[1] = _inputs[1];
         childInputs3[2] = _inputs[3];
@@ -541,7 +597,10 @@ contract Order {
         bytes[] memory childInputs4 = new bytes[](2);
         childInputs4[0] = _inputs[4];
         childInputs4[1] = inputProperty1Child3.inputs[0];
-        require(AtomicPredicate(IsValidSignature).decide(childInputs4));
+        require(
+            AtomicPredicate(IsValidSignature).decide(childInputs4),
+            "IsValidSignature must be true"
+        );
 
         return true;
     }
@@ -569,14 +628,21 @@ contract Order {
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = _inputs[1];
         childInputs0[1] = _inputs[2];
-        require(AtomicPredicate(IsLessThan).decide(childInputs0));
+        require(
+            AtomicPredicate(IsLessThan).decide(childInputs0),
+            "IsLessThan must be true"
+        );
 
 
         bytes[] memory childInputs1 = new bytes[](2);
         childInputs1[0] = _inputs[2];
         childInputs1[1] = _inputs[3];
-        require(AtomicPredicate(IsLessThan).decide(childInputs1));
+        require(
+            AtomicPredicate(IsLessThan).decide(childInputs1),
+            "IsLessThan must be true"
+        );
 
+            bytes[] memory childInputs2 = new bytes[](4);
         childInputs2[0] = OrderTA3T;
         childInputs2[1] = _inputs[4];
         childInputs2[2] = _inputs[5];

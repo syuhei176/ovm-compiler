@@ -20,26 +20,55 @@ contract LimboExit {
     address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
-    bytes Exit;
+    address public payoutContractAddress;
+    bool isInitialized = false;
+    address IsValidStateTransition;
+    address Exit;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
-        bytes memory _Exit
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
+        address  _IsValidStateTransition,
+        address  _Exit
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        andAddress = _andAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
+        IsValidStateTransition = _IsValidStateTransition;
         Exit = _Exit;
     }
 
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _payoutContractAddress
+    ) public {
+        require(!isInitialized, "isInitialized must be false");
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
+    }
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -54,7 +83,7 @@ contract LimboExit {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -66,6 +95,7 @@ contract LimboExit {
         if(input0 == keccak256(LimboExitO)) {
             return getChildLimboExitO(inputs, challengeInput);
         }
+        return getChildLimboExitO2A(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -74,11 +104,12 @@ contract LimboExit {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(LimboExitO2A)) {
-            decideLimboExitO2A(_inputs, _witness);
+            return decideLimboExitO2A(_inputs, _witness);
         }
         if(input0 == keccak256(LimboExitO)) {
-            decideLimboExitO(_inputs, _witness);
+            return decideLimboExitO(_inputs, _witness);
         }
+        return decideLimboExitO2A(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -179,12 +210,18 @@ contract LimboExit {
         childInputs1[0] = _inputs[1];
         childInputs1[1] = _inputs[2];
         childInputs1[2] = _inputs[3];
-        require(AtomicPredicate(IsValidStateTransition).decide(childInputs1));
+        require(
+            AtomicPredicate(IsValidStateTransition).decide(childInputs1),
+            "IsValidStateTransition must be true"
+        );
 
 
         bytes[] memory childInputs2 = new bytes[](1);
         childInputs2[0] = _inputs[3];
-        require(AtomicPredicate(Exit).decide(childInputs2));
+        require(
+            AtomicPredicate(Exit).decide(childInputs2),
+            "Exit must be true"
+        );
 
         return true;
     }
@@ -195,12 +232,13 @@ contract LimboExit {
         // check Or
         uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
-            bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
 
             bytes[] memory childInputs0 = new bytes[](1);
             childInputs0[0] = _inputs[1];
-            require(AtomicPredicate(Exit).decide(childInputs0));
+            require(
+                AtomicPredicate(Exit).decide(childInputs0),
+                "Exit must be true"
+            );
 
         }
         if(orIndex == 1) {

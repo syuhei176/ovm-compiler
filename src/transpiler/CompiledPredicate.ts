@@ -6,22 +6,26 @@ export interface CompiledPredicate {
   name: string
   inputDefs: string[]
   contracts: IntermediateCompiledPredicate[]
-  constants?: ConstantInput[]
+  constants?: ConstantVariable[]
   entryPoint: string
 }
 
-export interface IntermediateCompiledPredicate {
-  type: 'IntermediateCompiledPredicate'
-  isCompiled: boolean
-  originalPredicateName: string
-  definition: IntermediateCompiledPredicateDef
+export interface ConstantVariable {
+  varType: 'address' | 'bytes'
+  name: string
 }
 
-export interface IntermediateCompiledPredicateDef {
-  type: 'IntermediateCompiledPredicateDef'
+/**
+ * IntermediateCompiledPredicate is core of compilation which has only atomic propositions as its inputs.
+ * When we have for a in B() {Foo(a) and Bar(a)},
+ * "for a in B() {...}" and "Foo(a) and Bar(a)" are IntermediateCompiledPredicate.
+ */
+export interface IntermediateCompiledPredicate {
+  type: 'IntermediateCompiledPredicate'
   name: string
+  originalPredicateName: string
   // logical connective
-  predicate: string
+  connective: LogicalConnective
   inputDefs: string[]
   inputs: (AtomicProposition | Placeholder)[]
   propertyInputs: NormalInput[]
@@ -29,33 +33,44 @@ export interface IntermediateCompiledPredicateDef {
 
 export interface AtomicProposition {
   type: 'AtomicProposition'
-  predicate: Predicate
+  predicate: PredicateCall
   inputs: CompiledInput[]
   isCompiled?: boolean
 }
 
 export type Placeholder = string
 
-export type Predicate = AtomicPredicate | InputPredicate | VariablePredicate
+export type PredicateCall =
+  | AtomicPredicateCall
+  | InputPredicateCall
+  | VariablePredicateCall
 
-export interface AtomicPredicate {
-  type: 'AtomicPredicate'
+/**
+ * e.g. IsValidSignature()
+ */
+export interface AtomicPredicateCall {
+  type: 'AtomicPredicateCall'
   source: string
 }
 
-export interface InputPredicate {
-  type: 'InputPredicate'
+/**
+ * e.g. a() of "def Foo(a) := a()"
+ */
+export interface InputPredicateCall {
+  type: 'InputPredicateCall'
   source: NormalInput
 }
 
-export interface VariablePredicate {
-  type: 'VariablePredicate'
+/**
+ * e.g. su() of "def Foo(a) := with SU(a) as su {su()}"
+ */
+export interface VariablePredicateCall {
+  type: 'VariablePredicateCall'
 }
 
 /**
- * challengeInput -1
- * inputs[0] is 0
- * inputs[0].inputs[0] is [0, 0]
+ * CompiledInput indicates which value to pass to PredicateCall as input of predicate
+ * For example, parentProperty.inputs[0].inputs[1] is NormalInput and inputIndex is 0 and children is [1].
  */
 export type CompiledInput =
   | ConstantInput
@@ -89,4 +104,21 @@ export interface VariableInput {
 export interface SelfInput {
   type: 'SelfInput'
   children: number[]
+}
+
+// LogicalConnective
+export enum LogicalConnective {
+  And = 'And',
+  ForAllSuchThat = 'ForAllSuchThat',
+  Not = 'Not',
+  Or = 'Or',
+  ThereExistsSuchThat = 'ThereExistsSuchThat'
+}
+
+export type LogicalConnectiveStrings = keyof typeof LogicalConnective
+
+export function convertStringToLogicalConnective(
+  name: LogicalConnectiveStrings
+): LogicalConnective {
+  return LogicalConnective[name]
 }

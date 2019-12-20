@@ -19,26 +19,52 @@ contract Ownership {
     address IsLessThan = address(0x0000000000000000000000000000000000000000);
     address Equal = address(0x0000000000000000000000000000000000000000);
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
-    address IncludedWithin = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
-    address IsValidStateTransition = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    address public payoutContractAddress;
+    bool isInitialized = false;
     bytes secp256k1;
 
     constructor(
         address _adjudicationContractAddress,
         address _utilsAddress,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress,
         bytes memory _secp256k1
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        andAddress = _andAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
         secp256k1 = _secp256k1;
     }
 
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _payoutContractAddress
+    ) public {
+        require(!isInitialized, "isInitialized must be false");
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
+    }
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -53,7 +79,7 @@ contract Ownership {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -62,6 +88,7 @@ contract Ownership {
         if(input0 == keccak256(OwnershipT)) {
             return getChildOwnershipT(inputs, challengeInput);
         }
+        return getChildOwnershipT(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -70,8 +97,9 @@ contract Ownership {
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
         bytes32 input0 = keccak256(_inputs[0]);
         if(input0 == keccak256(OwnershipT)) {
-            decideOwnershipT(_inputs, _witness);
+            return decideOwnershipT(_inputs, _witness);
         }
+        return decideOwnershipT(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -91,7 +119,7 @@ contract Ownership {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](4);
         childInputsOf[0] = _inputs[2];
-        childInputsOf[1] = challengeInputs[0];
+        childInputsOf[1] = bytes("__VARIABLE__sig");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = secp256k1;
 
@@ -122,7 +150,10 @@ contract Ownership {
         childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = secp256k1;
-        require(AtomicPredicate(IsValidSignature).decide(childInputs));
+        require(
+            AtomicPredicate(IsValidSignature).decide(childInputs),
+            "IsValidSignature must be true"
+        );
 
         return true;
     }

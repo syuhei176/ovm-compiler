@@ -5,8 +5,8 @@ import getChild from './getChild'
 import constructProperty from './constructProperty'
 import constructInputs from './constructInputs'
 import decideProperty from './decideProperty'
-import { CodeGenerator } from './CodeGenerator'
-import { CompiledPredicate, AtomicProposition } from '../transpiler'
+import { CodeGenerator } from '../CodeGenerator'
+import { CompiledPredicate, AtomicProposition } from '../../transpiler'
 
 const templates: { [key: string]: string } = {
   decide: decide.toString(),

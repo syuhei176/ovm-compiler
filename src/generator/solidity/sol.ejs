@@ -20,7 +20,7 @@ contract <%= claimDef.name %> {
   for(var i = 0;i < claimDef.contracts.length;i++) {
     let property = claimDef.contracts[i]
 -%>
-    bytes public <%= property.definition.name %> = bytes("<%= property.definition.name %>");
+    bytes public <%= property.name %> = bytes("<%= property.name %>");
 <%
   }
 %>
@@ -29,32 +29,58 @@ contract <%= claimDef.name %> {
     address IsLessThan = address(<%= getAddress('IsLessThan') %>);
     address Equal = address(<%= getAddress('Equal') %>);
     address IsValidSignature = address(<%= getAddress('IsValidSignature') %>);
-    address IncludedWithin = address(<%= getAddress('IncludedWithin') %>);
     address IsContained = address(<%= getAddress('IsContained') %>);
     address VerifyInclusion = address(<%= getAddress('VerifyInclusion') %>);
-    address IsValidStateTransition = address(<%= getAddress('IsValidStateTransition') %>);
     address IsSameAmount = address(<%= getAddress('IsSameAmount') %>);
     address notAddress = address(<%= getAddress('Not') %>);
     address andAddress = address(<%= getAddress('And') %>);
     address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
+    address public payoutContractAddress;
+    bool isInitialized = false;
 <% constants.forEach(c => { -%>
-    bytes <%= c.name %>;
+    <%= c.varType %> <%= c.name %>;
 <% }) -%>
 
     constructor(
         address _adjudicationContractAddress,
-        address _utilsAddress<% if(constants.length > 0){ %>,<% } %>
+        address _utilsAddress,
+        address _notAddress,
+        address _andAddress,
+        address _forAllSuchThatAddress<% if(constants.length > 0){ %>,<% } %>
 <% constants.forEach((c, index) => { -%>
-        bytes memory _<%= c.name %><% if(index < constants.length - 1) { %>,<% } %>
+        <%= c.varType %> <%= c.varType == 'bytes' ? 'memory' : '' %> _<%= c.name %><% if(index < constants.length - 1) { %>,<% } %>
 <% }) -%>
     ) public {
         adjudicationContract = UniversalAdjudicationContract(_adjudicationContractAddress);
         utils = Utils(_utilsAddress);
+        notAddress = _notAddress;
+        andAddress = _andAddress;
+        forAllSuchThatAddress = _forAllSuchThatAddress;
 <% constants.forEach((c, index) => { -%>
         <%= c.name %> = _<%= c.name %>;
 <% }) -%>
     }
 
+    function setPredicateAddresses(
+        address _isLessThan,
+        address _equal,
+        address _isValidSignature,
+        address _isContained,
+        address _verifyInclusion,
+        address _isSameAmount,
+        address _payoutContractAddress
+    ) public {
+        require(!isInitialized, "isInitialized must be false");
+        IsLessThan = _isLessThan;
+        Equal = _equal;
+        IsValidSignature = _isValidSignature;
+        IsContained = _isContained;
+        VerifyInclusion = _verifyInclusion;
+        IsSameAmount = _isSameAmount;
+        payoutContractAddress = _payoutContractAddress;
+        isInitialized = true;
+    }
+    
     /**
      * @dev Validates a child node of the property in game tree.
      */
@@ -69,7 +95,7 @@ contract <%= claimDef.name %> {
         );
         return true;
     }
-
+    
     function getChild(
         bytes[] memory inputs,
         bytes[] memory challengeInput
@@ -78,12 +104,13 @@ contract <%= claimDef.name %> {
 <%
   claimDef.contracts.forEach((property) => {
 -%>
-        if(input0 == keccak256(<%= property.definition.name %>)) {
-            return getChild<%= property.definition.name %>(inputs, challengeInput);
+        if(input0 == keccak256(<%= property.name %>)) {
+            return getChild<%= property.name %>(inputs, challengeInput);
         }
 <%
   })
 -%>
+        return getChild<%= claimDef.entryPoint %>(utils.subArray(inputs, 1, inputs.length), challengeInput);
     }
 
     /**
@@ -94,12 +121,13 @@ contract <%= claimDef.name %> {
 <%
   claimDef.contracts.forEach((property) => {
 -%>
-        if(input0 == keccak256(<%= property.definition.name %>)) {
-            decide<%= property.definition.name %>(_inputs, _witness);
+        if(input0 == keccak256(<%= property.name %>)) {
+            return decide<%= property.name %>(_inputs, _witness);
         }
 <%
   })
 -%>
+        return decide<%= claimDef.entryPoint %>(utils.subArray(_inputs, 1, _inputs.length), _witness);
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {

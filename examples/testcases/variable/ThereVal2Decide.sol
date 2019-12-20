@@ -10,7 +10,10 @@
             childInputs[i] = inputPredicateProperty.inputs[i];
         }
         childInputs[inputPredicateProperty.inputs.length] = _inputs[];
-        require(CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs, utils.subArray(_witness, 1, _witness.length)));
+        require(
+            CompiledPredicate(inputPredicateProperty.predicateAddress).decide(childInputs, utils.subArray(_witness, 1, _witness.length)),
+            "InputPredicate must be true"
+        );
 
         return true;
     }
