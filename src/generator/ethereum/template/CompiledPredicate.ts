@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 import {DataTypes as types} from "ovm-contracts/DataTypes.sol";
 
 interface CompiledPredicate {
+    function payoutCountractAddress() external view returns (address);
     function isValidChallenge(
         bytes[] calldata _inputs,
         bytes calldata _challengeInput,
