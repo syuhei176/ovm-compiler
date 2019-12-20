@@ -1,3 +1,28 @@
+## <small>0.1.13 (2019-12-20)</small>
+
+* 0.1.13 ([3903750](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3903750))
+* add .gitignore ([3293173](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3293173))
+* add evm bytecode generator ([fde4e3d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/fde4e3d))
+* fix getChild of there exists ([b8c87f9](https://github.com/cryptoeconomicslab/ovm-compiler/commit/b8c87f9))
+* modify output ([441113b](https://github.com/cryptoeconomicslab/ovm-compiler/commit/441113b))
+* remove json ([9472110](https://github.com/cryptoeconomicslab/ovm-compiler/commit/9472110))
+* update ([82899e1](https://github.com/cryptoeconomicslab/ovm-compiler/commit/82899e1))
+* update changelog ([b46469d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/b46469d))
+* chore: add comment to data structure ([b027b7c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/b027b7c))
+* clean: change attribute name from predicate to connective ([257b119](https://github.com/cryptoeconomicslab/ovm-compiler/commit/257b119))
+* clean: change names Predicate to PredicateCall ([8b28fb4](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8b28fb4))
+* clean: remove IntermediateCompiledPredicateDef ([53e53d5](https://github.com/cryptoeconomicslab/ovm-compiler/commit/53e53d5))
+* fix: fix constructor of generated code ([66a38e7](https://github.com/cryptoeconomicslab/ovm-compiler/commit/66a38e7))
+* fix: modify didInitialized to isInitialized ([0177b4a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0177b4a))
+* fix: typo ([ce11b20](https://github.com/cryptoeconomicslab/ovm-compiler/commit/ce11b20))
+* fix: update example ([6f5af40](https://github.com/cryptoeconomicslab/ovm-compiler/commit/6f5af40))
+* fix: update examples ([d1d896f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/d1d896f))
+* feat: add payoutContractAddress ([1f9ae91](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1f9ae91))
+* feat: default is entry predicate ([9fb284f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/9fb284f))
+* feat: make payoutCountractAddress public ([65d9154](https://github.com/cryptoeconomicslab/ovm-compiler/commit/65d9154))
+
+
+
 ## <small>0.1.12 (2019-12-19)</small>
 
 * 0.1.12 ([4067e85](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4067e85))
