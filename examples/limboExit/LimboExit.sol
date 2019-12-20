@@ -26,6 +26,8 @@ contract LimboExit {
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
+    address payoutCountractAddress;
+    bool didInitialized = false;
     address IsValidStateTransition;
     address Exit;
 
@@ -53,14 +55,18 @@ contract LimboExit {
         address _isValidSignature,
         address _isContained,
         address _verifyInclusion,
-        address _isSameAmount
+        address _isSameAmount,
+        address _payoutCountractAddress
     ) public {
+        require(!didInitialized, "didInitialized must be false");
         IsLessThan = _isLessThan;
         Equal = _equal;
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
+        payoutCountractAddress = _payoutCountractAddress;
+        didInitialized = true;
     }
 
     /**
