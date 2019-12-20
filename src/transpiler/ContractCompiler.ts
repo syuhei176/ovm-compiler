@@ -40,7 +40,7 @@ function calculateInteractiveNodesPerProperty(
     name,
     inputDefs: p.inputDefs,
     contracts: newContracts,
-    entryPoint: newContracts[0].definition.name
+    entryPoint: newContracts[0].name
   }
   if (constants.length > 0) {
     result.constants = constants
@@ -74,18 +74,14 @@ function searchInteractiveNode(
     )
     const newContract: IntermediateCompiledPredicate = {
       type: 'IntermediateCompiledPredicate',
-      isCompiled: true,
       originalPredicateName,
-      definition: {
-        type: 'IntermediateCompiledPredicateDef',
-        name: makeContractName(originalPredicateName, suffix),
-        connective: convertStringToLogicalConnective(
-          property.predicate as LogicalConnectiveStrings
-        ),
-        inputDefs: newInputDefs,
-        inputs: [],
-        propertyInputs: []
-      }
+      name: makeContractName(originalPredicateName, suffix),
+      connective: convertStringToLogicalConnective(
+        property.predicate as LogicalConnectiveStrings
+      ),
+      inputDefs: newInputDefs,
+      inputs: [],
+      propertyInputs: []
     }
     let children: (AtomicProposition | Placeholder)[] = []
     if (
@@ -111,7 +107,7 @@ function searchInteractiveNode(
         children[0] = searchInteractiveNode(
           contracts,
           property.inputs[0],
-          newContract.definition.inputDefs,
+          newContract.inputDefs,
           originalPredicateName
         )
       }
@@ -121,7 +117,7 @@ function searchInteractiveNode(
       children[2] = searchInteractiveNode(
         contracts,
         property.inputs[2],
-        newContract.definition.inputDefs,
+        newContract.inputDefs,
         originalPredicateName,
         suffix
       )
@@ -141,22 +137,22 @@ function searchInteractiveNode(
           children[i] = searchInteractiveNode(
             contracts,
             p,
-            newContract.definition.inputDefs,
+            newContract.inputDefs,
             originalPredicateName,
             suffix + (i + 1)
           )
         }
       )
     }
-    newContract.definition.inputs = children
-    newContract.definition.propertyInputs = getPropertyInputIndexes(children)
+    newContract.inputs = children
+    newContract.propertyInputs = getPropertyInputIndexes(children)
     // If not atomic proposition, generate a contract
     contracts.push(newContract)
     return {
       type: 'AtomicProposition',
       predicate: {
         type: 'AtomicPredicateCall',
-        source: newContract.definition.name
+        source: newContract.name
       },
       inputs: getInputIndex(parentInputDefs, newInputDefs, true),
       isCompiled: true
@@ -336,7 +332,7 @@ function getConstants(
 ): ConstantVariable[] {
   const results: ConstantVariable[] = []
   predicates.forEach(p => {
-    p.definition.inputs.forEach(i => {
+    p.inputs.forEach(i => {
       if (typeof i != 'string' && i.type == 'AtomicProposition') {
         if (i.predicate.type == 'AtomicPredicateCall' && !i.isCompiled) {
           const predicateName = i.predicate.source

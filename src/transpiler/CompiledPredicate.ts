@@ -17,14 +17,8 @@ export interface ConstantVariable {
 
 export interface IntermediateCompiledPredicate {
   type: 'IntermediateCompiledPredicate'
-  isCompiled: boolean
-  originalPredicateName: string
-  definition: IntermediateCompiledPredicateDef
-}
-
-export interface IntermediateCompiledPredicateDef {
-  type: 'IntermediateCompiledPredicateDef'
   name: string
+  originalPredicateName: string
   // logical connective
   connective: LogicalConnective
   inputDefs: string[]

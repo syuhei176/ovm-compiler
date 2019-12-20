@@ -1,9 +1,9 @@
     /**
-     * Decides <%= property.definition.name %>(<%= property.definition.inputDefs %>).
+     * Decides <%= property.name %>(<%= property.inputDefs %>).
      */
-    function decide<%= property.definition.name %>(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
+    function decide<%= property.name %>(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
 <%
-        property.definition.propertyInputs.forEach((propertyInput, index) => {
+        property.propertyInputs.forEach((propertyInput, index) => {
 -%>
         types.Property memory inputProperty<%=propertyInput.inputIndex%> = abi.decode(_inputs[<%=propertyInput.inputIndex%>], (types.Property));
 <%
@@ -16,10 +16,10 @@
 <%
         })
 -%>
-<% if(property.definition.connective == 'And') { -%>
+<% if(property.connective == 'And') { -%>
         // And logical connective
 <%
-        property.definition.inputs.forEach((item, index) => {
+        property.inputs.forEach((item, index) => {
 -%>
 <%      if(item.isCompiled) { -%>
             bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
@@ -30,11 +30,11 @@
 <%      } %>
 <%      }) -%>
         return true;
-<% } else if(property.definition.connective == 'ThereExistsSuchThat') { -%>
+<% } else if(property.connective == 'ThereExistsSuchThat') { -%>
         // check ThereExistsSuchThat
 <%
-const quantifier = property.definition.inputs[0]
-const innerProperty = property.definition.inputs[2]
+const quantifier = property.inputs[0]
+const innerProperty = property.inputs[2]
 -%>
 <%      if(innerProperty.isCompiled) { -%>
         bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
@@ -44,11 +44,11 @@ const innerProperty = property.definition.inputs[2]
 <%- include('decideProperty', {property: innerProperty, valName: 'childInputs'}) -%>
 <%      } %>
         return true;
-<% } else if(property.definition.connective == 'Or') { -%>
+<% } else if(property.connective == 'Or') { -%>
         // check Or
         uint256 orIndex = abi.decode(_witness[0], (uint256));
 <%
-        property.definition.inputs.forEach((item, index) => {
+        property.inputs.forEach((item, index) => {
 -%>
         if(orIndex == <%= index %>) {
 <%        if(item.isCompiled) { -%>

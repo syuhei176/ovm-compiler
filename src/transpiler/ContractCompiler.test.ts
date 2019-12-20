@@ -30,31 +30,27 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'AndTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'AndTestA',
-                  connective: LogicalConnective.And,
-                  inputDefs: ['AndTestA', 'a', 'b'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
-                    },
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 2, children: [] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'AndTestA',
+                connective: LogicalConnective.And,
+                inputDefs: ['AndTestA', 'a', 'b'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 2, children: [] }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'AndTestA'
@@ -85,31 +81,27 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'OrTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'OrTestO',
-                  connective: LogicalConnective.Or,
-                  inputDefs: ['OrTestO', 'a', 'b'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
-                    },
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 2, children: [] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'OrTestO',
+                connective: LogicalConnective.Or,
+                inputDefs: ['OrTestO', 'a', 'b'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 2, children: [] }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'OrTestO'
@@ -139,24 +131,20 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'NotTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'NotTestN',
-                  connective: LogicalConnective.Not,
-                  inputDefs: ['NotTestN', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'NotTestN',
+                connective: LogicalConnective.Not,
+                inputDefs: ['NotTestN', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'NotTestN'
@@ -188,36 +176,32 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'ForallTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'ForallTestF',
-                  connective: LogicalConnective.ForAllSuchThat,
-                  inputDefs: ['ForallTestF', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'A' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
-                    },
-                    'b',
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        {
-                          type: 'VariableInput',
-                          placeholder: 'b',
-                          children: []
-                        }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'ForallTestF',
+                connective: LogicalConnective.ForAllSuchThat,
+                inputDefs: ['ForallTestF', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'A' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  },
+                  'b',
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      {
+                        type: 'VariableInput',
+                        placeholder: 'b',
+                        children: []
+                      }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'ForallTestF'
@@ -249,30 +233,26 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'ThereTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'ThereTestT',
-                  connective: LogicalConnective.ThereExistsSuchThat,
-                  inputDefs: ['ThereTestT'],
-                  inputs: [
-                    'hint:hint:hint',
-                    'a',
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        {
-                          type: 'VariableInput',
-                          placeholder: 'a',
-                          children: []
-                        }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'ThereTestT',
+                connective: LogicalConnective.ThereExistsSuchThat,
+                inputDefs: ['ThereTestT'],
+                inputs: [
+                  'hint:hint:hint',
+                  'a',
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      {
+                        type: 'VariableInput',
+                        placeholder: 'a',
+                        children: []
+                      }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'ThereTestT'
@@ -305,33 +285,29 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'BindAndTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'BindAndTestA',
-                  connective: LogicalConnective.And,
-                  inputDefs: ['BindAndTestA', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [0] }
-                      ]
-                    },
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [1] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: [
-                    { type: 'NormalInput', inputIndex: 1, children: [] }
-                  ]
-                }
+                name: 'BindAndTestA',
+                connective: LogicalConnective.And,
+                inputDefs: ['BindAndTestA', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [0] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [1] }
+                    ]
+                  }
+                ],
+                propertyInputs: [
+                  { type: 'NormalInput', inputIndex: 1, children: [] }
+                ]
               }
             ],
             entryPoint: 'BindAndTestA'
@@ -362,33 +338,29 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'Bind2Test',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'Bind2TestA',
-                  connective: LogicalConnective.And,
-                  inputDefs: ['Bind2TestA', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [0] }
-                      ]
-                    },
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [1, 2] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: [
-                    { type: 'NormalInput', inputIndex: 1, children: [1] }
-                  ]
-                }
+                name: 'Bind2TestA',
+                connective: LogicalConnective.And,
+                inputDefs: ['Bind2TestA', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [0] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [1, 2] }
+                    ]
+                  }
+                ],
+                propertyInputs: [
+                  { type: 'NormalInput', inputIndex: 1, children: [1] }
+                ]
               }
             ],
             entryPoint: 'Bind2TestA'
@@ -420,35 +392,31 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'BindValTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'BindValTestT',
-                  connective: LogicalConnective.ThereExistsSuchThat,
-                  inputDefs: ['BindValTestT', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'B' },
-                      inputs: []
-                    },
-                    'b',
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        {
-                          type: 'VariableInput',
-                          placeholder: 'b',
-                          children: [0]
-                        },
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'BindValTestT',
+                connective: LogicalConnective.ThereExistsSuchThat,
+                inputDefs: ['BindValTestT', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'B' },
+                    inputs: []
+                  },
+                  'b',
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      {
+                        type: 'VariableInput',
+                        placeholder: 'b',
+                        children: [0]
+                      },
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'BindValTestT'
@@ -484,41 +452,37 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'BindAddrTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'BindAddrTestA',
-                  connective: LogicalConnective.And,
-                  inputDefs: ['BindAddrTestA', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: {
-                        type: 'AtomicPredicateCall',
-                        source: 'Equal'
-                      },
-                      inputs: [
-                        {
-                          type: 'NormalInput',
-                          inputIndex: 1,
-                          children: [-1]
-                        },
-                        { type: 'SelfInput', children: [-1] }
-                      ]
+                name: 'BindAddrTestA',
+                connective: LogicalConnective.And,
+                inputDefs: ['BindAddrTestA', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: {
+                      type: 'AtomicPredicateCall',
+                      source: 'Equal'
                     },
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [0] }
-                      ]
-                    }
-                  ],
-                  propertyInputs: [
-                    { type: 'NormalInput', inputIndex: 1, children: [] }
-                  ]
-                }
+                    inputs: [
+                      {
+                        type: 'NormalInput',
+                        inputIndex: 1,
+                        children: [-1]
+                      },
+                      { type: 'SelfInput', children: [-1] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Bar' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [0] }
+                    ]
+                  }
+                ],
+                propertyInputs: [
+                  { type: 'NormalInput', inputIndex: 1, children: [] }
+                ]
               }
             ],
             entryPoint: 'BindAddrTestA'
@@ -551,36 +515,32 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'EvalTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'EvalTestA',
-                  connective: LogicalConnective.And,
-                  inputDefs: ['EvalTestA', 'a', 'b'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
+                name: 'EvalTestA',
+                connective: LogicalConnective.And,
+                inputDefs: ['EvalTestA', 'a', 'b'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  },
+                  {
+                    type: 'AtomicProposition',
+                    predicate: {
+                      type: 'InputPredicateCall',
+                      source: {
+                        type: 'NormalInput',
+                        inputIndex: 2,
+                        children: []
+                      }
                     },
-                    {
-                      type: 'AtomicProposition',
-                      predicate: {
-                        type: 'InputPredicateCall',
-                        source: {
-                          type: 'NormalInput',
-                          inputIndex: 2,
-                          children: []
-                        }
-                      },
-                      inputs: []
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                    inputs: []
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'EvalTestA'
@@ -612,30 +572,26 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'ForValTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'ForValTestF',
-                  connective: LogicalConnective.ForAllSuchThat,
-                  inputDefs: ['ForValTestF', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'A' },
-                      inputs: [
-                        { type: 'NormalInput', inputIndex: 1, children: [] }
-                      ]
-                    },
-                    'b',
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'VariablePredicateCall' },
-                      inputs: []
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'ForValTestF',
+                connective: LogicalConnective.ForAllSuchThat,
+                inputDefs: ['ForValTestF', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'A' },
+                    inputs: [
+                      { type: 'NormalInput', inputIndex: 1, children: [] }
+                    ]
+                  },
+                  'b',
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'VariablePredicateCall' },
+                    inputs: []
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'ForValTestF'
@@ -667,28 +623,24 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'ThereValTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'ThereValTestT',
-                  connective: LogicalConnective.ThereExistsSuchThat,
-                  inputDefs: ['ThereValTestT'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'A' },
-                      inputs: []
-                    },
-                    'a',
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'VariablePredicateCall' },
-                      inputs: []
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                name: 'ThereValTestT',
+                connective: LogicalConnective.ThereExistsSuchThat,
+                inputDefs: ['ThereValTestT'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'A' },
+                    inputs: []
+                  },
+                  'a',
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'VariablePredicateCall' },
+                    inputs: []
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'ThereValTestT'
@@ -720,41 +672,37 @@ describe('ContractCompiler', () => {
             contracts: [
               {
                 type: 'IntermediateCompiledPredicate',
-                isCompiled: true,
                 originalPredicateName: 'ThereValTest',
-                definition: {
-                  type: 'IntermediateCompiledPredicateDef',
-                  name: 'ThereValTestT',
-                  connective: LogicalConnective.ThereExistsSuchThat,
-                  inputDefs: ['ThereValTestT', 'a'],
-                  inputs: [
-                    {
-                      type: 'AtomicProposition',
-                      predicate: { type: 'AtomicPredicateCall', source: 'B' },
-                      inputs: []
+                name: 'ThereValTestT',
+                connective: LogicalConnective.ThereExistsSuchThat,
+                inputDefs: ['ThereValTestT', 'a'],
+                inputs: [
+                  {
+                    type: 'AtomicProposition',
+                    predicate: { type: 'AtomicPredicateCall', source: 'B' },
+                    inputs: []
+                  },
+                  'b',
+                  {
+                    type: 'AtomicProposition',
+                    predicate: {
+                      type: 'InputPredicateCall',
+                      source: {
+                        type: 'NormalInput',
+                        inputIndex: 1,
+                        children: []
+                      }
                     },
-                    'b',
-                    {
-                      type: 'AtomicProposition',
-                      predicate: {
-                        type: 'InputPredicateCall',
-                        source: {
-                          type: 'NormalInput',
-                          inputIndex: 1,
-                          children: []
-                        }
-                      },
-                      inputs: [
-                        {
-                          type: 'VariableInput',
-                          placeholder: 'b',
-                          children: []
-                        }
-                      ]
-                    }
-                  ],
-                  propertyInputs: []
-                }
+                    inputs: [
+                      {
+                        type: 'VariableInput',
+                        placeholder: 'b',
+                        children: []
+                      }
+                    ]
+                  }
+                ],
+                propertyInputs: []
               }
             ],
             entryPoint: 'ThereValTestT'
