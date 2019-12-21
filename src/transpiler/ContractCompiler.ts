@@ -40,7 +40,7 @@ function calculateInteractiveNodesPerProperty(
     name,
     inputDefs: p.inputDefs,
     contracts: newContracts,
-    entryPoint: newContracts[0].name
+    entryPoint: newContracts[newContracts.length - 1].name
   }
   if (constants.length > 0) {
     result.constants = constants
