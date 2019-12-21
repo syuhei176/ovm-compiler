@@ -1,3 +1,11 @@
+## <small>0.1.15 (2019-12-21)</small>
+
+* 0.1.15 ([7c19729](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7c19729))
+* update changelog ([5e4dfc5](https://github.com/cryptoeconomicslab/ovm-compiler/commit/5e4dfc5))
+* fix: fix entryPoint ([63bcc3f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/63bcc3f))
+
+
+
 ## <small>0.1.14 (2019-12-20)</small>
 
 * 0.1.14 ([1cc18cf](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1cc18cf))
