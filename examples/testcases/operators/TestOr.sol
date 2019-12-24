@@ -122,28 +122,28 @@ contract OrTest {
         bytes[] memory childInputsOf0 = new bytes[](1);
         childInputsOf0[0] = _inputs[1];
 
-        notInputs0[0] = abi.encode(types.Property({
+        notInputs0[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
             predicateAddress: Foo,
             inputs: childInputsOf0
-        }));
+        })));
 
-        andInputs[0] = abi.encode(types.Property({
+        andInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
-        }));
+        })));
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputsOf1 = new bytes[](1);
         childInputsOf1[0] = _inputs[2];
 
-        notInputs1[0] = abi.encode(types.Property({
+        notInputs1[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
             predicateAddress: Bar,
             inputs: childInputsOf1
-        }));
+        })));
 
-        andInputs[1] = abi.encode(types.Property({
+        andInputs[1] = utils.withPrimitivePrefix(abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
-        }));
+        })));
         return types.Property({
             predicateAddress: andAddress,
             inputs: andInputs

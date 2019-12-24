@@ -9,20 +9,20 @@
             bytes[] memory childInputsOf0 = new bytes[](1);
             childInputsOf0[0] = inputProperty1.inputs[0];
 
-            notInputs[0] = abi.encode(types.Property({
+            notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
                 predicateAddress: Foo,
                 inputs: childInputsOf0
-            }));
+            })));
 
         }
         if(challengeInput == 1) {
             bytes[] memory childInputsOf1 = new bytes[](1);
             childInputsOf1[0] = inputProperty1.inputs[1];
 
-            notInputs[0] = abi.encode(types.Property({
+            notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
                 predicateAddress: Bar,
                 inputs: childInputsOf1
-            }));
+            })));
 
         }
         return types.Property({

@@ -95,5 +95,34 @@ contract Utils {
         }
         return result;
     }
+
+    function withPrimitivePrefix(bytes memory source)
+        public
+        pure
+        returns (bytes memory)
+    {
+        return withPrefix(bytes1("P"), source);
+    }
+
+    function withLabelPrefix(bytes memory source)
+        public
+        pure
+        returns (bytes memory)
+    {
+        return withPrefix(bytes1("L"), source);
+    }
+
+    function withPrefix(bytes1 prefix, bytes memory source)
+        public
+        pure
+        returns (bytes memory)
+    {
+        bytes memory result = new bytes(source.length + 1);
+        result[0] = prefix;
+        for (uint256 i = 1; i < result.length; i++) {
+            result[i] = source[i - 1];
+        }
+        return result;
+    }
 }
 `

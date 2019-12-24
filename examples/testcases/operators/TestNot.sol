@@ -120,10 +120,10 @@ contract NotTest {
         bytes[] memory childInputsOf = new bytes[](1);
         childInputsOf[0] = _inputs[1];
 
-        property = abi.encode(types.Property({
+        property = utils.withPrimitivePrefix(abi.encode(types.Property({
             predicateAddress: Foo,
             inputs: childInputsOf
-        }));
+        })));
 
         return abi.decode(property, (types.Property));
     }

@@ -54,7 +54,7 @@ const innerProperty = property.inputs[2]
 <%        if(item.isCompiled) { -%>
             bytes[] memory childInputs<%= index %> = new bytes[](<%= item.inputs.length %>);
 <%- indent(include('constructInputs', {property: item, valName: 'childInputs' + index, witnessName: '_witness[0]'}), 4) -%>
-            require(decide<%= item.predicate.source %>(childInputs<%= index %>,  utils.subArray(_witness, 1, _witness.length)));
+            require(decide<%= item.predicate.source %>(childInputs<%= index %>, utils.subArray(_witness, 1, _witness.length)));
 <%        } else { %>
 <%- indent(include('decideProperty', {property: item, valName: 'childInputs' + index}), 4) -%>
 <%        } %>
