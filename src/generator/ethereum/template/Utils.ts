@@ -48,16 +48,28 @@ contract Utils {
 
     function isPlaceholder(bytes memory target) public pure returns (bool) {
         return
-            keccak256(subBytes(target, 0, 12)) ==
-            keccak256(bytes("__VARIABLE__"));
+            keccak256(subBytes(target, 0, 1)) ==
+            keccak256(bytes("V"));
     }
 
-    function getPlaceholderName(bytes memory target)
+    function isLabel(bytes memory target) public pure returns (bool) {
+        return
+            keccak256(subBytes(target, 0, 1)) ==
+            keccak256(bytes("L"));
+    }
+
+    function isPrimitive(bytes memory target) public pure returns (bool) {
+        return
+            keccak256(subBytes(target, 0, 1)) ==
+            keccak256(bytes("P"));
+    }
+
+    function getInputValue(bytes memory target)
         public
         pure
         returns (bytes memory)
     {
-        return subBytes(target, 12, target.length);
+        return subBytes(target, 1, target.length);
     }
 
     function subBytes(bytes memory target, uint256 startIndex, uint256 endIndex)
