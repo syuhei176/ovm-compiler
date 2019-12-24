@@ -112,7 +112,7 @@ contract AndTest {
      * Gets child of AndTestA(AndTestA,a,b).
      */
     function getChildAndTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](1);

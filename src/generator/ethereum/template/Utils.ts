@@ -27,6 +27,17 @@ contract Utils {
         }
     }
 
+    function bytesToUint(bytes memory source)
+        public
+        pure
+        returns (uint256 result)
+    {
+        require(source.length >= 32);
+        assembly {
+            result := mload(add(source, 0x20))
+        }
+    }
+
     function getPropertyId(types.Property memory _property)
         public
         pure
