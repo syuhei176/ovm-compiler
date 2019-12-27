@@ -68,7 +68,7 @@
 <%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]', propIndex: '', freeVariable: 'bytes(\"V' + property.inputs[1] + '\")'}) -%>
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("<%= property.inputs[1] %>");
-        forAllSuchThatInputs[2] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        forAllSuchThatInputs[2] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         })));
@@ -83,7 +83,7 @@
 -%>
         bytes[] memory notInputs<%= index %> = new bytes[](1);
 <%-  include('constructProperty', {property: item, valName: 'notInputs' + index + '[0]', propIndex: index, freeVariable: false}) -%>
-        andInputs[<%= index %>] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        andInputs[<%= index %>] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs<%= index %>
         })));

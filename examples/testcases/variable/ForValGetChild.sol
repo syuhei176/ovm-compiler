@@ -3,7 +3,7 @@
      */
     function getChildForValTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory notInputs = new bytes[](1);
-        notInputs[0] = utils.withPrimitivePrefix(challengeInput);
+        notInputs[0] = utils.prefixPrimitive(challengeInput);
         return types.Property({
             predicateAddress: notAddress,
             inputs: notInputs

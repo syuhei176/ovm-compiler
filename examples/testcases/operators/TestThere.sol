@@ -119,16 +119,16 @@ contract ThereTest {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](1);
-        childInputsOf[0] = utils.withPrimitivePrefix(bytes("Va"));
+        childInputsOf[0] = utils.prefixPrimitive(bytes("Va"));
 
-        notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        notInputs[0] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: Foo,
             inputs: childInputsOf
         })));
 
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("a");
-        forAllSuchThatInputs[2] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        forAllSuchThatInputs[2] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         })));
@@ -144,7 +144,7 @@ contract ThereTest {
         // check ThereExistsSuchThat
 
         bytes[] memory childInputs = new bytes[](1);
-        childInputs[0] = utils.withPrimitivePrefix(_witness[0]);
+        childInputs[0] = utils.prefixPrimitive(_witness[0]);
         require(
             AtomicPredicate(Foo).decide(childInputs),
             "Foo must be true"

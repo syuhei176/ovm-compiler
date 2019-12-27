@@ -1,6 +1,6 @@
 <%  if(property.predicate.type == 'InputPredicateCall') { -%>
 <%    if(property.inputs.length == 0) { -%>
-        <%= valName %> = utils.withPrimitivePrefix(_inputs[<%= property.predicate.source.inputIndex %>]);
+        <%= valName %> = utils.prefixPrimitive(_inputs[<%= property.predicate.source.inputIndex %>]);
 <%    } else { -%>
         types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex %>], (types.Property));
         bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty.inputs.length + 1);
@@ -8,14 +8,14 @@
             childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];
         }
         childInputsOf<%=propIndex %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
-        <%= valName %> = utils.withPrimitivePrefix(abi.encode(types.Property({
+        <%= valName %> = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
             inputs: childInputsOf<%=propIndex %>
         })));
 <%    } -%>
 <%  } else if(property.predicate.type == 'VariablePredicateCall') { -%>
 <%    if(property.inputs.length == 0) { -%>
-        <%= valName %> = utils.withPrimitivePrefix(challengeInput);
+        <%= valName %> = utils.prefixPrimitive(challengeInput);
 <%    } else { -%>
         types.Property memory inputPredicateProperty = abi.decode(challengeInput, (types.Property));
         bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty.inputs.length + 1);
@@ -23,7 +23,7 @@
             childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];
         }
         childInputsOf<%=propIndex %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
-        <%= valName %> = utils.withPrimitivePrefix(abi.encode(types.Property({
+        <%= valName %> = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
             inputs: childInputsOf<%=propIndex %>
         })));
@@ -32,12 +32,12 @@
         bytes[] memory childInputsOf<%=propIndex %> = new bytes[](<%= property.inputs.length %>);
 <%- include('constructInputs', {property: property, valName: 'childInputsOf' + propIndex, witnessName: freeVariable?freeVariable:'challengeInputs[0]'}) -%>
 <%      if(property.isCompiled) { %>
-        <%= valName %> = utils.withPrimitivePrefix(abi.encode(types.Property({
+        <%= valName %> = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: address(this),
             inputs: childInputsOf<%=propIndex %>
         })));
 <%      } else { %>
-        <%= valName %> = utils.withPrimitivePrefix(abi.encode(types.Property({
+        <%= valName %> = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: <%= property.predicate.source %>,
             inputs: childInputsOf<%=propIndex %>
         })));

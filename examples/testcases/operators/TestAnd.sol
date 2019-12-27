@@ -122,7 +122,7 @@ contract AndTest {
             bytes[] memory childInputsOf0 = new bytes[](1);
             childInputsOf0[0] = _inputs[1];
 
-            notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
+            notInputs[0] = utils.prefixPrimitive(abi.encode(types.Property({
                 predicateAddress: Foo,
                 inputs: childInputsOf0
             })));
@@ -132,7 +132,7 @@ contract AndTest {
             bytes[] memory childInputsOf1 = new bytes[](1);
             childInputsOf1[0] = _inputs[2];
 
-            notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
+            notInputs[0] = utils.prefixPrimitive(abi.encode(types.Property({
                 predicateAddress: Bar,
                 inputs: childInputsOf1
             })));

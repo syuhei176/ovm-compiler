@@ -118,9 +118,9 @@ contract ForallTest {
     function getChildForallTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](1);
-        childInputsOf[0] = utils.withPrimitivePrefix(challengeInputs[0]);
+        childInputsOf[0] = utils.prefixPrimitive(challengeInputs[0]);
 
-        notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        notInputs[0] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: Foo,
             inputs: childInputsOf
         })));

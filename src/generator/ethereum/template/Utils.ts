@@ -47,21 +47,15 @@ contract Utils {
     }
 
     function isPlaceholder(bytes memory target) public pure returns (bool) {
-        return
-            keccak256(subBytes(target, 0, 1)) ==
-            keccak256(bytes("V"));
+        return keccak256(subBytes(target, 0, 1)) == keccak256(bytes("V"));
     }
 
     function isLabel(bytes memory target) public pure returns (bool) {
-        return
-            keccak256(subBytes(target, 0, 1)) ==
-            keccak256(bytes("L"));
+        return keccak256(subBytes(target, 0, 1)) == keccak256(bytes("L"));
     }
 
     function isPrimitive(bytes memory target) public pure returns (bool) {
-        return
-            keccak256(subBytes(target, 0, 1)) ==
-            keccak256(bytes("P"));
+        return keccak256(subBytes(target, 0, 1)) == keccak256(bytes("P"));
     }
 
     function getInputValue(bytes memory target)
@@ -96,33 +90,32 @@ contract Utils {
         return result;
     }
 
-    function withPrimitivePrefix(bytes memory source)
+    function prefixPrimitive(bytes memory _source)
         public
         pure
         returns (bytes memory)
     {
-        return withPrefix(bytes1("P"), source);
+        return prefix(bytes1("P"), _source);
     }
 
-    function withLabelPrefix(bytes memory source)
+    function prefixLabel(bytes memory _source)
         public
         pure
         returns (bytes memory)
     {
-        return withPrefix(bytes1("L"), source);
+        return prefix(bytes1("L"), _source);
     }
 
-    function withPrefix(bytes1 prefix, bytes memory source)
+    function prefix(bytes1 _prefix, bytes memory _source)
         public
         pure
         returns (bytes memory)
     {
-        bytes memory result = new bytes(source.length + 1);
-        result[0] = prefix;
+        bytes memory result = new bytes(_source.length + 1);
+        result[0] = _prefix;
         for (uint256 i = 1; i < result.length; i++) {
-            result[i] = source[i - 1];
+            result[i] = _source[i - 1];
         }
         return result;
     }
-}
-`
+}`

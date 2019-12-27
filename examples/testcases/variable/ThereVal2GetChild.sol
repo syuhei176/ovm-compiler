@@ -10,13 +10,13 @@
             childInputsOf[i] = inputPredicateProperty.inputs[i];
         }
         childInputsOf[inputPredicateProperty.inputs.length] = _inputs[];
-        notInputs[0] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        notInputs[0] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: inputPredicateProperty.predicateAddress,
             inputs: childInputsOf
         })));
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("b");
-        forAllSuchThatInputs[2] = utils.withPrimitivePrefix(abi.encode(types.Property({
+        forAllSuchThatInputs[2] = utils.prefixPrimitive(abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs
         })));
