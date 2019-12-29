@@ -120,30 +120,30 @@ contract OrTest {
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
         bytes[] memory childInputsOf0 = new bytes[](1);
-        childInputsOf0[0] = _inputs[1];
+        childInputsOf0[0] = _inputs[0];
 
-        notInputs0[0] = utils.prefixPrimitive(abi.encode(types.Property({
+        notInputs0[0] = abi.encode(types.Property({
             predicateAddress: Foo,
             inputs: childInputsOf0
-        })));
+        }));
 
-        andInputs[0] = utils.prefixPrimitive(abi.encode(types.Property({
+        andInputs[0] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs0
-        })));
+        }));
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputsOf1 = new bytes[](1);
-        childInputsOf1[0] = _inputs[2];
+        childInputsOf1[0] = _inputs[1];
 
-        notInputs1[0] = utils.prefixPrimitive(abi.encode(types.Property({
+        notInputs1[0] = abi.encode(types.Property({
             predicateAddress: Bar,
             inputs: childInputsOf1
-        })));
+        }));
 
-        andInputs[1] = utils.prefixPrimitive(abi.encode(types.Property({
+        andInputs[1] = abi.encode(types.Property({
             predicateAddress: notAddress,
             inputs: notInputs1
-        })));
+        }));
         return types.Property({
             predicateAddress: andAddress,
             inputs: andInputs
@@ -158,7 +158,7 @@ contract OrTest {
         if(orIndex == 0) {
 
             bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
+            childInputs0[0] = _inputs[0];
             require(
                 AtomicPredicate(Foo).decide(childInputs0),
                 "Foo must be true"
@@ -168,7 +168,7 @@ contract OrTest {
         if(orIndex == 1) {
 
             bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = _inputs[2];
+            childInputs1[0] = _inputs[1];
             require(
                 AtomicPredicate(Bar).decide(childInputs1),
                 "Bar must be true"

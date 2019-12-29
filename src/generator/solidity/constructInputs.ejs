@@ -17,7 +17,7 @@
         <%= valName %>[<%=index%>] = abi.encodePacked(inputProperty<%=input.inputIndex%>Child<%=input.children[0]%>.predicateAddress);
 <%          } -%>
 <%        } else { -%>
-        <%= valName %>[<%=index%>] = _inputs[<%=input.inputIndex%>];
+        <%= valName %>[<%=index%>] = _inputs[<%=input.inputIndex - 1%>];
 <%        } -%>
 <%      } else if(input.type == 'VariableInput') { -%>
         <%= valName %>[<%=index%>] = <%- witnessName %>;

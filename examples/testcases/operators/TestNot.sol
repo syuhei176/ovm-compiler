@@ -118,12 +118,12 @@ contract NotTest {
     function getChildNotTestN(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes memory property;
         bytes[] memory childInputsOf = new bytes[](1);
-        childInputsOf[0] = _inputs[1];
+        childInputsOf[0] = _inputs[0];
 
-        property = utils.prefixPrimitive(abi.encode(types.Property({
+        property = abi.encode(types.Property({
             predicateAddress: Foo,
             inputs: childInputsOf
-        })));
+        }));
 
         return abi.decode(property, (types.Property));
     }
