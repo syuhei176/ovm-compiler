@@ -8,6 +8,7 @@ const list = [
   './src/generator/solidity/getChild.ejs',
   './src/generator/solidity/constructProperty.ejs',
   './src/generator/solidity/constructInputs.ejs',
+  './src/generator/solidity/constructInput.ejs',
   './src/generator/solidity/decideProperty.ejs'
 ]
 
