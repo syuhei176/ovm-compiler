@@ -85,28 +85,32 @@ contract StateUpdate {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(StateUpdateTA)) {
-            return getChildStateUpdateTA(inputs, challengeInput);
-        }
-        if(input0 == keccak256(StateUpdateT)) {
+        if(!utils.isLabel(inputs[0]) || inputs[0].length >= 20) {
             return getChildStateUpdateT(inputs, challengeInput);
         }
-        return getChildStateUpdateTA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(StateUpdateTA)) {
+            return getChildStateUpdateTA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(StateUpdateT)) {
+            return getChildStateUpdateT(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(StateUpdateTA)) {
-            return decideStateUpdateTA(_inputs, _witness);
-        }
-        if(input0 == keccak256(StateUpdateT)) {
+        if(!utils.isLabel(_inputs[0]) || _inputs[0].length >= 20) {
             return decideStateUpdateT(_inputs, _witness);
         }
-        return decideStateUpdateTA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(StateUpdateTA)) {
+            return decideStateUpdateTA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(StateUpdateT)) {
+            return decideStateUpdateT(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -123,12 +127,12 @@ contract StateUpdate {
      */
     function getChildStateUpdateTA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);
             childInputsOf0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-            childInputsOf0[1] = TransactionAddress;
+            childInputsOf0[1] = utils.prefixConstant(TransactionAddress);
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Equal,
@@ -193,8 +197,8 @@ contract StateUpdate {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](6);
-        childInputsOf[0] = StateUpdateTA;
-        childInputsOf[1] = bytes("__VARIABLE__tx");
+        childInputsOf[0] = utils.prefixLabel(StateUpdateTA);
+        childInputsOf[1] = bytes("Vtx");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
         childInputsOf[4] = _inputs[3];
@@ -225,7 +229,7 @@ contract StateUpdate {
 
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-        childInputs0[1] = TransactionAddress;
+        childInputs0[1] = utils.prefixConstant(TransactionAddress);
         require(
             AtomicPredicate(Equal).decide(childInputs0),
             "Equal must be true"
@@ -278,7 +282,7 @@ contract StateUpdate {
     function decideStateUpdateT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](6);
-        childInputs[0] = StateUpdateTA;
+        childInputs[0] = utils.prefixLabel(StateUpdateTA);
         childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];

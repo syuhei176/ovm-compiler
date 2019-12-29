@@ -88,28 +88,32 @@ contract LimboExit {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(LimboExitO2A)) {
-            return getChildLimboExitO2A(inputs, challengeInput);
-        }
-        if(input0 == keccak256(LimboExitO)) {
+        if(!utils.isLabel(inputs[0]) || inputs[0].length >= 20) {
             return getChildLimboExitO(inputs, challengeInput);
         }
-        return getChildLimboExitO2A(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(LimboExitO2A)) {
+            return getChildLimboExitO2A(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(LimboExitO)) {
+            return getChildLimboExitO(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(LimboExitO2A)) {
-            return decideLimboExitO2A(_inputs, _witness);
-        }
-        if(input0 == keccak256(LimboExitO)) {
+        if(!utils.isLabel(_inputs[0]) || _inputs[0].length >= 20) {
             return decideLimboExitO(_inputs, _witness);
         }
-        return decideLimboExitO2A(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(LimboExitO2A)) {
+            return decideLimboExitO2A(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(LimboExitO)) {
+            return decideLimboExitO(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -125,7 +129,7 @@ contract LimboExit {
      * Gets child of LimboExitO2A(LimboExitO2A,prev_su,tx,su).
      */
     function getChildLimboExitO2A(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             notInputs[0] = _inputs[1];
@@ -178,7 +182,7 @@ contract LimboExit {
         }));
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputsOf1 = new bytes[](4);
-        childInputsOf1[0] = LimboExitO2A;
+        childInputsOf1[0] = utils.prefixLabel(LimboExitO2A);
         childInputsOf1[1] = _inputs[1];
         childInputsOf1[2] = _inputs[2];
         childInputsOf1[3] = _inputs[3];
@@ -230,7 +234,7 @@ contract LimboExit {
      */
     function decideLimboExitO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(_witness[0], (uint256));
+        uint256 orIndex = utils.bytesToUint(_witness[0]);
         if(orIndex == 0) {
 
             bytes[] memory childInputs0 = new bytes[](1);
@@ -243,11 +247,11 @@ contract LimboExit {
         }
         if(orIndex == 1) {
             bytes[] memory childInputs1 = new bytes[](4);
-            childInputs1[0] = LimboExitO2A;
+            childInputs1[0] = utils.prefixLabel(LimboExitO2A);
             childInputs1[1] = _inputs[1];
             childInputs1[2] = _inputs[2];
             childInputs1[3] = _inputs[3];
-            require(decideLimboExitO2A(childInputs1,  utils.subArray(_witness, 1, _witness.length)));
+            require(decideLimboExitO2A(childInputs1, utils.subArray(_witness, 1, _witness.length)));
 
         }
         return true;

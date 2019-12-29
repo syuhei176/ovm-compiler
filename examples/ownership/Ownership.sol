@@ -84,22 +84,26 @@ contract Ownership {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(OwnershipT)) {
+        if(!utils.isLabel(inputs[0]) || inputs[0].length >= 20) {
             return getChildOwnershipT(inputs, challengeInput);
         }
-        return getChildOwnershipT(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(OwnershipT)) {
+            return getChildOwnershipT(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(OwnershipT)) {
+        if(!utils.isLabel(_inputs[0]) || _inputs[0].length >= 20) {
             return decideOwnershipT(_inputs, _witness);
         }
-        return decideOwnershipT(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(OwnershipT)) {
+            return decideOwnershipT(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -119,9 +123,9 @@ contract Ownership {
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](4);
         childInputsOf[0] = _inputs[2];
-        childInputsOf[1] = bytes("__VARIABLE__sig");
+        childInputsOf[1] = bytes("Vsig");
         childInputsOf[2] = _inputs[1];
-        childInputsOf[3] = secp256k1;
+        childInputsOf[3] = utils.prefixConstant(secp256k1);
 
         notInputs[0] = abi.encode(types.Property({
             predicateAddress: IsValidSignature,
@@ -149,7 +153,7 @@ contract Ownership {
         childInputs[0] = _inputs[2];
         childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
-        childInputs[3] = secp256k1;
+        childInputs[3] = utils.prefixConstant(secp256k1);
         require(
             AtomicPredicate(IsValidSignature).decide(childInputs),
             "IsValidSignature must be true"

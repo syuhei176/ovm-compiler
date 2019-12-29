@@ -89,52 +89,56 @@ contract Checkpoint {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(CheckpointFO1N)) {
-            return getChildCheckpointFO1N(inputs, challengeInput);
-        }
-        if(input0 == keccak256(CheckpointFO2FO1N)) {
-            return getChildCheckpointFO2FO1N(inputs, challengeInput);
-        }
-        if(input0 == keccak256(CheckpointFO2FO)) {
-            return getChildCheckpointFO2FO(inputs, challengeInput);
-        }
-        if(input0 == keccak256(CheckpointFO2F)) {
-            return getChildCheckpointFO2F(inputs, challengeInput);
-        }
-        if(input0 == keccak256(CheckpointFO)) {
-            return getChildCheckpointFO(inputs, challengeInput);
-        }
-        if(input0 == keccak256(CheckpointF)) {
+        if(!utils.isLabel(inputs[0]) || inputs[0].length >= 20) {
             return getChildCheckpointF(inputs, challengeInput);
         }
-        return getChildCheckpointFO1N(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(CheckpointFO1N)) {
+            return getChildCheckpointFO1N(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(CheckpointFO2FO1N)) {
+            return getChildCheckpointFO2FO1N(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(CheckpointFO2FO)) {
+            return getChildCheckpointFO2FO(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(CheckpointFO2F)) {
+            return getChildCheckpointFO2F(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(CheckpointFO)) {
+            return getChildCheckpointFO(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(CheckpointF)) {
+            return getChildCheckpointF(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(CheckpointFO1N)) {
-            return decideCheckpointFO1N(_inputs, _witness);
-        }
-        if(input0 == keccak256(CheckpointFO2FO1N)) {
-            return decideCheckpointFO2FO1N(_inputs, _witness);
-        }
-        if(input0 == keccak256(CheckpointFO2FO)) {
-            return decideCheckpointFO2FO(_inputs, _witness);
-        }
-        if(input0 == keccak256(CheckpointFO2F)) {
-            return decideCheckpointFO2F(_inputs, _witness);
-        }
-        if(input0 == keccak256(CheckpointFO)) {
-            return decideCheckpointFO(_inputs, _witness);
-        }
-        if(input0 == keccak256(CheckpointF)) {
+        if(!utils.isLabel(_inputs[0]) || _inputs[0].length >= 20) {
             return decideCheckpointF(_inputs, _witness);
         }
-        return decideCheckpointFO1N(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(CheckpointFO1N)) {
+            return decideCheckpointFO1N(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(CheckpointFO2FO1N)) {
+            return decideCheckpointFO2FO1N(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(CheckpointFO2FO)) {
+            return decideCheckpointFO2FO(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(CheckpointFO2F)) {
+            return decideCheckpointFO2F(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(CheckpointFO)) {
+            return decideCheckpointFO(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(CheckpointF)) {
+            return decideCheckpointF(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -190,7 +194,7 @@ contract Checkpoint {
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
         bytes[] memory childInputsOf0 = new bytes[](4);
-        childInputsOf0[0] = CheckpointFO2FO1N;
+        childInputsOf0[0] = utils.prefixLabel(CheckpointFO2FO1N);
         childInputsOf0[1] = _inputs[1];
         childInputsOf0[2] = _inputs[2];
         childInputsOf0[3] = _inputs[3];
@@ -220,7 +224,7 @@ contract Checkpoint {
      */
     function getChildCheckpointFO2F(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory childInputs = new bytes[](4);
-        childInputs[0] = CheckpointFO2FO;
+        childInputs[0] = utils.prefixLabel(CheckpointFO2FO);
         childInputs[1] = challengeInputs[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];
@@ -234,7 +238,7 @@ contract Checkpoint {
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
         bytes[] memory childInputsOf0 = new bytes[](3);
-        childInputsOf0[0] = CheckpointFO1N;
+        childInputsOf0[0] = utils.prefixLabel(CheckpointFO1N);
         childInputsOf0[1] = _inputs[1];
         childInputsOf0[2] = _inputs[2];
 
@@ -249,7 +253,7 @@ contract Checkpoint {
         }));
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputsOf1 = new bytes[](3);
-        childInputsOf1[0] = CheckpointFO2F;
+        childInputsOf1[0] = utils.prefixLabel(CheckpointFO2F);
         childInputsOf1[1] = _inputs[2];
         childInputsOf1[2] = _inputs[1];
 
@@ -272,7 +276,7 @@ contract Checkpoint {
      */
     function getChildCheckpointF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         bytes[] memory childInputs = new bytes[](3);
-        childInputs[0] = CheckpointFO;
+        childInputs[0] = utils.prefixLabel(CheckpointFO);
         childInputs[1] = challengeInputs[0];
         childInputs[2] = _inputs[1];
         return getChildCheckpointFO(childInputs, utils.subArray(challengeInputs, 1, challengeInputs.length));
@@ -296,14 +300,14 @@ contract Checkpoint {
      */
     function decideCheckpointFO2FO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(_witness[0], (uint256));
+        uint256 orIndex = utils.bytesToUint(_witness[0]);
         if(orIndex == 0) {
             bytes[] memory childInputs0 = new bytes[](4);
-            childInputs0[0] = CheckpointFO2FO1N;
+            childInputs0[0] = utils.prefixLabel(CheckpointFO2FO1N);
             childInputs0[1] = _inputs[1];
             childInputs0[2] = _inputs[2];
             childInputs0[3] = _inputs[3];
-            require(decideCheckpointFO2FO1N(childInputs0,  utils.subArray(_witness, 1, _witness.length)));
+            require(decideCheckpointFO2FO1N(childInputs0, utils.subArray(_witness, 1, _witness.length)));
 
         }
         if(orIndex == 1) {
@@ -324,21 +328,21 @@ contract Checkpoint {
      */
     function decideCheckpointFO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(_witness[0], (uint256));
+        uint256 orIndex = utils.bytesToUint(_witness[0]);
         if(orIndex == 0) {
             bytes[] memory childInputs0 = new bytes[](3);
-            childInputs0[0] = CheckpointFO1N;
+            childInputs0[0] = utils.prefixLabel(CheckpointFO1N);
             childInputs0[1] = _inputs[1];
             childInputs0[2] = _inputs[2];
-            require(decideCheckpointFO1N(childInputs0,  utils.subArray(_witness, 1, _witness.length)));
+            require(decideCheckpointFO1N(childInputs0, utils.subArray(_witness, 1, _witness.length)));
 
         }
         if(orIndex == 1) {
             bytes[] memory childInputs1 = new bytes[](3);
-            childInputs1[0] = CheckpointFO2F;
+            childInputs1[0] = utils.prefixLabel(CheckpointFO2F);
             childInputs1[1] = _inputs[2];
             childInputs1[2] = _inputs[1];
-            require(decideCheckpointFO2F(childInputs1,  utils.subArray(_witness, 1, _witness.length)));
+            require(decideCheckpointFO2F(childInputs1, utils.subArray(_witness, 1, _witness.length)));
 
         }
         return true;

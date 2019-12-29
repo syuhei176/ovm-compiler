@@ -32,9 +32,31 @@ contract Utils {
         pure
         returns (uint256 result)
     {
-        require(source.length >= 32);
+        result = bytesToUintWithOffset(source, 0);
+    }
+
+    function bytesToRange(bytes memory _bytes)
+        public
+        pure
+        returns (types.Range memory)
+    {
+        uint256 start = bytesToUintWithOffset(_bytes, 0);
+        uint256 end = bytesToUintWithOffset(_bytes, 32);
+        return types.Range({start: start, end: end});
+    }
+
+    function bytesToUintWithOffset(bytes memory _bytes, uint256 _start)
+        private
+        pure
+        returns (uint256 result)
+    {
+        require(
+            _bytes.length >= (_start + 32),
+            "_bytes do not have enough length"
+        );
+
         assembly {
-            result := mload(add(source, 0x20))
+            result := mload(add(add(_bytes, 0x20), _start))
         }
     }
 
@@ -47,15 +69,21 @@ contract Utils {
     }
 
     function isPlaceholder(bytes memory target) public pure returns (bool) {
-        return keccak256(subBytes(target, 0, 1)) == keccak256(bytes("V"));
+        return
+            target.length < 20 &&
+            keccak256(subBytes(target, 0, 1)) == keccak256(bytes("V"));
     }
 
     function isLabel(bytes memory target) public pure returns (bool) {
-        return keccak256(subBytes(target, 0, 1)) == keccak256(bytes("L"));
+        return
+            target.length < 20 &&
+            keccak256(subBytes(target, 0, 1)) == keccak256(bytes("L"));
     }
 
-    function isPrimitive(bytes memory target) public pure returns (bool) {
-        return keccak256(subBytes(target, 0, 1)) == keccak256(bytes("P"));
+    function isConstant(bytes memory target) public pure returns (bool) {
+        return
+            target.length < 20 &&
+            keccak256(subBytes(target, 0, 1)) == keccak256(bytes("C"));
     }
 
     function getInputValue(bytes memory target)
@@ -90,12 +118,12 @@ contract Utils {
         return result;
     }
 
-    function prefixPrimitive(bytes memory _source)
+    function prefixConstant(bytes memory _source)
         public
         pure
         returns (bytes memory)
     {
-        return prefix(bytes1("P"), _source);
+        return prefix(bytes1("C"), _source);
     }
 
     function prefixLabel(bytes memory _source)
@@ -104,6 +132,14 @@ contract Utils {
         returns (bytes memory)
     {
         return prefix(bytes1("L"), _source);
+    }
+
+    function prefixVariable(bytes memory _source)
+        public
+        pure
+        returns (bytes memory)
+    {
+        return prefix(bytes1("V"), _source);
     }
 
     function prefix(bytes1 _prefix, bytes memory _source)

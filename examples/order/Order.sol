@@ -96,58 +96,62 @@ contract Order {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(OrderTA3TA4O2TA)) {
-            return getChildOrderTA3TA4O2TA(inputs, challengeInput);
-        }
-        if(input0 == keccak256(OrderTA3TA4O2T)) {
-            return getChildOrderTA3TA4O2T(inputs, challengeInput);
-        }
-        if(input0 == keccak256(OrderTA3TA4O)) {
-            return getChildOrderTA3TA4O(inputs, challengeInput);
-        }
-        if(input0 == keccak256(OrderTA3TA)) {
-            return getChildOrderTA3TA(inputs, challengeInput);
-        }
-        if(input0 == keccak256(OrderTA3T)) {
-            return getChildOrderTA3T(inputs, challengeInput);
-        }
-        if(input0 == keccak256(OrderTA)) {
-            return getChildOrderTA(inputs, challengeInput);
-        }
-        if(input0 == keccak256(OrderT)) {
+        if(!utils.isLabel(inputs[0]) || inputs[0].length >= 20) {
             return getChildOrderT(inputs, challengeInput);
         }
-        return getChildOrderTA3TA4O2TA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(OrderTA3TA4O2TA)) {
+            return getChildOrderTA3TA4O2TA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(OrderTA3TA4O2T)) {
+            return getChildOrderTA3TA4O2T(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(OrderTA3TA4O)) {
+            return getChildOrderTA3TA4O(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(OrderTA3TA)) {
+            return getChildOrderTA3TA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(OrderTA3T)) {
+            return getChildOrderTA3T(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(OrderTA)) {
+            return getChildOrderTA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
+        if(input0 == keccak256(OrderT)) {
+            return getChildOrderT(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(OrderTA3TA4O2TA)) {
-            return decideOrderTA3TA4O2TA(_inputs, _witness);
-        }
-        if(input0 == keccak256(OrderTA3TA4O2T)) {
-            return decideOrderTA3TA4O2T(_inputs, _witness);
-        }
-        if(input0 == keccak256(OrderTA3TA4O)) {
-            return decideOrderTA3TA4O(_inputs, _witness);
-        }
-        if(input0 == keccak256(OrderTA3TA)) {
-            return decideOrderTA3TA(_inputs, _witness);
-        }
-        if(input0 == keccak256(OrderTA3T)) {
-            return decideOrderTA3T(_inputs, _witness);
-        }
-        if(input0 == keccak256(OrderTA)) {
-            return decideOrderTA(_inputs, _witness);
-        }
-        if(input0 == keccak256(OrderT)) {
+        if(!utils.isLabel(_inputs[0]) || _inputs[0].length >= 20) {
             return decideOrderT(_inputs, _witness);
         }
-        return decideOrderTA3TA4O2TA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(OrderTA3TA4O2TA)) {
+            return decideOrderTA3TA4O2TA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(OrderTA3TA4O2T)) {
+            return decideOrderTA3TA4O2T(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(OrderTA3TA4O)) {
+            return decideOrderTA3TA4O(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(OrderTA3TA)) {
+            return decideOrderTA3TA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(OrderTA3T)) {
+            return decideOrderTA3T(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(OrderTA)) {
+            return decideOrderTA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
+        if(input0 == keccak256(OrderT)) {
+            return decideOrderT(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -165,12 +169,12 @@ contract Order {
     function getChildOrderTA3TA4O2TA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         types.Property memory inputProperty2 = abi.decode(_inputs[2], (types.Property));
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);
             childInputsOf0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-            childInputsOf0[1] = TransactionAddress;
+            childInputsOf0[1] = utils.prefixConstant(TransactionAddress);
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Equal,
@@ -234,8 +238,8 @@ contract Order {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](4);
-        childInputsOf[0] = OrderTA3TA4O2TA;
-        childInputsOf[1] = bytes("__VARIABLE__tx");
+        childInputsOf[0] = utils.prefixLabel(OrderTA3TA4O2TA);
+        childInputsOf[1] = bytes("Vtx");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
 
@@ -276,7 +280,7 @@ contract Order {
         }));
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputsOf1 = new bytes[](3);
-        childInputsOf1[0] = OrderTA3TA4O2T;
+        childInputsOf1[0] = utils.prefixLabel(OrderTA3TA4O2T);
         childInputsOf1[1] = _inputs[1];
         childInputsOf1[2] = _inputs[2];
 
@@ -300,12 +304,12 @@ contract Order {
     function getChildOrderTA3TA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
         types.Property memory inputProperty1Child3 = abi.decode(inputProperty1.inputs[3], (types.Property));
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);
             childInputsOf0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-            childInputsOf0[1] = swapAddress;
+            childInputsOf0[1] = utils.prefixConstant(swapAddress);
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Equal,
@@ -337,7 +341,7 @@ contract Order {
         }
         if(challengeInput == 3) {
             bytes[] memory childInputs = new bytes[](3);
-            childInputs[0] = OrderTA3TA4O;
+            childInputs[0] = utils.prefixLabel(OrderTA3TA4O);
             childInputs[1] = _inputs[1];
             childInputs[2] = _inputs[3];
             return getChildOrderTA3TA4O(childInputs, utils.subArray(challengeInputs, 1, challengeInputs.length));
@@ -365,8 +369,8 @@ contract Order {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](5);
-        childInputsOf[0] = OrderTA3TA;
-        childInputsOf[1] = bytes("__VARIABLE__c_su");
+        childInputsOf[0] = utils.prefixLabel(OrderTA3TA);
+        childInputsOf[1] = bytes("Vc_su");
         childInputsOf[2] = _inputs[1];
         childInputsOf[3] = _inputs[2];
         childInputsOf[4] = _inputs[3];
@@ -391,7 +395,7 @@ contract Order {
      * Gets child of OrderTA(OrderTA,min_block_number,b,max_block_number,c_amount,maker,tx).
      */
     function getChildOrderTA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);
@@ -417,7 +421,7 @@ contract Order {
         }
         if(challengeInput == 2) {
             bytes[] memory childInputs = new bytes[](4);
-            childInputs[0] = OrderTA3T;
+            childInputs[0] = utils.prefixLabel(OrderTA3T);
             childInputs[1] = _inputs[4];
             childInputs[2] = _inputs[5];
             childInputs[3] = _inputs[6];
@@ -435,9 +439,9 @@ contract Order {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](7);
-        childInputsOf[0] = OrderTA;
+        childInputsOf[0] = utils.prefixLabel(OrderTA);
         childInputsOf[1] = _inputs[4];
-        childInputsOf[2] = bytes("__VARIABLE__b");
+        childInputsOf[2] = bytes("Vb");
         childInputsOf[3] = _inputs[5];
         childInputsOf[4] = _inputs[3];
         childInputsOf[5] = _inputs[1];
@@ -469,7 +473,7 @@ contract Order {
 
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-        childInputs0[1] = TransactionAddress;
+        childInputs0[1] = utils.prefixConstant(TransactionAddress);
         require(
             AtomicPredicate(Equal).decide(childInputs0),
             "Equal must be true"
@@ -519,7 +523,7 @@ contract Order {
     function decideOrderTA3TA4O2T(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](4);
-        childInputs[0] = OrderTA3TA4O2TA;
+        childInputs[0] = utils.prefixLabel(OrderTA3TA4O2TA);
         childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];
@@ -532,7 +536,7 @@ contract Order {
      */
     function decideOrderTA3TA4O(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(_witness[0], (uint256));
+        uint256 orIndex = utils.bytesToUint(_witness[0]);
         if(orIndex == 0) {
 
             bytes[] memory childInputs0 = new bytes[](1);
@@ -545,10 +549,10 @@ contract Order {
         }
         if(orIndex == 1) {
             bytes[] memory childInputs1 = new bytes[](3);
-            childInputs1[0] = OrderTA3TA4O2T;
+            childInputs1[0] = utils.prefixLabel(OrderTA3TA4O2T);
             childInputs1[1] = _inputs[1];
             childInputs1[2] = _inputs[2];
-            require(decideOrderTA3TA4O2T(childInputs1,  utils.subArray(_witness, 1, _witness.length)));
+            require(decideOrderTA3TA4O2T(childInputs1, utils.subArray(_witness, 1, _witness.length)));
 
         }
         return true;
@@ -563,7 +567,7 @@ contract Order {
 
         bytes[] memory childInputs0 = new bytes[](2);
         childInputs0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-        childInputs0[1] = swapAddress;
+        childInputs0[1] = utils.prefixConstant(swapAddress);
         require(
             AtomicPredicate(Equal).decide(childInputs0),
             "Equal must be true"
@@ -588,7 +592,7 @@ contract Order {
         );
 
             bytes[] memory childInputs3 = new bytes[](3);
-        childInputs3[0] = OrderTA3TA4O;
+        childInputs3[0] = utils.prefixLabel(OrderTA3TA4O);
         childInputs3[1] = _inputs[1];
         childInputs3[2] = _inputs[3];
         require(decideOrderTA3TA4O(childInputs3,  utils.subArray(_witness, 1, _witness.length)));
@@ -610,7 +614,7 @@ contract Order {
     function decideOrderTA3T(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](5);
-        childInputs[0] = OrderTA3TA;
+        childInputs[0] = utils.prefixLabel(OrderTA3TA);
         childInputs[1] = _witness[0];
         childInputs[2] = _inputs[1];
         childInputs[3] = _inputs[2];
@@ -643,7 +647,7 @@ contract Order {
         );
 
             bytes[] memory childInputs2 = new bytes[](4);
-        childInputs2[0] = OrderTA3T;
+        childInputs2[0] = utils.prefixLabel(OrderTA3T);
         childInputs2[1] = _inputs[4];
         childInputs2[2] = _inputs[5];
         childInputs2[3] = _inputs[6];
@@ -657,7 +661,7 @@ contract Order {
     function decideOrderT(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check ThereExistsSuchThat
         bytes[] memory childInputs = new bytes[](7);
-        childInputs[0] = OrderTA;
+        childInputs[0] = utils.prefixLabel(OrderTA);
         childInputs[1] = _inputs[4];
         childInputs[2] = _witness[0];
         childInputs[3] = _inputs[5];
