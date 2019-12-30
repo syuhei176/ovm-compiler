@@ -55,8 +55,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
     }
   }
 }
-const zero =
-  '0x0000000000000000000000000000000000000000000000000000000000000000'
+const zero = '0000000000000000000000000000000000000000000000000000000000000000'
 const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   IsLessThan: {
     name: 'IsLessThan',
@@ -64,7 +63,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
       const quantifier = p.inputs[0] as PropertyNode
       const variable = p.inputs[1]
       return {
-        hint: `range,NUMBER,${zero}-\${${quantifier.inputs[0]}}`,
+        hint: `range,NUMBER,${zero}\${${quantifier.inputs[0]}}`,
         properties: [
           {
             type: 'PropertyNode',
