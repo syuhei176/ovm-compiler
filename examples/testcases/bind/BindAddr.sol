@@ -2,8 +2,8 @@
      * Gets child of BindAddrTestA(BindAddrTestA,a).
      */
     function getChildBindAddrTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        types.Property memory inputProperty1 = abi.decode(_inputs[1], (types.Property));
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        types.Property memory inputProperty1 = abi.decode(_inputs[0], (types.Property));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);

@@ -5,8 +5,8 @@
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](2);
-        childInputsOf[0] = bytes("__VARIABLE__b");
-        childInputsOf[1] = _inputs[1];
+        childInputsOf[0] = bytes("Vb");
+        childInputsOf[1] = _inputs[0];
 
         notInputs[0] = abi.encode(types.Property({
             predicateAddress: Foo,

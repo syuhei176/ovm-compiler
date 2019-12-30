@@ -1,13 +1,13 @@
 <%  if(property.predicate.type == 'InputPredicateCall') { -%>
 <%    if(property.inputs.length == 0) { -%>
-        require(adjudicationContract.isDecidedById(keccak256(_inputs[<%= property.predicate.source.inputIndex %>])));
+        require(adjudicationContract.isDecidedById(keccak256(_inputs[<%= property.predicate.source.inputIndex-1 %>])));
 <%    } else { -%>
-        types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex %>], (types.Property));
+        types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex-1 %>], (types.Property));
         bytes[] memory <%= valName %> = new bytes[](inputPredicateProperty.inputs.length + 1);
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
             <%= valName %>[i] = inputPredicateProperty.inputs[i];
         }
-        <%= valName %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex %>];
+        <%= valName %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex-1 %>];
         require(
             CompiledPredicate(inputPredicateProperty.predicateAddress).decide(<%= valName %>, utils.subArray(_witness, 1, _witness.length)),
             "InputPredicate must be true"

@@ -81,22 +81,26 @@ contract ThereTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(ThereTestT)) {
+        if(!utils.isLabel(inputs[0])) {
             return getChildThereTestT(inputs, challengeInput);
         }
-        return getChildThereTestT(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(ThereTestT)) {
+            return getChildThereTestT(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(ThereTestT)) {
+        if(!utils.isLabel(_inputs[0])) {
             return decideThereTestT(_inputs, _witness);
         }
-        return decideThereTestT(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(ThereTestT)) {
+            return decideThereTestT(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -115,7 +119,7 @@ contract ThereTest {
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](1);
-        childInputsOf[0] = bytes("__VARIABLE__a");
+        childInputsOf[0] = bytes("Va");
 
         notInputs[0] = abi.encode(types.Property({
             predicateAddress: Foo,

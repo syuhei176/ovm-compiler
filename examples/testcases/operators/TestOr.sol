@@ -81,22 +81,26 @@ contract OrTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(OrTestO)) {
+        if(!utils.isLabel(inputs[0])) {
             return getChildOrTestO(inputs, challengeInput);
         }
-        return getChildOrTestO(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(OrTestO)) {
+            return getChildOrTestO(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(OrTestO)) {
+        if(!utils.isLabel(_inputs[0])) {
             return decideOrTestO(_inputs, _witness);
         }
-        return decideOrTestO(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(OrTestO)) {
+            return decideOrTestO(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -116,7 +120,7 @@ contract OrTest {
         bytes[] memory andInputs = new bytes[](2);
         bytes[] memory notInputs0 = new bytes[](1);
         bytes[] memory childInputsOf0 = new bytes[](1);
-        childInputsOf0[0] = _inputs[1];
+        childInputsOf0[0] = _inputs[0];
 
         notInputs0[0] = abi.encode(types.Property({
             predicateAddress: Foo,
@@ -129,7 +133,7 @@ contract OrTest {
         }));
         bytes[] memory notInputs1 = new bytes[](1);
         bytes[] memory childInputsOf1 = new bytes[](1);
-        childInputsOf1[0] = _inputs[2];
+        childInputsOf1[0] = _inputs[1];
 
         notInputs1[0] = abi.encode(types.Property({
             predicateAddress: Bar,
@@ -150,11 +154,11 @@ contract OrTest {
      */
     function decideOrTestO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = abi.decode(_witness[0], (uint256));
+        uint256 orIndex = utils.bytesToUint(_witness[0]);
         if(orIndex == 0) {
 
             bytes[] memory childInputs0 = new bytes[](1);
-            childInputs0[0] = _inputs[1];
+            childInputs0[0] = _inputs[0];
             require(
                 AtomicPredicate(Foo).decide(childInputs0),
                 "Foo must be true"
@@ -164,7 +168,7 @@ contract OrTest {
         if(orIndex == 1) {
 
             bytes[] memory childInputs1 = new bytes[](1);
-            childInputs1[0] = _inputs[2];
+            childInputs1[0] = _inputs[1];
             require(
                 AtomicPredicate(Bar).decide(childInputs1),
                 "Bar must be true"

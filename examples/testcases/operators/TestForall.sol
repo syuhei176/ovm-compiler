@@ -81,22 +81,26 @@ contract ForallTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(ForallTestF)) {
+        if(!utils.isLabel(inputs[0])) {
             return getChildForallTestF(inputs, challengeInput);
         }
-        return getChildForallTestF(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(ForallTestF)) {
+            return getChildForallTestF(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(ForallTestF)) {
+        if(!utils.isLabel(_inputs[0])) {
             return decideForallTestF(_inputs, _witness);
         }
-        return decideForallTestF(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(ForallTestF)) {
+            return decideForallTestF(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {

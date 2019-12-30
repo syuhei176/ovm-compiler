@@ -81,22 +81,26 @@ contract AndTest {
         bytes[] memory inputs,
         bytes[] memory challengeInput
     ) private returns (types.Property memory) {
-        bytes32 input0 = keccak256(inputs[0]);
-        if(input0 == keccak256(AndTestA)) {
+        if(!utils.isLabel(inputs[0])) {
             return getChildAndTestA(inputs, challengeInput);
         }
-        return getChildAndTestA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        bytes32 input0 = keccak256(utils.getInputValue(inputs[0]));
+        if(input0 == keccak256(AndTestA)) {
+            return getChildAndTestA(utils.subArray(inputs, 1, inputs.length), challengeInput);
+        }
     }
 
     /**
      * @dev check the property is true
      */
     function decide(bytes[] memory _inputs, bytes[] memory _witness) public view returns(bool) {
-        bytes32 input0 = keccak256(_inputs[0]);
-        if(input0 == keccak256(AndTestA)) {
+        if(!utils.isLabel(_inputs[0])) {
             return decideAndTestA(_inputs, _witness);
         }
-        return decideAndTestA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        bytes32 input0 = keccak256(utils.getInputValue(_inputs[0]));
+        if(input0 == keccak256(AndTestA)) {
+            return decideAndTestA(utils.subArray(_inputs, 1, _inputs.length), _witness);
+        }
     }
 
     function decideTrue(bytes[] memory _inputs, bytes[] memory _witness) public {
@@ -112,11 +116,11 @@ contract AndTest {
      * Gets child of AndTestA(AndTestA,a,b).
      */
     function getChildAndTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](1);
-            childInputsOf0[0] = _inputs[1];
+            childInputsOf0[0] = _inputs[0];
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Foo,
@@ -126,7 +130,7 @@ contract AndTest {
         }
         if(challengeInput == 1) {
             bytes[] memory childInputsOf1 = new bytes[](1);
-            childInputsOf1[0] = _inputs[2];
+            childInputsOf1[0] = _inputs[1];
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Bar,
@@ -146,7 +150,7 @@ contract AndTest {
         // And logical connective
 
         bytes[] memory childInputs0 = new bytes[](1);
-        childInputs0[0] = _inputs[1];
+        childInputs0[0] = _inputs[0];
         require(
             AtomicPredicate(Foo).decide(childInputs0),
             "Foo must be true"
@@ -154,7 +158,7 @@ contract AndTest {
 
 
         bytes[] memory childInputs1 = new bytes[](1);
-        childInputs1[0] = _inputs[2];
+        childInputs1[0] = _inputs[1];
         require(
             AtomicPredicate(Bar).decide(childInputs1),
             "Bar must be true"

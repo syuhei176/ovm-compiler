@@ -5,7 +5,7 @@
 <%
         property.propertyInputs.forEach((propertyInput, index) => {
 -%>
-        types.Property memory inputProperty<%=propertyInput.inputIndex%> = abi.decode(_inputs[<%=propertyInput.inputIndex%>], (types.Property));
+        types.Property memory inputProperty<%=propertyInput.inputIndex%> = abi.decode(_inputs[<%=propertyInput.inputIndex-1%>], (types.Property));
 <%
         if(propertyInput.children.length > 0) {
 -%>
@@ -17,7 +17,7 @@
         })
 -%>
 <%  if(property.connective == 'And') { -%>
-        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
+        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
         bytes[] memory notInputs = new bytes[](1);
 <%
       for(var j = 0;j < property.inputs.length;j++) {
@@ -65,7 +65,7 @@
 -%>
         bytes[] memory forAllSuchThatInputs = new bytes[](3);
         bytes[] memory notInputs = new bytes[](1);
-<%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]', propIndex: '', freeVariable: 'bytes(\"__VARIABLE__' + property.inputs[1] + '\")'}) -%>
+<%-  include('constructProperty', {property: innerProperty, valName: 'notInputs[0]', propIndex: '', freeVariable: 'bytes(\"V' + property.inputs[1] + '\")'}) -%>
         forAllSuchThatInputs[0] = bytes("");
         forAllSuchThatInputs[1] = bytes("<%= property.inputs[1] %>");
         forAllSuchThatInputs[2] = abi.encode(types.Property({
