@@ -2,7 +2,8 @@ import { SolidityCodeGenerator } from './'
 import {
   CompiledPredicate,
   IntermediateCompiledPredicate,
-  LogicalConnective
+  LogicalConnective,
+  CompiledInput
 } from '../../transpiler'
 import fs from 'fs'
 import path from 'path'
@@ -504,6 +505,109 @@ describe('SolidityCodeGenerator', () => {
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
       expect(outputOfDecide).toBe(testOutputOfDecide.toString())
+    })
+  })
+
+  describe('constructInput', () => {
+    test('ConstantInput', async () => {
+      const input: CompiledInput = {
+        type: 'ConstantInput',
+        name: 'aaa'
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 0
+      })
+      expect(output).toBe('        items[0] = utils.prefixConstant(aaa);\n')
+    })
+
+    test('NormalInput', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 1,
+        children: []
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe('        items[1] = _inputs[0];\n')
+    })
+
+    test('NormalInput with child', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [1]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe('        items[1] = inputProperty0.inputs[1];\n')
+    })
+
+    test('NormalInput with child address', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [-1]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe(
+        '        items[1] = abi.encodePacked(inputProperty0.predicateAddress);\n'
+      )
+    })
+
+    test('NormalInput with 2 children', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [1, 2]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe(
+        '        items[1] = inputProperty0Child1.inputs[2];\n'
+      )
+    })
+
+    test('LabelInput', async () => {
+      const input: CompiledInput = {
+        type: 'LabelInput',
+        label: 'FooF'
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 2
+      })
+      expect(output).toBe('        items[2] = utils.prefixLabel(FooF);\n')
+    })
+
+    test('VariableInput', async () => {
+      const input: CompiledInput = {
+        type: 'VariableInput',
+        placeholder: 'a',
+        children: []
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 3,
+        witnessName: 'challengeInput'
+      })
+      expect(output).toBe('        items[3] = challengeInput;\n')
     })
   })
 })
