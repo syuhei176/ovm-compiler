@@ -3,4 +3,5 @@ decide.ts
 getChild.ts
 constructProperty.ts
 constructInputs.ts
+constructInput.ts
 decideProperty.ts

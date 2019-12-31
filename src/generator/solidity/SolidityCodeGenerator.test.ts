@@ -2,7 +2,9 @@ import { SolidityCodeGenerator } from './'
 import {
   CompiledPredicate,
   IntermediateCompiledPredicate,
-  LogicalConnective
+  LogicalConnective,
+  CompiledInput,
+  AtomicProposition
 } from '../../transpiler'
 import fs from 'fs'
 import path from 'path'
@@ -504,6 +506,304 @@ describe('SolidityCodeGenerator', () => {
       )
       expect(outputOfGetChild).toBe(testOutputOfGetChild.toString())
       expect(outputOfDecide).toBe(testOutputOfDecide.toString())
+    })
+  })
+
+  describe('constructInput', () => {
+    test('ConstantInput', async () => {
+      const input: CompiledInput = {
+        type: 'ConstantInput',
+        name: 'aaa'
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 0
+      })
+      expect(output).toBe('        items[0] = utils.prefixConstant(aaa);\n')
+    })
+
+    test('NormalInput', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 1,
+        children: []
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe('        items[1] = _inputs[0];\n')
+    })
+
+    test('NormalInput with child', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [1]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe('        items[1] = inputProperty0.inputs[1];\n')
+    })
+
+    test('NormalInput with child address', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [-1]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe(
+        '        items[1] = abi.encodePacked(inputProperty0.predicateAddress);\n'
+      )
+    })
+
+    test('NormalInput with 2 children', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [1, 2]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe(
+        '        items[1] = inputProperty0Child1.inputs[2];\n'
+      )
+    })
+
+    test('LabelInput', async () => {
+      const input: CompiledInput = {
+        type: 'LabelInput',
+        label: 'FooF'
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 2
+      })
+      expect(output).toBe('        items[2] = utils.prefixLabel(FooF);\n')
+    })
+
+    test('VariableInput', async () => {
+      const input: CompiledInput = {
+        type: 'VariableInput',
+        placeholder: 'a',
+        children: []
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 3,
+        witnessName: 'challengeInput'
+      })
+      expect(output).toBe('        items[3] = challengeInput;\n')
+    })
+  })
+
+  describe('decideProperty', () => {
+    test('AtomicPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+        inputs: []
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        bytes[] memory inputs = new bytes[](0);
+        require(
+            AtomicPredicate(Foo).decide(inputs),
+            "Foo must be true"
+        );
+`
+      )
+    })
+
+    test('InputPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        require(adjudicationContract.isDecidedById(keccak256(_inputs[0])));
+`
+      )
+    })
+
+    test('InputPredicateCall with inputs', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: [
+          {
+            type: 'NormalInput',
+            inputIndex: 1,
+            children: []
+          }
+        ]
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        types.Property memory inputPredicateProperty = abi.decode(_inputs[0], (types.Property));
+        bytes[] memory inputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            inputs[i] = inputPredicateProperty.inputs[i];
+        }
+        inputs[inputPredicateProperty.inputs.length] = _inputs[0];
+        require(
+            CompiledPredicate(inputPredicateProperty.predicateAddress).decide(inputs, utils.subArray(_witness, 1, _witness.length)),
+            "InputPredicate must be true"
+        );
+`
+      )
+    })
+
+    test('VariablePredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'VariablePredicateCall'
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        require(
+            adjudicationContract.isDecidedById(keccak256(challengeInput)),
+            "VariablePredicate must be true"
+        );
+`
+      )
+    })
+  })
+
+  describe('constructProperty', () => {
+    test('AtomicPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+        inputs: []
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        propIndex: 0,
+        valName: 'value',
+        freeVariable: 'challengeInput'
+      })
+      expect(output).toBe(
+        `        bytes[] memory childInputsOf0 = new bytes[](0);
+
+        value = abi.encode(types.Property({
+            predicateAddress: Foo,
+            inputs: childInputsOf0
+        }));
+
+`
+      )
+    })
+
+    test('InputPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        inputs = _inputs[0];
+`
+      )
+    })
+
+    test('InputPredicateCall with inputs', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: [
+          {
+            type: 'NormalInput',
+            inputIndex: 1,
+            children: []
+          }
+        ]
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        propIndex: 3,
+        valName: 'value',
+        freeVariable: 'challengeInput'
+      })
+      expect(output).toBe(
+        `        types.Property memory inputPredicateProperty = abi.decode(_inputs[0], (types.Property));
+        bytes[] memory childInputsOf3 = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            childInputsOf3[i] = inputPredicateProperty.inputs[i];
+        }
+        childInputsOf3[inputPredicateProperty.inputs.length] = _inputs[0];
+        value = abi.encode(types.Property({
+            predicateAddress: inputPredicateProperty.predicateAddress,
+            inputs: childInputsOf3
+        }));
+`
+      )
+    })
+
+    test('VariablePredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'VariablePredicateCall'
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        inputs = challengeInput;
+`
+      )
     })
   })
 })
