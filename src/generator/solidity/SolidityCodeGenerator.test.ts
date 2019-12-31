@@ -652,6 +652,40 @@ describe('SolidityCodeGenerator', () => {
       )
     })
 
+    test('InputPredicateCall with inputs', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: [
+          {
+            type: 'NormalInput',
+            inputIndex: 1,
+            children: []
+          }
+        ]
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        types.Property memory inputPredicateProperty = abi.decode(_inputs[0], (types.Property));
+        bytes[] memory inputs = new bytes[](inputPredicateProperty.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
+            inputs[i] = inputPredicateProperty.inputs[i];
+        }
+        inputs[inputPredicateProperty.inputs.length] = _inputs[0];
+        require(
+            CompiledPredicate(inputPredicateProperty.predicateAddress).decide(inputs, utils.subArray(_witness, 1, _witness.length)),
+            "InputPredicate must be true"
+        );
+`
+      )
+    })
+
     test('VariablePredicateCall', async () => {
       const input: AtomicProposition = {
         type: 'AtomicProposition',
