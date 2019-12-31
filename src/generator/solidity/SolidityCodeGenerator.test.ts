@@ -673,4 +673,67 @@ describe('SolidityCodeGenerator', () => {
       )
     })
   })
+
+  describe('constructProperty', () => {
+    test('AtomicPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+        inputs: []
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        propIndex: 0,
+        valName: 'value',
+        freeVariable: 'challengeInput'
+      })
+      expect(output).toBe(
+        `        bytes[] memory childInputsOf0 = new bytes[](0);
+
+        value = abi.encode(types.Property({
+            predicateAddress: Foo,
+            inputs: childInputsOf0
+        }));
+
+`
+      )
+    })
+
+    test('InputPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        inputs = _inputs[0];
+`
+      )
+    })
+
+    test('VariablePredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'VariablePredicateCall'
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('constructProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        inputs = challengeInput;
+`
+      )
+    })
+  })
 })
