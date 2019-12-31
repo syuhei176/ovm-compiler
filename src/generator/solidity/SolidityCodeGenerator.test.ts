@@ -3,7 +3,8 @@ import {
   CompiledPredicate,
   IntermediateCompiledPredicate,
   LogicalConnective,
-  CompiledInput
+  CompiledInput,
+  AtomicProposition
 } from '../../transpiler'
 import fs from 'fs'
 import path from 'path'
@@ -608,6 +609,68 @@ describe('SolidityCodeGenerator', () => {
         witnessName: 'challengeInput'
       })
       expect(output).toBe('        items[3] = challengeInput;\n')
+    })
+  })
+
+  describe('decideProperty', () => {
+    test('AtomicPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: { type: 'AtomicPredicateCall', source: 'Foo' },
+        inputs: []
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        bytes[] memory inputs = new bytes[](0);
+        require(
+            AtomicPredicate(Foo).decide(inputs),
+            "Foo must be true"
+        );
+`
+      )
+    })
+
+    test('InputPredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'InputPredicateCall',
+          source: { type: 'NormalInput', inputIndex: 1, children: [] }
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        require(adjudicationContract.isDecidedById(keccak256(_inputs[0])));
+`
+      )
+    })
+
+    test('VariablePredicateCall', async () => {
+      const input: AtomicProposition = {
+        type: 'AtomicProposition',
+        predicate: {
+          type: 'VariablePredicateCall'
+        },
+        inputs: []
+      }
+      const output = generator.includeCallback('decideProperty', {
+        property: input,
+        valName: 'inputs'
+      })
+      expect(output).toBe(
+        `        require(
+            adjudicationContract.isDecidedById(keccak256(challengeInput)),
+            "VariablePredicate must be true"
+        );
+`
+      )
     })
   })
 })
