@@ -1,3 +1,24 @@
+## <small>0.1.16 (2020-01-01)</small>
+
+* 0.1.16 ([55c4791](https://github.com/cryptoeconomicslab/ovm-compiler/commit/55c4791))
+* update changelog ([8904b1f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8904b1f))
+* test: add test code for constructInput.ejs ([99b8f24](https://github.com/cryptoeconomicslab/ovm-compiler/commit/99b8f24))
+* test: add test code for constructProperty ([a55c926](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a55c926))
+* test: add test code for constructProperty ([c104196](https://github.com/cryptoeconomicslab/ovm-compiler/commit/c104196))
+* test: add test code for decideProperty ([916374d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/916374d))
+* test: add test code for decideProperty.ejs ([0012d22](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0012d22))
+* fix: fix encoding of integer ([301aa3f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/301aa3f))
+* fix: fix hint data of range ([eda5c04](https://github.com/cryptoeconomicslab/ovm-compiler/commit/eda5c04))
+* fix: fix inputs index ([4f41d6d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4f41d6d))
+* fix: fix method name in Utils ([b6cd496](https://github.com/cryptoeconomicslab/ovm-compiler/commit/b6cd496))
+* fix: fix quantifier ([f98017c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/f98017c))
+* fix: fix thereval2 ([a0a938a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a0a938a))
+* fix: label and primitive have prefix L and P ([216251c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/216251c))
+* fix: update inputs format ([26aac45](https://github.com/cryptoeconomicslab/ovm-compiler/commit/26aac45))
+* fix: variable has prefix V ([34cd0f5](https://github.com/cryptoeconomicslab/ovm-compiler/commit/34cd0f5))
+
+
+
 ## <small>0.1.15 (2019-12-21)</small>
 
 * 0.1.15 ([7c19729](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7c19729))
