@@ -1,6 +1,6 @@
 {
   "name": "@cryptoeconomicslab/ovm-parser",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "OVM parser",
   "author": {
     "name": "Cryptoeconomics Lab",
