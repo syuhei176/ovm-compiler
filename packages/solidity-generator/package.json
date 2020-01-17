@@ -50,6 +50,7 @@
   "dependencies": {
     "@cryptoeconomicslab/ovm-generator": "^0.2.2",
     "@cryptoeconomicslab/ovm-transpiler": "^0.2.2",
-    "ejs": "^3.0.1"
+    "ejs": "^3.0.1",
+    "tslib": "^1.10.0"
   }
 }

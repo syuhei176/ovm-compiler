@@ -51,6 +51,7 @@
     "@cryptoeconomicslab/ovm-generator": "^0.2.2",
     "@cryptoeconomicslab/ovm-solidity-generator": "^0.2.2",
     "@cryptoeconomicslab/ovm-transpiler": "^0.2.2",
-    "solc": "^0.5.15"
+    "solc": "^0.5.15",
+    "tslib": "^1.10.0"
   }
 }
