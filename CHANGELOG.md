@@ -3,6 +3,13 @@
 
 
 
+## <small>0.2.2 (2020-01-17)</small>
+
+* update changelog ([001a55f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/001a55f))
+* v0.2.2 ([96660cc](https://github.com/cryptoeconomicslab/ovm-compiler/commit/96660cc))
+
+
+
 ## <small>0.2.1 (2020-01-17)</small>
 
 * update changelog ([838294c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/838294c))
