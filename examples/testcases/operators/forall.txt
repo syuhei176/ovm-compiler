@@ -1,1 +1,1 @@
-def forallTest(a) := for b in A(a) {Foo(b)}
+def forallTest(a) := A(a).all(b -> Foo(b))

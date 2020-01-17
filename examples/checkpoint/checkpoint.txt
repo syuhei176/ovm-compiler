@@ -1,6 +1,4 @@
 def checkpoint(su) := 
-for b in IsLessThan(su.2) {
-  for old_su in SU(b, su.0, su.1) {
-    old_su()
-  }
-}
+IsLessThan(su.2).all(b -> 
+  SU(b, su.0, su.1).all(old_su -> old_su())
+)
