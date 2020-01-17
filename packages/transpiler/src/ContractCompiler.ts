@@ -11,10 +11,7 @@ import {
   convertStringToLogicalConnective,
   LogicalConnectiveStrings
 } from './CompiledPredicate'
-import {
-  PropertyDef,
-  PropertyNode
-} from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
+import { PropertyDef, PropertyNode } from '@cryptoeconomicslab/ovm-parser'
 
 /**
  *

@@ -1,5 +1,5 @@
 import { translateQuantifier } from './QuantifierTranslater'
-import { PropertyDef } from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
+import { PropertyDef } from '@cryptoeconomicslab/ovm-parser'
 
 describe('QuantifierTranslater', () => {
   beforeEach(async () => {})

@@ -24,7 +24,7 @@
   "scripts": {
     "build": "tsc --build",
     "build:check": "tsc --noEmit",
-    "test": "jest --passWithNoTests",
+    "test": "jest",
     "lint": "eslint --ext ts,tsx src",
     "doc": "typedoc --out docs src",
     "clean": "rm -rf lib docs"
