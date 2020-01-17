@@ -1,5 +1,21 @@
 ## <small>0.1.17 (2020-01-17)</small>
 
+
+
+
+## 0.2.0 (2020-01-17)
+
+* monorepo ([a20308a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a20308a))
+* update changelog ([1bf2be3](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1bf2be3))
+* v0.2.0 ([45d7229](https://github.com/cryptoeconomicslab/ovm-compiler/commit/45d7229))
+* fix: add lerna bootstrap to .travis.yml ([3e40c85](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3e40c85))
+* fix: fix .travis.yml ([a6d1b26](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a6d1b26))
+* fix: fix test ([965b3ae](https://github.com/cryptoeconomicslab/ovm-compiler/commit/965b3ae))
+
+
+
+## <small>0.1.17 (2020-01-17)</small>
+
 * 0.1.17 ([23c1f7e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/23c1f7e))
 * BREAKING CHANGE: new syntax ([0b808c0](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0b808c0))
 * update changelog ([3f8ce5d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3f8ce5d))
