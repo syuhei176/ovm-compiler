@@ -3,6 +3,14 @@
 
 
 
+## <small>0.2.3 (2020-01-17)</small>
+
+* add tslib ([414c888](https://github.com/cryptoeconomicslab/ovm-compiler/commit/414c888))
+* update changelog ([cabbd43](https://github.com/cryptoeconomicslab/ovm-compiler/commit/cabbd43))
+* v0.2.3 ([d791019](https://github.com/cryptoeconomicslab/ovm-compiler/commit/d791019))
+
+
+
 ## <small>0.2.2 (2020-01-17)</small>
 
 * update changelog ([001a55f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/001a55f))
