@@ -7,6 +7,6 @@ install:
   - npm ci
   - lerna bootstrap
 
-test:
+script:
   - npm run build
   - npm run test
