@@ -1,4 +1,4 @@
-// OVM language grammar
+const text = `// OVM language grammar
 // ==========================
 //
 
@@ -114,4 +114,6 @@ String "string"
   = _ "$"?[a-zA-Z0-9_]+ { return text(); }
 
 _ "whitespace"
-  =  [ \t\n\r]*
+  = [ \\t\\n\\r]*
+`
+export default text

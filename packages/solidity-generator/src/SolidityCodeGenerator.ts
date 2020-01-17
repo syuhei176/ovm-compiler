@@ -6,8 +6,8 @@ import constructProperty from './constructProperty'
 import constructInputs from './constructInputs'
 import constructInput from './constructInput'
 import decideProperty from './decideProperty'
-import { CodeGenerator } from '../CodeGenerator'
-import { CompiledPredicate, AtomicProposition } from '../../transpiler'
+import { CodeGenerator } from '@cryptoeconomicslab/ovm-generator'
+import { CompiledPredicate } from '@cryptoeconomicslab/ovm-transpiler'
 
 const templates: { [key: string]: string } = {
   decide: decide.toString(),

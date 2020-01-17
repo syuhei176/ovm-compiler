@@ -5,7 +5,7 @@ import {
   LogicalConnective,
   CompiledInput,
   AtomicProposition
-} from '../../transpiler'
+} from '@cryptoeconomicslab/ovm-transpiler'
 import fs from 'fs'
 import path from 'path'
 

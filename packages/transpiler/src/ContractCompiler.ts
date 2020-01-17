@@ -7,13 +7,11 @@ import {
   Placeholder,
   PredicateCall,
   NormalInput,
-  ConstantInput,
   ConstantVariable,
   convertStringToLogicalConnective,
   LogicalConnectiveStrings
 } from './CompiledPredicate'
-import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
-import { AssertionError } from 'assert'
+import { PropertyDef, PropertyNode } from '@cryptoeconomicslab/ovm-parser'
 
 /**
  *
