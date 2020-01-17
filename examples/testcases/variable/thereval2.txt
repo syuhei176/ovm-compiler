@@ -1,4 +1,2 @@
 def thereValTest(a) :=
-with B() as b {
-  a(b)
-}
+B().any(b -> a(b))

@@ -47,7 +47,7 @@ Decider
 }
   
 UniversalQuantifier
-  = "for" _ v:String _ "in" _ V:Decider _ "{" _ property:Expression _ "}" {
+  = V:Decider ".all(" v:String _ "->" _ property:Expression _ ")" {
     return {
       type: 'PropertyNode',
       predicate: "ForAllSuchThat",
@@ -60,7 +60,7 @@ UniversalQuantifier
   }
 
 ThereExistsQuantifier
-  = "with" _ Q:Decider _ "as" _ v:String _ "{" _ property:Expression _ "}" {
+  = Q:Decider ".any(" v:String _ "->" _ property:Expression _ ")" {
     return {
       type: 'PropertyNode',
       predicate: "ThereExistsSuchThat",
