@@ -1,3 +1,11 @@
+## <small>0.1.17 (2020-01-17)</small>
+
+* 0.1.17 ([23c1f7e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/23c1f7e))
+* BREAKING CHANGE: new syntax ([0b808c0](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0b808c0))
+* update changelog ([3f8ce5d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/3f8ce5d))
+
+
+
 ## <small>0.1.16 (2020-01-01)</small>
 
 * 0.1.16 ([55c4791](https://github.com/cryptoeconomicslab/ovm-compiler/commit/55c4791))
