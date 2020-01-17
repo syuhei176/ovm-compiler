@@ -5,7 +5,7 @@
 ## Usage
 
 ```
-npm i https://github.com/cryptoeconomicslab/ovm-compiler
+npm i @cryptoeconomicslab/ovm-compiler
 ```
 
 ```js
