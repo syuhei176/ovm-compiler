@@ -3,6 +3,14 @@
 
 
 
+## <small>0.2.1 (2020-01-17)</small>
+
+* update changelog ([838294c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/838294c))
+* update README.md ([7a1095f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7a1095f))
+* v0.2.1 ([10bc022](https://github.com/cryptoeconomicslab/ovm-compiler/commit/10bc022))
+
+
+
 ## 0.2.0 (2020-01-17)
 
 * monorepo ([a20308a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a20308a))
