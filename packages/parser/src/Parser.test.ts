@@ -6,7 +6,7 @@ import path from 'path'
 function loadTest(testCaseName: string) {
   return fs
     .readFileSync(
-      path.join(__dirname, `../../examples/testcases/${testCaseName}.txt`)
+      path.join(__dirname, `../../../examples/testcases/${testCaseName}.txt`)
     )
     .toString()
 }

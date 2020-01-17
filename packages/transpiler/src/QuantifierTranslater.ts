@@ -1,4 +1,7 @@
-import { PropertyDef, PropertyNode } from '../parser/PropertyDef'
+import {
+  PropertyDef,
+  PropertyNode
+} from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
 import * as utils from './utils'
 
 interface PredicatePreset {

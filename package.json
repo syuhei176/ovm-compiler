@@ -1,20 +1,14 @@
 {
   "name": "ovm-compiler",
+  "private": true,
   "version": "0.1.17",
   "description": "",
-  "main": "dist/index.js",
-  "files": [
-    "dist/**/*.js",
-    "dist/**/*.d.ts"
-  ],
   "scripts": {
-    "build": "node preprocessor.js && tsc --build ./tsconfig.json",
-    "build:check": "tsc --noEmit",
-    "build:dev": "tsc",
-    "test": "node preprocessor.js && jest",
-    "lint": "eslint --ext ts,tsx src",
-    "lint:fix": "eslint --fix --ext ts,tsx src",
-    "prepare": "npm run build",
+    "build": "lerna run build",
+    "build:check": "lerna run build:check",
+    "test": "lerna run test",
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
     "postversion": "npm run changelog",
     "changelog": "conventional-changelog -i CHANGELOG.md -s -r 0 && git add CHANGELOG.md && git commit -m 'update changelog'"
   },
@@ -23,6 +17,7 @@
   "devDependencies": {
     "@types/ejs": "^2.7.0",
     "@types/jest": "^24.0.20",
+    "@types/node": "^12.12.14",
     "@types/pegjs": "^0.10.1",
     "@typescript-eslint/eslint-plugin": "^2.5.0",
     "@typescript-eslint/parser": "^2.5.0",
@@ -31,35 +26,12 @@
     "eslint-config-prettier": "^6.5.0",
     "eslint-plugin-prettier": "^3.1.1",
     "jest": "^24.9.0",
+    "lerna": "^3.20.2",
     "prettier": "^1.19.1",
     "ts-jest": "^24.1.0",
     "ts-node": "^8.4.1",
     "typedoc": "^0.15.0",
     "typescript": "^3.6.4"
   },
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testMatch": [
-      "**/__tests__/**/?(*.)+(spec|test).(ts|js)",
-      "**/?(*.)+(spec|test).ts"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "ts"
-    ],
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.json"
-      }
-    }
-  },
-  "dependencies": {
-    "@types/node": "^12.12.14",
-    "ejs": "^3.0.1",
-    "pegjs": "^0.10.0",
-    "solc": "^0.5.15",
-    "tslib": "^1.10.0"
-  }
+  "dependencies": {}
 }

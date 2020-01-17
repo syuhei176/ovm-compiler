@@ -1,5 +1,5 @@
 import { createCompiledPredicates } from './ContractCompiler'
-import { PropertyDef } from '../parser/PropertyDef'
+import { PropertyDef } from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
 import { LogicalConnective } from './CompiledPredicate'
 
 describe('ContractCompiler', () => {

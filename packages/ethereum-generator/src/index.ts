@@ -1,9 +1,9 @@
 import {
   SolidityCodeGeneratorOptions,
   SolidityCodeGenerator
-} from '../solidity'
-import { CompiledPredicate } from '../../transpiler'
-import { CodeGenerator } from '../CodeGenerator'
+} from '@cryptoeconomicslab/ovm-solidity-generator'
+import { CompiledPredicate } from '@cryptoeconomicslab/ovm-transpiler'
+import { CodeGenerator } from '@cryptoeconomicslab/ovm-generator'
 import { basename } from 'path'
 import template from './template'
 
