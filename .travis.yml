@@ -8,5 +8,4 @@ install:
   - lerna bootstrap
 
 script:
-  - npm run build
   - npm run test

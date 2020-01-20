@@ -583,6 +583,22 @@ describe('SolidityCodeGenerator', () => {
       )
     })
 
+    test('NormalInput with a child and address', async () => {
+      const input: CompiledInput = {
+        type: 'NormalInput',
+        inputIndex: 0,
+        children: [1, -1]
+      }
+      const output = generator.includeCallback('constructInput', {
+        input: input,
+        valName: 'items',
+        index: 1
+      })
+      expect(output).toBe(
+        '        items[1] = abi.encodePacked(inputProperty0Child1.predicateAddress);\n'
+      )
+    })
+
     test('LabelInput', async () => {
       const input: CompiledInput = {
         type: 'LabelInput',
