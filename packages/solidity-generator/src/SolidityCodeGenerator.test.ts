@@ -685,6 +685,7 @@ describe('SolidityCodeGenerator', () => {
       }
       const output = generator.includeCallback('decideProperty', {
         property: input,
+        propIndex: '',
         valName: 'inputs'
       })
       expect(output).toBe(
@@ -790,14 +791,14 @@ describe('SolidityCodeGenerator', () => {
         freeVariable: 'challengeInput'
       })
       expect(output).toBe(
-        `        types.Property memory inputPredicateProperty = abi.decode(_inputs[0], (types.Property));
-        bytes[] memory childInputsOf3 = new bytes[](inputPredicateProperty.inputs.length + 1);
-        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-            childInputsOf3[i] = inputPredicateProperty.inputs[i];
+        `        types.Property memory inputPredicateProperty3 = abi.decode(_inputs[0], (types.Property));
+        bytes[] memory childInputsOf3 = new bytes[](inputPredicateProperty3.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty3.inputs.length;i++) {
+            childInputsOf3[i] = inputPredicateProperty3.inputs[i];
         }
-        childInputsOf3[inputPredicateProperty.inputs.length] = _inputs[0];
+        childInputsOf3[inputPredicateProperty3.inputs.length] = _inputs[0];
         value = abi.encode(types.Property({
-            predicateAddress: inputPredicateProperty.predicateAddress,
+            predicateAddress: inputPredicateProperty3.predicateAddress,
             inputs: childInputsOf3
         }));
 `

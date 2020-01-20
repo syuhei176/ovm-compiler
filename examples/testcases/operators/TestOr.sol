@@ -21,6 +21,8 @@ contract OrTest {
     address IsValidSignature = address(0x0000000000000000000000000000000000000000);
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
+    address VerifyRoot = address(0x0000000000000000000000000000000000000000);
+    address VerifyConcatenate = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
@@ -48,6 +50,8 @@ contract OrTest {
         address _isValidSignature,
         address _isContained,
         address _verifyInclusion,
+        address _verifyRoot,
+        address _verifyConcatenate,
         address _isSameAmount,
         address _payoutContractAddress
     ) public {
@@ -57,6 +61,8 @@ contract OrTest {
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
+        VerifyRoot = _verifyRoot;
+        VerifyConcatenate = _verifyConcatenate;
         IsSameAmount = _isSameAmount;
         payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
