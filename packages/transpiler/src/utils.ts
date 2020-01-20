@@ -32,6 +32,8 @@ export function isAtomicPredicate(predicate: string) {
     predicate == 'IsValidHash' ||
     predicate == 'IsContained' ||
     predicate == 'VerifyInclusion' ||
+    predicate == 'VerifyConcatenate' ||
+    predicate == 'VerifyRoot' ||
     predicate == 'IsSameAmount'
   )
 }
