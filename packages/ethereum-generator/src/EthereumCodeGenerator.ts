@@ -47,6 +47,9 @@ export class EthereumCodeGenerator implements CodeGenerator {
     })
     const output = JSON.parse(outputString)
     const contract = output.contracts['test.sol']
+    if (output.errors.length > 0) {
+      console.error(output.errors.filter((e: any) => e.type == 'CompilerError'))
+    }
     const name = Object.keys(contract)[0]
     return JSON.stringify(output.contracts['test.sol'][name])
   }

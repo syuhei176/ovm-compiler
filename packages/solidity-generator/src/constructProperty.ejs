@@ -2,14 +2,14 @@
 <%    if(property.inputs.length == 0) { -%>
         <%= valName %> = _inputs[<%= property.predicate.source.inputIndex-1 %>];
 <%    } else { -%>
-        types.Property memory inputPredicateProperty = abi.decode(_inputs[<%= property.predicate.source.inputIndex-1 %>], (types.Property));
-        bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty.inputs.length + 1);
-        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-            childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];
+        types.Property memory inputPredicateProperty<%=propIndex%> = abi.decode(_inputs[<%= property.predicate.source.inputIndex-1 %>], (types.Property));
+        bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty<%=propIndex%>.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty<%=propIndex%>.inputs.length;i++) {
+            childInputsOf<%=propIndex %>[i] = inputPredicateProperty<%=propIndex%>.inputs[i];
         }
-<%- include('constructInput', {valName: 'childInputsOf' + propIndex, input: property.inputs[0], index: 'inputPredicateProperty.inputs.length', witnessName: 'challengeInputs[0]'}) -%>
+<%- include('constructInput', {valName: 'childInputsOf' + propIndex, input: property.inputs[0], index: 'inputPredicateProperty'+propIndex+'.inputs.length', witnessName: 'challengeInputs[0]'}) -%>
         <%= valName %> = abi.encode(types.Property({
-            predicateAddress: inputPredicateProperty.predicateAddress,
+            predicateAddress: inputPredicateProperty<%=propIndex%>.predicateAddress,
             inputs: childInputsOf<%=propIndex %>
         }));
 <%    } -%>
@@ -17,14 +17,14 @@
 <%    if(property.inputs.length == 0) { -%>
         <%= valName %> = challengeInput;
 <%    } else { -%>
-        types.Property memory inputPredicateProperty = abi.decode(challengeInput, (types.Property));
-        bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty.inputs.length + 1);
-        for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
-            childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];
+        types.Property memory inputPredicateProperty<%=propIndex%> = abi.decode(challengeInput, (types.Property));
+        bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty<%=propIndex%>.inputs.length + 1);
+        for(uint256 i = 0;i < inputPredicateProperty<%=propIndex%>.inputs.length;i++) {
+            childInputsOf<%=propIndex %>[i] = inputPredicateProperty<%=propIndex%>.inputs[i];
         }
-        childInputsOf<%=propIndex %>[inputPredicateProperty.inputs.length] = _inputs[<%= property.inputs[0].inputIndex-1 %>];
+        childInputsOf<%=propIndex %>[inputPredicateProperty<%=propIndex%>.inputs.length] = _inputs[<%= property.inputs[0].inputIndex-1 %>];
         <%= valName %> = abi.encode(types.Property({
-            predicateAddress: inputPredicateProperty.predicateAddress,
+            predicateAddress: inputPredicateProperty<%=propIndex%>.predicateAddress,
             inputs: childInputsOf<%=propIndex %>
         }));
 <%    } -%>

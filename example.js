@@ -1,4 +1,7 @@
-const { generateSolidityCode, generateEVMByteCode } = require('./')
+const {
+  generateSolidityCode,
+  generateEVMByteCode
+} = require('./packages/compiler/lib')
 const fs = require('fs')
 const path = require('path')
 
@@ -8,6 +11,7 @@ async function compileAllExamples() {
   await generate('checkpoint')
   await generate('limboExit')
   await generate('order')
+  await generate('swap')
   await generate('ownership')
   await generate('su')
   return 'all examples compiled'
