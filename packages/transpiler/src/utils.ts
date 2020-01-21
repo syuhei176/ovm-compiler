@@ -33,7 +33,7 @@ export function isAtomicPredicate(predicate: string) {
     predicate == 'IsContained' ||
     predicate == 'VerifyInclusion' ||
     predicate == 'VerifyConcatenate' ||
-    predicate == 'VerifyRoot' ||
+    predicate == 'IsStored' ||
     predicate == 'IsSameAmount'
   )
 }
