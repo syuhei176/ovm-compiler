@@ -8,7 +8,10 @@ interface PredicatePreset {
 
 interface QuantifierPreset {
   name: string
-  translate: (p: PropertyNode) => { hint: string; properties: PropertyNode[] }
+  translate: (
+    quantifier: PropertyNode,
+    variable: string
+  ) => { hint: string; properties: PropertyNode[] }
 }
 
 const presetPredicateTable: { [key: string]: PredicatePreset } = {
@@ -59,9 +62,7 @@ const zero = '0000000000000000000000000000000000000000000000000000000000000000'
 const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   IsLessThan: {
     name: 'IsLessThan',
-    translate: (p: PropertyNode) => {
-      const quantifier = p.inputs[0] as PropertyNode
-      const variable = p.inputs[1]
+    translate: (quantifier: PropertyNode, variable: string) => {
       return {
         hint: `range,NUMBER,${zero}\${${quantifier.inputs[0]}}`,
         properties: [
@@ -76,9 +77,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   },
   Range: {
     name: 'Range',
-    translate: (p: PropertyNode) => {
-      const quantifier = p.inputs[0] as PropertyNode
-      const variable = p.inputs[1]
+    translate: (quantifier: PropertyNode, variable: string) => {
       return {
         hint: `range,NUMBER,\${${quantifier.inputs[0]}}\${${quantifier.inputs[1]}}`,
         properties: [
@@ -98,9 +97,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   },
   SU: {
     name: 'SU',
-    translate: (p: PropertyNode) => {
-      const quantifier = p.inputs[0] as PropertyNode
-      const variable = p.inputs[1]
+    translate: (quantifier: PropertyNode, variable: string) => {
       if (quantifier.inputs.length == 2) {
         return {
           hint: `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},ITER,${zero}`,
@@ -129,9 +126,7 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   },
   Tx: {
     name: 'Tx',
-    translate: (p: PropertyNode) => {
-      const quantifier = p.inputs[0] as PropertyNode
-      const variable = p.inputs[1]
+    translate: (quantifier: PropertyNode, variable: string) => {
       return {
         hint: `tx.block\${${quantifier.inputs[2]}}.range\${${quantifier.inputs[0]}},RANGE,\${${quantifier.inputs[1]}}`,
         properties: [
@@ -201,7 +196,9 @@ function translateForAllSuchThat(p: PropertyNode): PropertyNode {
   const preset = presetQuantifierTable[p.inputs[0].predicate]
   p.inputs[2] = translateQuantifierPerPropertyNode(p.inputs[2] as PropertyNode)
   if (preset) {
-    const translated = preset.translate(p)
+    const quantifier = p.inputs[0] as PropertyNode
+    const variable = p.inputs[1] as string
+    const translated = preset.translate(quantifier, variable)
     p.inputs[0] = translated.hint
     const condition = translated.properties[0]
     if (condition) {
@@ -229,7 +226,9 @@ function translateThereExistsSuchThat(p: PropertyNode): PropertyNode {
   const preset = presetQuantifierTable[p.inputs[0].predicate]
   p.inputs[2] = translateQuantifierPerPropertyNode(p.inputs[2] as PropertyNode)
   if (preset) {
-    const translated = preset.translate(p)
+    const quantifier = p.inputs[0] as PropertyNode
+    const variable = p.inputs[1] as string
+    const translated = preset.translate(quantifier, variable)
     p.inputs[0] = translated.hint
     if (translated.properties.length > 0) {
       p.inputs[2] = {
