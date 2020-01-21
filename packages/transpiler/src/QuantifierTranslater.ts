@@ -1,3 +1,4 @@
+import { BigNumber } from '@cryptoeconomicslab/primitives'
 import { PropertyDef, PropertyNode } from '@cryptoeconomicslab/ovm-parser'
 import * as utils from './utils'
 
@@ -174,13 +175,15 @@ const createQuantifier = (
   }
 }
 
-const zero = '0000000000000000000000000000000000000000000000000000000000000000'
+const zero = BigNumber.from(0)
 const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   IsLessThan: createQuantifier(
     'IsLessThan',
     'IsLessThan',
-    (quantifier: PropertyNode) =>
-      `range,NUMBER,${zero}\${${quantifier.inputs[0]}}`
+    (quantifier: PropertyNode) => {
+      const encodedZero = ovmContext.coder.encode(zero).toHexString()
+      return `range,NUMBER,${encodedZero}-\${${quantifier.inputs[0]}}`
+    }
   ),
   Range: createQuantifier(
     'Range',
@@ -190,7 +193,8 @@ const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
   ),
   SU: createQuantifier('SU', 'IncludedWithin', (quantifier: PropertyNode) => {
     if (quantifier.inputs.length == 2) {
-      return `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},ITER,${zero}`
+      const encodedZero = ovmContext.coder.encode(zero).toHexString()
+      return `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},ITER,${encodedZero}`
     } else if (quantifier.inputs.length == 3) {
       return `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},RANGE,\${${quantifier.inputs[2]}}`
     } else {
