@@ -1,5 +1,8 @@
 import { translateQuantifier } from './QuantifierTranslater'
 import { PropertyDef } from '@cryptoeconomicslab/ovm-parser'
+import Coder from '@cryptoeconomicslab/coder'
+import { setupContext } from '@cryptoeconomicslab/context'
+setupContext({ coder: Coder })
 
 describe('QuantifierTranslater', () => {
   beforeEach(async () => {})
@@ -71,7 +74,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ForAllSuchThat',
             inputs: [
-              'range,NUMBER,0000000000000000000000000000000000000000000000000000000000000000${b}',
+              'range,NUMBER,0x223022-${b}',
               'bb',
               {
                 type: 'PropertyNode',
