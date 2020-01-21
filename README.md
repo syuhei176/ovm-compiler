@@ -32,3 +32,18 @@ https://ovm-compiler.netlify.com
 ```
 npm test
 ```
+
+## Roadmap
+
+- [x] Plasma checkpoint example
+- [x] Plasma exit example
+- [x] Plasma ownership predicate example
+- [x] Plasma swap predicate example
+- [x] Plasma offline swap predicate example
+- [ ] Plasma fast finality predicate example
+- [ ] Plasma swap between main chain and Plasma chain predicate example
+- [x] add parser
+- [x] add byte code generator for ethereum
+- [ ] add code generator for Substrate
+- [ ] update language to write state transition
+
