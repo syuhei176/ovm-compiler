@@ -3,7 +3,7 @@ import * as utils from './utils'
 
 interface PredicatePreset {
   name: string
-  translate: (p: PropertyNode) => PropertyNode
+  translate: (p: PropertyNode, suffix: string) => PropertyNode
 }
 
 interface QuantifierPreset {
@@ -17,17 +17,17 @@ interface QuantifierPreset {
 const presetPredicateTable: { [key: string]: PredicatePreset } = {
   SignedBy: {
     name: 'SignedBy',
-    translate: (p: PropertyNode) => {
+    translate: (p: PropertyNode, suffix: string) => {
       return {
         type: 'PropertyNode',
         predicate: 'ThereExistsSuchThat',
         inputs: [
           `signatures,KEY,\${${p.inputs[0]}}`,
-          'sig',
+          `sig${suffix}`,
           {
             type: 'PropertyNode',
             predicate: 'IsValidSignature',
-            inputs: [p.inputs[0], 'sig', p.inputs[1], '$secp256k1']
+            inputs: [p.inputs[0], `sig${suffix}`, p.inputs[1], '$secp256k1']
           }
         ]
       }
@@ -35,13 +35,13 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
   },
   IncludedAt: {
     name: 'IncludedAt',
-    translate: (p: PropertyNode) => {
+    translate: (p: PropertyNode, suffix: string) => {
       return {
         type: 'PropertyNode',
         predicate: 'ThereExistsSuchThat',
         inputs: [
           `su.block\${${p.inputs[3]}}.range\${${p.inputs[1]}},RANGE,\${${p.inputs[2]}}`,
-          'inclusionProof',
+          `proof${suffix}`,
           {
             type: 'PropertyNode',
             predicate: 'VerifyInclusion',
@@ -49,7 +49,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
               p.inputs[0],
               p.inputs[1],
               p.inputs[2],
-              'inclusionProof',
+              `proof${suffix}`,
               p.inputs[3]
             ]
           }
@@ -59,7 +59,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
   },
   IsWithinRange: {
     name: 'IsWithinRange',
-    translate: (p: PropertyNode) => {
+    translate: (p: PropertyNode, suffix: string) => {
       return {
         type: 'PropertyNode',
         predicate: 'And',
@@ -80,14 +80,14 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
   },
   IncludedWithin: {
     name: 'IncludedWithin',
-    translate: (p: PropertyNode) => {
+    translate: (p: PropertyNode, suffix: string) => {
       const inputs: PropertyNode[] = [
         {
           type: 'PropertyNode',
           predicate: 'ThereExistsSuchThat',
           inputs: [
             `su.block\${${p.inputs[1]}}.range\${${p.inputs[2]}},RANGE,\${${p.inputs[3]}}`,
-            'proof',
+            `proof${suffix}`,
             {
               type: 'PropertyNode',
               predicate: 'VerifyInclusion',
@@ -95,7 +95,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
                 p.inputs[0],
                 p.inputs[0] + '.0',
                 p.inputs[0] + '.1',
-                'proof',
+                `proof${suffix}`,
                 p.inputs[1]
               ]
             }
@@ -123,7 +123,7 @@ const presetPredicateTable: { [key: string]: PredicatePreset } = {
   },
   IsTx: {
     name: 'IsTx',
-    translate: (p: PropertyNode) => {
+    translate: (p: PropertyNode, suffix: string) => {
       return {
         type: 'PropertyNode',
         predicate: 'And',
@@ -216,11 +216,14 @@ function translateQuantifierPerPropertyDef(p: PropertyDef): PropertyDef {
   return p
 }
 
-function translateQuantifierPerPropertyNode(p: PropertyNode): PropertyNode {
+function translateQuantifierPerPropertyNode(
+  p: PropertyNode,
+  variableSuffix: number = 0
+): PropertyNode {
   if (utils.isAtomicProposition(p.predicate)) {
     const preset = presetPredicateTable[p.predicate]
     if (preset) {
-      return preset.translate(p)
+      return preset.translate(p, (variableSuffix++).toString())
     }
   } else if (p.predicate == 'ForAllSuchThat') {
     return translateForAllSuchThat(p)
@@ -231,7 +234,7 @@ function translateQuantifierPerPropertyNode(p: PropertyNode): PropertyNode {
       if (typeof i === 'string' || i === undefined) {
         return i
       } else {
-        return translateQuantifierPerPropertyNode(i)
+        return translateQuantifierPerPropertyNode(i, variableSuffix)
       }
     })
   }

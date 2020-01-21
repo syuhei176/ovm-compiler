@@ -26,11 +26,11 @@ describe('QuantifierTranslater', () => {
             predicate: 'ThereExistsSuchThat',
             inputs: [
               'signatures,KEY,${a}',
-              'sig',
+              'sig0',
               {
                 type: 'PropertyNode',
                 predicate: 'IsValidSignature',
-                inputs: ['a', 'sig', 'b', '$secp256k1']
+                inputs: ['a', 'sig0', 'b', '$secp256k1']
               }
             ]
           }
@@ -149,11 +149,17 @@ describe('QuantifierTranslater', () => {
                             predicate: 'ThereExistsSuchThat',
                             inputs: [
                               'su.block${token}.range${range},RANGE,${block}',
-                              'proof',
+                              'proof0',
                               {
                                 type: 'PropertyNode',
                                 predicate: 'VerifyInclusion',
-                                inputs: ['su', 'su.0', 'su.1', 'proof', 'token']
+                                inputs: [
+                                  'su',
+                                  'su.0',
+                                  'su.1',
+                                  'proof0',
+                                  'token'
+                                ]
                               }
                             ]
                           },
