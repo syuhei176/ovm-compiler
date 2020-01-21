@@ -142,8 +142,32 @@ describe('QuantifierTranslater', () => {
                     inputs: [
                       {
                         type: 'PropertyNode',
-                        predicate: 'IncludedWithin',
-                        inputs: ['su', 'range', 'block', 'token']
+                        predicate: 'And',
+                        inputs: [
+                          {
+                            type: 'PropertyNode',
+                            predicate: 'ThereExistsSuchThat',
+                            inputs: [
+                              'su.block${token}.range${range},RANGE,${block}',
+                              'proof',
+                              {
+                                type: 'PropertyNode',
+                                predicate: 'VerifyInclusion',
+                                inputs: ['su', 'su.0', 'su.1', 'proof', 'token']
+                              }
+                            ]
+                          },
+                          {
+                            type: 'PropertyNode',
+                            predicate: 'Equal',
+                            inputs: ['su.0', 'range']
+                          },
+                          {
+                            type: 'PropertyNode',
+                            predicate: 'IsContained',
+                            inputs: ['su.1', 'block']
+                          }
+                        ]
                       }
                     ]
                   },
@@ -197,23 +221,29 @@ describe('QuantifierTranslater', () => {
                 inputs: [
                   {
                     type: 'PropertyNode',
-                    predicate: 'Equal',
-                    inputs: ['tx.address', '$TransactionAddress']
-                  },
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'Equal',
-                    inputs: ['tx.0', 'token']
-                  },
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'IsContained',
-                    inputs: ['tx.1', 'range']
-                  },
-                  {
-                    type: 'PropertyNode',
-                    predicate: 'Equal',
-                    inputs: ['tx.2', 'block']
+                    predicate: 'And',
+                    inputs: [
+                      {
+                        type: 'PropertyNode',
+                        predicate: 'Equal',
+                        inputs: ['tx.address', '$TransactionAddress']
+                      },
+                      {
+                        type: 'PropertyNode',
+                        predicate: 'Equal',
+                        inputs: ['tx.0', 'token']
+                      },
+                      {
+                        type: 'PropertyNode',
+                        predicate: 'IsContained',
+                        inputs: ['tx.1', 'range']
+                      },
+                      {
+                        type: 'PropertyNode',
+                        predicate: 'Equal',
+                        inputs: ['tx.2', 'block']
+                      }
+                    ]
                   },
                   { type: 'PropertyNode', predicate: 'Foo', inputs: ['tx'] }
                 ]
