@@ -4,6 +4,7 @@ import { transpilePropertyDefsToCompiledPredicate } from '@cryptoeconomicslab/ov
 import { SolidityCodeGeneratorOptions } from '@cryptoeconomicslab/ovm-solidity-generator'
 import Coder from '@cryptoeconomicslab/coder'
 import { setupContext } from '@cryptoeconomicslab/context'
+// Set default JSON coder because code generator doesn't use hint data.
 setupContext({ coder: Coder })
 
 export async function generateEVMByteCode(
