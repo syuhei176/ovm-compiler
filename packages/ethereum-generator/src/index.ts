@@ -2,6 +2,9 @@ import { Parser } from '@cryptoeconomicslab/ovm-parser'
 import { EthereumCodeGenerator } from './EthereumCodeGenerator'
 import { transpilePropertyDefsToCompiledPredicate } from '@cryptoeconomicslab/ovm-transpiler'
 import { SolidityCodeGeneratorOptions } from '@cryptoeconomicslab/ovm-solidity-generator'
+import Coder from '@cryptoeconomicslab/coder'
+import { setupContext } from '@cryptoeconomicslab/context'
+setupContext({ coder: Coder })
 
 export async function generateEVMByteCode(
   source: string,
