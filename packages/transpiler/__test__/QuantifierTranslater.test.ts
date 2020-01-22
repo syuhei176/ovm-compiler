@@ -174,7 +174,7 @@ describe('QuantifierTranslater', () => {
       ])
     })
 
-    test('Root', () => {
+    test('Stored', () => {
       const input: PropertyDef[] = [
         {
           name: 'RootTest',
@@ -266,7 +266,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ForAllSuchThat',
             inputs: [
-              '_,CONCAT,${a}${b}',
+              '_,CONCAT,${a}-${b}',
               'bytes',
               {
                 type: 'PropertyNode',
