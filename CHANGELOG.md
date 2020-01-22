@@ -1,5 +1,21 @@
-## <small>0.1.17 (2020-01-17)</small>
+## <small>0.1.17 (2020-01-22)</small>
 
+
+
+
+## <small>0.2.4 (2020-01-22)</small>
+
+* clean structure ([99cd32f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/99cd32f))
+* set up context ([fd162d5](https://github.com/cryptoeconomicslab/ovm-compiler/commit/fd162d5))
+* update changelog ([16a79fe](https://github.com/cryptoeconomicslab/ovm-compiler/commit/16a79fe))
+* v0.2.4 ([b26705a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/b26705a))
+* chore: add comment ([e24cdf0](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e24cdf0))
+* fix: add suffix to variable name ([f6a71de](https://github.com/cryptoeconomicslab/ovm-compiler/commit/f6a71de))
+* fix: build before test ([a57967c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a57967c))
+* fix: fix input.0.address syntax #41 ([49fd4b9](https://github.com/cryptoeconomicslab/ovm-compiler/commit/49fd4b9)), closes [#41](https://github.com/cryptoeconomicslab/ovm-compiler/issues/41)
+* fix: transpiler depends on coder ([f703595](https://github.com/cryptoeconomicslab/ovm-compiler/commit/f703595))
+* clean: generate quantifier from preset predicate ([69e2875](https://github.com/cryptoeconomicslab/ovm-compiler/commit/69e2875))
+* clean: preset quantifier ([269c7f9](https://github.com/cryptoeconomicslab/ovm-compiler/commit/269c7f9))
 
 
 
