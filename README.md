@@ -42,6 +42,8 @@ npm test
 - [x] Plasma offline swap predicate example
 - [ ] Plasma fast finality predicate example
 - [ ] Plasma swap between main chain and Plasma chain predicate example
+- [ ] State channel example
+- [ ] Optimistic Rollup example
 - [x] add parser
 - [x] add byte code generator for ethereum
 - [ ] add code generator for Substrate
