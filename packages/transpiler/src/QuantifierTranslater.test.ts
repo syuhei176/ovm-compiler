@@ -194,7 +194,7 @@ describe('QuantifierTranslater', () => {
       const library: PropertyDef[] = applyLibraries(
         parser.parse(`
 @library
-@quantifier("proof.block\${t}.range\${r},RANGE,\${b}")
+@quantifier("proof.block\${b}.range\${t},RANGE,\${r}")
 def IncludedAt(p, l, t, r, b) := 
   VerifyInclusion(l, t, r, b, p)
 
@@ -238,7 +238,7 @@ def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
                             type: 'PropertyNode',
                             predicate: 'ThereExistsSuchThat',
                             inputs: [
-                              'proof.block${su.0}.range${su.1},RANGE,${b}',
+                              'proof.block${b}.range${su.0},RANGE,${su.1}',
                               'v0',
                               {
                                 type: 'PropertyNode',
