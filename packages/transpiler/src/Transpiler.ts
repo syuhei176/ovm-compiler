@@ -20,7 +20,7 @@ export function transpile(
   importHandler: ImportHandler
 ): CompiledPredicate[] {
   const importPredicates = createImportPredicates(importHandler)
-  // Compile predicates which isn't library
+  // Compile predicates which aren't library
   return createCompiledPredicates(
     applyLibraries(program.declarations, importPredicates(program)).filter(
       p => !isLibrary(p)
