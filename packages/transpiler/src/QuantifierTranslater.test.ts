@@ -10,6 +10,7 @@ describe('QuantifierTranslater', () => {
     test('SignedBy', () => {
       const input: PropertyDef[] = [
         {
+          annotations: [],
           name: 'SignedByTest',
           inputDefs: ['a', 'b'],
           body: {
@@ -22,6 +23,7 @@ describe('QuantifierTranslater', () => {
       const output = translateQuantifier(input)
       expect(output).toStrictEqual([
         {
+          annotations: [],
           name: 'SignedByTest',
           inputDefs: ['a', 'b'],
           body: {
@@ -44,6 +46,7 @@ describe('QuantifierTranslater', () => {
     test('IsLessThan', () => {
       const input: PropertyDef[] = [
         {
+          annotations: [],
           name: 'LessThanTest',
           inputDefs: ['b'],
           body: {
@@ -68,6 +71,7 @@ describe('QuantifierTranslater', () => {
       const output = translateQuantifier(input)
       expect(output).toStrictEqual([
         {
+          annotations: [],
           name: 'LessThanTest',
           inputDefs: ['b'],
           body: {
@@ -103,6 +107,7 @@ describe('QuantifierTranslater', () => {
     test('SU', () => {
       const input: PropertyDef[] = [
         {
+          annotations: [],
           name: 'SUTest',
           inputDefs: ['token', 'range', 'block'],
           body: {
@@ -127,6 +132,7 @@ describe('QuantifierTranslater', () => {
       const output = translateQuantifier(input)
       expect(output).toStrictEqual([
         {
+          annotations: [],
           name: 'SUTest',
           inputDefs: ['token', 'range', 'block'],
           body: {
@@ -192,6 +198,7 @@ describe('QuantifierTranslater', () => {
     test('Tx', () => {
       const input: PropertyDef[] = [
         {
+          annotations: [],
           name: 'TxTest',
           inputDefs: ['token', 'range', 'block'],
           body: {
@@ -216,6 +223,7 @@ describe('QuantifierTranslater', () => {
       const output = translateQuantifier(input)
       expect(output).toStrictEqual([
         {
+          annotations: [],
           name: 'TxTest',
           inputDefs: ['token', 'range', 'block'],
           body: {

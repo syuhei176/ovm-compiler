@@ -1,5 +1,5 @@
-import { transpilePropertyDefsToCompiledPredicate } from './Transpiler'
+import { transpile } from './Transpiler'
 
-export { transpilePropertyDefsToCompiledPredicate }
+export { transpile }
 
 export * from './CompiledPredicate'

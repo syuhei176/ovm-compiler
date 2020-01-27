@@ -1,10 +1,8 @@
 import { createCompiledPredicates } from './ContractCompiler'
 import { translateQuantifier } from './QuantifierTranslater'
 import { CompiledPredicate } from './CompiledPredicate'
-import { PropertyDef } from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
+import { Program } from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
 
-export function transpilePropertyDefsToCompiledPredicate(
-  propertyDefs: PropertyDef[]
-): CompiledPredicate[] {
-  return createCompiledPredicates(translateQuantifier(propertyDefs))
+export function transpile(program: Program): CompiledPredicate[] {
+  return createCompiledPredicates(translateQuantifier(program.declarations))
 }
