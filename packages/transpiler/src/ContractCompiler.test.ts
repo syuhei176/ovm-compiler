@@ -9,6 +9,7 @@ describe('ContractCompiler', () => {
       test('and', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'andTest',
             inputDefs: ['a', 'b'],
             body: {
@@ -60,6 +61,7 @@ describe('ContractCompiler', () => {
       test('or', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'orTest',
             inputDefs: ['a', 'b'],
             body: {
@@ -111,6 +113,7 @@ describe('ContractCompiler', () => {
       test('not', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'notTest',
             inputDefs: ['a'],
             body: {
@@ -154,6 +157,7 @@ describe('ContractCompiler', () => {
       test('forall', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'forallTest',
             inputDefs: ['a'],
             body: {
@@ -211,6 +215,7 @@ describe('ContractCompiler', () => {
       test('there', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'thereTest',
             inputDefs: [],
             body: {
@@ -264,6 +269,7 @@ describe('ContractCompiler', () => {
       test('bindand', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'bindAndTest',
             inputDefs: ['a'],
             body: {
@@ -317,6 +323,7 @@ describe('ContractCompiler', () => {
       test('bind2', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'bind2Test',
             inputDefs: ['a'],
             body: {
@@ -370,6 +377,7 @@ describe('ContractCompiler', () => {
       test('bindval', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'bindValTest',
             inputDefs: ['a'],
             body: {
@@ -427,6 +435,7 @@ describe('ContractCompiler', () => {
       test('bindaddr', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'bindAddrTest',
             inputDefs: ['a'],
             body: {
@@ -494,6 +503,7 @@ describe('ContractCompiler', () => {
       test('eval1', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'evalTest',
             inputDefs: ['a', 'b'],
             body: {
@@ -550,6 +560,7 @@ describe('ContractCompiler', () => {
       test('forval', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'forValTest',
             inputDefs: ['a'],
             body: {
@@ -601,6 +612,7 @@ describe('ContractCompiler', () => {
       test('thereval', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'thereValTest',
             inputDefs: [],
             body: {
@@ -650,6 +662,7 @@ describe('ContractCompiler', () => {
       test('thereval2', () => {
         const input: PropertyDef[] = [
           {
+            annotations: [],
             name: 'thereValTest',
             inputDefs: ['a'],
             body: {

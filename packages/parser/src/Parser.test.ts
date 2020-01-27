@@ -20,9 +20,10 @@ describe('Parser', () => {
     describe('operator', () => {
       test('and', () => {
         const testOutput = loadTest('operators/and')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'andTest',
             inputDefs: ['a', 'b'],
             body: {
@@ -38,9 +39,10 @@ describe('Parser', () => {
       })
       test('or', () => {
         const testOutput = loadTest('operators/or')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'orTest',
             inputDefs: ['a', 'b'],
             body: {
@@ -56,9 +58,10 @@ describe('Parser', () => {
       })
       test('not', () => {
         const testOutput = loadTest('operators/not')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'notTest',
             inputDefs: ['a'],
             body: {
@@ -73,9 +76,10 @@ describe('Parser', () => {
       })
       test('forall', () => {
         const testOutput = loadTest('operators/forall')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'forallTest',
             inputDefs: ['a'],
             body: {
@@ -92,9 +96,10 @@ describe('Parser', () => {
       })
       test('there', () => {
         const testOutput = loadTest('operators/there')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'thereTest',
             inputDefs: [],
             body: {
@@ -109,13 +114,30 @@ describe('Parser', () => {
           }
         ])
       })
+      test('there without child', () => {
+        const testOutput = `def thereTest() := A().any()`
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
+        expect(ast).toStrictEqual([
+          {
+            annotations: [],
+            name: 'thereTest',
+            inputDefs: [],
+            body: {
+              type: 'PropertyNode',
+              predicate: 'ThereExistsSuchThat',
+              inputs: [{ type: 'PropertyNode', predicate: 'A', inputs: [] }]
+            }
+          }
+        ])
+      })
     })
     describe('bind', () => {
       test('bindand', () => {
         const testOutput = loadTest('bind/bindand')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'bindAndTest',
             inputDefs: ['a'],
             body: {
@@ -131,9 +153,10 @@ describe('Parser', () => {
       })
       test('bindval', () => {
         const testOutput = loadTest('bind/bindval')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'bindValTest',
             inputDefs: ['a'],
             body: {
@@ -150,9 +173,10 @@ describe('Parser', () => {
       })
       test('bind2', () => {
         const testOutput = loadTest('bind/bind2')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'bind2Test',
             inputDefs: ['a'],
             body: {
@@ -169,9 +193,10 @@ describe('Parser', () => {
 
       test('bindaddr', () => {
         const testOutput = loadTest('bind/bindaddr')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'bindAddrTest',
             inputDefs: ['a'],
             body: {
@@ -194,9 +219,10 @@ describe('Parser', () => {
     describe('variable', () => {
       test('eval1', () => {
         const testOutput = loadTest('variable/eval1')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'evalTest',
             inputDefs: ['a', 'b'],
             body: {
@@ -212,9 +238,10 @@ describe('Parser', () => {
       })
       test('forval', () => {
         const testOutput = loadTest('variable/forval')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'forValTest',
             inputDefs: ['a'],
             body: {
@@ -231,9 +258,10 @@ describe('Parser', () => {
       })
       test('thereval', () => {
         const testOutput = loadTest('variable/thereval')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'thereValTest',
             inputDefs: [],
             body: {
@@ -250,9 +278,10 @@ describe('Parser', () => {
       })
       test('thereval2', () => {
         const testOutput = loadTest('variable/thereval2')
-        const ast: PropertyDef[] = parser.parse(testOutput)
+        const ast: PropertyDef[] = parser.parse(testOutput).declarations
         expect(ast).toStrictEqual([
           {
+            annotations: [],
             name: 'thereValTest',
             inputDefs: ['a'],
             body: {
@@ -266,6 +295,72 @@ describe('Parser', () => {
             }
           }
         ])
+      })
+    })
+
+    describe('import', () => {
+      test('import', () => {
+        const testOutput = `
+        from aaa import bbb
+        def Foo(a, b) := Bool(a) and Bool(b)
+        `
+        const ast = parser.parse(testOutput)
+        expect(ast).toStrictEqual({
+          imports: [
+            {
+              path: 'aaa',
+              module: 'bbb'
+            }
+          ],
+          declarations: [
+            {
+              annotations: [],
+              name: 'Foo',
+              inputDefs: ['a', 'b'],
+              body: {
+                type: 'PropertyNode',
+                predicate: 'And',
+                inputs: [
+                  { type: 'PropertyNode', predicate: 'Bool', inputs: ['a'] },
+                  { type: 'PropertyNode', predicate: 'Bool', inputs: ['b'] }
+                ]
+              }
+            }
+          ]
+        })
+      })
+    })
+
+    describe('annotation', () => {
+      test('annotation', () => {
+        const testOutput = `
+        @quantifier("bucket\${b},type,\${a}")
+        def Foo(a, b) := Bool(a) and Bool(b)
+        `
+        const ast = parser.parse(testOutput)
+        expect(ast).toStrictEqual({
+          imports: [],
+          declarations: [
+            {
+              annotations: [
+                {
+                  type: 'Annotation',
+                  body: { name: 'quantifier', args: ['bucket${b},type,${a}'] }
+                }
+              ],
+              name: 'Foo',
+              inputDefs: ['a', 'b'],
+              body: {
+                type: 'PropertyNode',
+                predicate: 'And',
+                inputs: [
+                  { type: 'PropertyNode', predicate: 'Bool', inputs: ['a'] },
+                  { type: 'PropertyNode', predicate: 'Bool', inputs: ['b'] }
+                ]
+              }
+            }
+          ]
+        })
       })
     })
   })
