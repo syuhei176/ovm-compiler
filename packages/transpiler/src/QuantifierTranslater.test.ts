@@ -177,21 +177,26 @@ describe('QuantifierTranslater', () => {
         }
       ]
       const parser = new Parser()
-      const library: PropertyDef[] = parser.parse(`
+      const library: PropertyDef[] = applyLibraries(
+        parser.parse(`
+@inline
 @quantifier("proof.block\${t}.range\${r},RANGE,\${b}")
 def IncludedAt(p, l, t, r, b) := 
   VerifyInclusion(l, t, r, b, p)
 
+@inline
 def IncludedWithin(su, b, t, r) := 
   IncludedAt(su, su.0, su.1, b).any()
   and Equal(su.0, t)
   and IsContained(su.1, range)
         
+@inline
 @quantifier("su.block\${token}.range\${range},RANGE,\${block}")
 def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
-      `).declarations
+      `).declarations,
+        []
+      )
       const output = applyLibraries(input, library)
-      console.log(JSON.stringify(output))
       expect(output).toStrictEqual([
         {
           annotations: [],
@@ -219,30 +224,24 @@ def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
                             type: 'PropertyNode',
                             predicate: 'ThereExistsSuchThat',
                             inputs: [
-                              'su.block${token}.range${range},RANGE,${block}',
-                              'proof0',
+                              'proof.block${su.0}.range${su.1},RANGE,${b}',
+                              'v0',
                               {
                                 type: 'PropertyNode',
                                 predicate: 'VerifyInclusion',
-                                inputs: [
-                                  'su',
-                                  'su.0',
-                                  'su.1',
-                                  'proof0',
-                                  'token'
-                                ]
+                                inputs: ['su', 'su.0', 'su.1', 'block', 'v0']
                               }
                             ]
                           },
                           {
                             type: 'PropertyNode',
                             predicate: 'Equal',
-                            inputs: ['su.0', 'range']
+                            inputs: ['su.0', 'token']
                           },
                           {
                             type: 'PropertyNode',
                             predicate: 'IsContained',
-                            inputs: ['su.1', 'block']
+                            inputs: ['su.1', 'range']
                           }
                         ]
                       }
@@ -284,12 +283,14 @@ def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
       ]
       const parser = new Parser()
       const library: PropertyDef[] = parser.parse(`
+@inline
 def IsTx(tx, t, r, b) := 
   Equal(tx.address, $TransactionAddress)
   and Equal(tx.0, t)
   and IsContained(tx.1, range)
   and IsLessThan(tx.2, b)
         
+@inline
 @quantifier("tx.block\${block}.range\${token},RANGE,\${range}")
 def Tx(tx, token, range, block) := IsTx(tx, token, range, block)
       `).declarations

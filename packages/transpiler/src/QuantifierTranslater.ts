@@ -148,11 +148,23 @@ export function applyLibraries(
     }
     return presetTable
   }, {})
-  const translator = createTranslator(presetTable, quantifierPresetTable)
-  return propertyDefinitions.map(propertyDefinition => {
-    propertyDefinition.body = translator(propertyDefinition.body)
-    return propertyDefinition
-  })
+  propertyDefinitions.reduce(
+    ({ presetTable, quantifierPresetTable }, propertyDefinition) => {
+      const translator = createTranslator(presetTable, quantifierPresetTable)
+      const translated = translator(propertyDefinition.body)
+      propertyDefinition.body = translated
+      presetTable[propertyDefinition.name] = createPredicatePreset(
+        propertyDefinition
+      )
+      const quantifierPreset = createQuantifierPreset(propertyDefinition)
+      if (quantifierPreset) {
+        quantifierPresetTable[quantifierPreset.name] = quantifierPreset
+      }
+      return { presetTable, quantifierPresetTable }
+    },
+    { presetTable, quantifierPresetTable }
+  )
+  return propertyDefinitions
 }
 
 function createTranslator(
@@ -217,7 +229,7 @@ function createTranslator(
     suffix: string
   ): PropertyNode => {
     if (p.inputs[0] === undefined || typeof p.inputs[0] === 'string') {
-      throw new Error('invalid quantifier')
+      return p
     }
     const preset = quantifierPresetTable[p.inputs[0].predicate]
     const originalChildren = (p.inputs.slice(2) as PropertyNode[]).map(
