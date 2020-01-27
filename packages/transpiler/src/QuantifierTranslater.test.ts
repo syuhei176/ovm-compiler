@@ -32,6 +32,13 @@ describe('QuantifierTranslater', () => {
             {
               type: 'Annotation',
               body: {
+                name: 'library',
+                args: []
+              }
+            },
+            {
+              type: 'Annotation',
+              body: {
                 name: 'quantifier',
                 args: ['signatures,KEY,${message}']
               }
@@ -97,6 +104,13 @@ describe('QuantifierTranslater', () => {
       const library: PropertyDef[] = [
         {
           annotations: [
+            {
+              type: 'Annotation',
+              body: {
+                name: 'library',
+                args: []
+              }
+            },
             {
               type: 'Annotation',
               body: {
@@ -179,18 +193,18 @@ describe('QuantifierTranslater', () => {
       const parser = new Parser()
       const library: PropertyDef[] = applyLibraries(
         parser.parse(`
-@inline
+@library
 @quantifier("proof.block\${t}.range\${r},RANGE,\${b}")
 def IncludedAt(p, l, t, r, b) := 
   VerifyInclusion(l, t, r, b, p)
 
-@inline
+@library
 def IncludedWithin(su, b, t, r) := 
   IncludedAt(su, su.0, su.1, b).any()
   and Equal(su.0, t)
   and IsContained(su.1, range)
         
-@inline
+@library
 @quantifier("su.block\${token}.range\${range},RANGE,\${block}")
 def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
       `).declarations,
@@ -283,14 +297,14 @@ def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
       ]
       const parser = new Parser()
       const library: PropertyDef[] = parser.parse(`
-@inline
+@library
 def IsTx(tx, t, r, b) := 
   Equal(tx.address, $TransactionAddress)
   and Equal(tx.0, t)
   and IsContained(tx.1, range)
   and IsLessThan(tx.2, b)
         
-@inline
+@library
 @quantifier("tx.block\${block}.range\${token},RANGE,\${range}")
 def Tx(tx, token, range, block) := IsTx(tx, token, range, block)
       `).declarations

@@ -132,14 +132,17 @@ export function applyLibraries(
   propertyDefinitions: PropertyDef[],
   importedPredicates: PropertyDef[]
 ): PropertyDef[] {
-  const presetTable = importedPredicates.reduce<{
+  const inlinePredicates = importedPredicates.filter(
+    p => !!p.annotations.find(a => a.body.name == 'library')
+  )
+  const presetTable = inlinePredicates.reduce<{
     [key: string]: PredicatePreset
   }>((presetTable, importedPredicate) => {
     const preset = createPredicatePreset(importedPredicate)
     presetTable[preset.name] = preset
     return presetTable
   }, {})
-  const quantifierPresetTable = importedPredicates.reduce<{
+  const quantifierPresetTable = inlinePredicates.reduce<{
     [key: string]: QuantifierPreset
   }>((presetTable, importedPredicate) => {
     const preset = createQuantifierPreset(importedPredicate)
@@ -260,199 +263,3 @@ function createTranslator(
 
   return translate
 }
-
-/*
-const presetPredicateTable: { [key: string]: PredicatePreset } = {
-  SignedBy: {
-    name: 'SignedBy',
-    translate: (p: PropertyNode, suffix: string) => {
-      return {
-        type: 'PropertyNode',
-        predicate: 'ThereExistsSuchThat',
-        inputs: [
-          `signatures,KEY,\${${p.inputs[0]}}`,
-          `sig${suffix}`,
-          {
-            type: 'PropertyNode',
-            predicate: 'IsValidSignature',
-            inputs: [p.inputs[0], `sig${suffix}`, p.inputs[1], '$secp256k1']
-          }
-        ]
-      }
-    }
-  },
-  IncludedAt: {
-    name: 'IncludedAt',
-    translate: (p: PropertyNode, suffix: string) => {
-      return {
-        type: 'PropertyNode',
-        predicate: 'ThereExistsSuchThat',
-        inputs: [
-          `su.block\${${p.inputs[3]}}.range\${${p.inputs[1]}},RANGE,\${${p.inputs[2]}}`,
-          `proof${suffix}`,
-          {
-            type: 'PropertyNode',
-            predicate: 'VerifyInclusion',
-            inputs: [
-              p.inputs[0],
-              p.inputs[1],
-              p.inputs[2],
-              `proof${suffix}`,
-              p.inputs[3]
-            ]
-          }
-        ]
-      }
-    }
-  },
-  IsWithinRange: {
-    name: 'IsWithinRange',
-    translate: (p: PropertyNode, suffix: string) => {
-      return {
-        type: 'PropertyNode',
-        predicate: 'And',
-        inputs: [
-          {
-            type: 'PropertyNode',
-            predicate: 'IsLessThan',
-            inputs: [p.inputs[1], p.inputs[0]]
-          },
-          {
-            type: 'PropertyNode',
-            predicate: 'IsLessThan',
-            inputs: [p.inputs[0], p.inputs[2]]
-          }
-        ]
-      }
-    }
-  },
-  IncludedWithin: {
-    name: 'IncludedWithin',
-    translate: (p: PropertyNode, suffix: string) => {
-      const inputs: PropertyNode[] = [
-        {
-          type: 'PropertyNode',
-          predicate: 'ThereExistsSuchThat',
-          inputs: [
-            `su.block\${${p.inputs[1]}}.range\${${p.inputs[2]}},RANGE,\${${p.inputs[3]}}`,
-            `proof${suffix}`,
-            {
-              type: 'PropertyNode',
-              predicate: 'VerifyInclusion',
-              inputs: [
-                p.inputs[0],
-                p.inputs[0] + '.0',
-                p.inputs[0] + '.1',
-                `proof${suffix}`,
-                p.inputs[1]
-              ]
-            }
-          ]
-        },
-        {
-          type: 'PropertyNode',
-          predicate: 'Equal',
-          inputs: [p.inputs[0] + '.0', p.inputs[2]]
-        }
-      ]
-      if (p.inputs.length > 3) {
-        inputs.push({
-          type: 'PropertyNode',
-          predicate: 'IsContained',
-          inputs: [p.inputs[0] + '.1', p.inputs[3]]
-        })
-      }
-      return {
-        type: 'PropertyNode',
-        predicate: 'And',
-        inputs: inputs
-      }
-    }
-  },
-  IsTx: {
-    name: 'IsTx',
-    translate: (p: PropertyNode, suffix: string) => {
-      return {
-        type: 'PropertyNode',
-        predicate: 'And',
-        inputs: [
-          {
-            type: 'PropertyNode',
-            predicate: 'Equal',
-            inputs: [p.inputs[0] + '.address', '$TransactionAddress']
-          },
-          {
-            type: 'PropertyNode',
-            predicate: 'Equal',
-            inputs: [p.inputs[0] + '.0', p.inputs[1]]
-          },
-          {
-            type: 'PropertyNode',
-            predicate: 'IsContained',
-            inputs: [p.inputs[0] + '.1', p.inputs[2]]
-          },
-          {
-            type: 'PropertyNode',
-            predicate: 'Equal',
-            inputs: [p.inputs[0] + '.2', p.inputs[3]]
-          }
-        ]
-      }
-    }
-  }
-}
-
-const createQuantifier = (
-  name: string,
-  predicate: string,
-  hint: (quantifier: PropertyNode) => string
-): QuantifierPreset => {
-  return {
-    name,
-    translate: (quantifier: PropertyNode, variable: string) => {
-      return {
-        hint: hint(quantifier),
-        property: {
-          type: 'PropertyNode',
-          predicate,
-          inputs: [variable].concat(quantifier.inputs as string[])
-        }
-      }
-    }
-  }
-}
-
-const zero = BigNumber.from(0)
-const presetQuantifierTable: { [key: string]: QuantifierPreset } = {
-  IsLessThan: createQuantifier(
-    'IsLessThan',
-    'IsLessThan',
-    (quantifier: PropertyNode) => {
-      const encodedZero = ovmContext.coder.encode(zero).toHexString()
-      return `range,NUMBER,${encodedZero}-\${${quantifier.inputs[0]}}`
-    }
-  ),
-  Range: createQuantifier(
-    'Range',
-    'IsWithinRange',
-    (quantifier: PropertyNode) =>
-      `range,NUMBER,\${${quantifier.inputs[0]}}\${${quantifier.inputs[1]}}`
-  ),
-  SU: createQuantifier('SU', 'IncludedWithin', (quantifier: PropertyNode) => {
-    if (quantifier.inputs.length == 2) {
-      const encodedZero = ovmContext.coder.encode(zero).toHexString()
-      return `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},ITER,${encodedZero}`
-    } else if (quantifier.inputs.length == 3) {
-      return `su.block\${${quantifier.inputs[0]}}.range\${${quantifier.inputs[1]}},RANGE,\${${quantifier.inputs[2]}}`
-    } else {
-      throw new Error('invalid number of quantifier inputs')
-    }
-  }),
-  Tx: createQuantifier(
-    'Tx',
-    'IsTx',
-    (quantifier: PropertyNode) =>
-      `tx.block\${${quantifier.inputs[2]}}.range\${${quantifier.inputs[0]}},RANGE,\${${quantifier.inputs[1]}}`
-  )
-}
-*/

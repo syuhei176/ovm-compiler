@@ -16,7 +16,7 @@ export function transpile(
   const importPredicates = createImportPredicates(handler)
   return createCompiledPredicates(
     applyLibraries(program.declarations, importPredicates(program)).filter(
-      p => p.annotations.find(a => a.body.name == 'inline') === undefined
+      p => p.annotations.find(a => a.body.name == 'library') === undefined
     )
   )
 }
