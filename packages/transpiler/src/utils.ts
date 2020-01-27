@@ -1,3 +1,5 @@
+import { PropertyDef } from '@cryptoeconomicslab/ovm-parser'
+
 export function isNotAtomicProposition(predicate: string) {
   return (
     predicate == 'ForAllSuchThat' ||
@@ -63,4 +65,8 @@ export function getBindParams(
     }
   })
   return { parent, children }
+}
+
+export function isLibrary(declaration: PropertyDef): boolean {
+  return !!declaration.annotations.find(a => a.body.name == 'library')
 }

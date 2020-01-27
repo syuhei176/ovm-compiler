@@ -1,5 +1,5 @@
-import { transpile } from './Transpiler'
+import { transpile, ImportHandler } from './Transpiler'
 
-export { transpile }
+export { transpile, ImportHandler }
 
 export * from './CompiledPredicate'

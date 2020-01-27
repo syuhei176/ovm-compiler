@@ -1,12 +1,12 @@
-import { translateQuantifier } from './QuantifierTranslater'
-import { PropertyDef } from '@cryptoeconomicslab/ovm-parser'
+import { applyLibraries } from './QuantifierTranslater'
+import { PropertyDef, Parser } from '@cryptoeconomicslab/ovm-parser'
 import Coder from '@cryptoeconomicslab/coder'
 import { setupContext } from '@cryptoeconomicslab/context'
 setupContext({ coder: Coder })
 
 describe('QuantifierTranslater', () => {
   beforeEach(async () => {})
-  describe('translateQuantifier', () => {
+  describe('applyLibraries', () => {
     test('SignedBy', () => {
       const input: PropertyDef[] = [
         {
@@ -15,12 +15,45 @@ describe('QuantifierTranslater', () => {
           inputDefs: ['a', 'b'],
           body: {
             type: 'PropertyNode',
-            predicate: 'SignedBy',
-            inputs: ['a', 'b']
+            predicate: 'ThereExistsSuchThat',
+            inputs: [
+              {
+                type: 'PropertyNode',
+                predicate: 'SignedBy',
+                inputs: ['a', 'b']
+              }
+            ]
           }
         }
       ]
-      const output = translateQuantifier(input)
+      const library: PropertyDef[] = [
+        {
+          annotations: [
+            {
+              type: 'Annotation',
+              body: {
+                name: 'library',
+                args: []
+              }
+            },
+            {
+              type: 'Annotation',
+              body: {
+                name: 'quantifier',
+                args: ['signatures,KEY,${message}']
+              }
+            }
+          ],
+          name: 'SignedBy',
+          inputDefs: ['sig', 'message', 'public_key'],
+          body: {
+            type: 'PropertyNode',
+            predicate: 'IsValidSignature',
+            inputs: ['message', 'sig', 'public_key', '$secp256k1']
+          }
+        }
+      ]
+      const output = applyLibraries(input, library)
       expect(output).toStrictEqual([
         {
           annotations: [],
@@ -31,11 +64,11 @@ describe('QuantifierTranslater', () => {
             predicate: 'ThereExistsSuchThat',
             inputs: [
               'signatures,KEY,${a}',
-              'sig0',
+              'v0',
               {
                 type: 'PropertyNode',
                 predicate: 'IsValidSignature',
-                inputs: ['a', 'sig0', 'b', '$secp256k1']
+                inputs: ['a', 'v0', 'b', '$secp256k1']
               }
             ]
           }
@@ -68,7 +101,35 @@ describe('QuantifierTranslater', () => {
           }
         }
       ]
-      const output = translateQuantifier(input)
+      const library: PropertyDef[] = [
+        {
+          annotations: [
+            {
+              type: 'Annotation',
+              body: {
+                name: 'library',
+                args: []
+              }
+            },
+            {
+              type: 'Annotation',
+              body: {
+                name: 'quantifier',
+                args: ['range,NUMBER,${zero}-${upper_bound}']
+              }
+            }
+          ],
+          name: 'IsLessThan',
+          inputDefs: ['n', 'upper_bound'],
+          body: {
+            type: 'PropertyNode',
+            predicate: 'IsLessThan',
+            inputs: ['n', 'upper_bound']
+          }
+        }
+      ]
+
+      const output = applyLibraries(input, library)
       expect(output).toStrictEqual([
         {
           annotations: [],
@@ -129,7 +190,27 @@ describe('QuantifierTranslater', () => {
           }
         }
       ]
-      const output = translateQuantifier(input)
+      const parser = new Parser()
+      const library: PropertyDef[] = applyLibraries(
+        parser.parse(`
+@library
+@quantifier("proof.block\${b}.range\${t},RANGE,\${r}")
+def IncludedAt(p, l, t, r, b) := 
+  VerifyInclusion(l, t, r, b, p)
+
+@library
+def IncludedWithin(su, b, t, r) := 
+  IncludedAt(su, su.0, su.1, b).any()
+  and Equal(su.0, t)
+  and IsContained(su.1, range)
+        
+@library
+@quantifier("su.block\${token}.range\${range},RANGE,\${block}")
+def SU(su, token, range, block) := IncludedWithin(su, block, token, range)
+      `).declarations,
+        []
+      )
+      const output = applyLibraries(input, library)
       expect(output).toStrictEqual([
         {
           annotations: [],
@@ -157,30 +238,24 @@ describe('QuantifierTranslater', () => {
                             type: 'PropertyNode',
                             predicate: 'ThereExistsSuchThat',
                             inputs: [
-                              'su.block${token}.range${range},RANGE,${block}',
-                              'proof0',
+                              'proof.block${b}.range${su.0},RANGE,${su.1}',
+                              'v0',
                               {
                                 type: 'PropertyNode',
                                 predicate: 'VerifyInclusion',
-                                inputs: [
-                                  'su',
-                                  'su.0',
-                                  'su.1',
-                                  'proof0',
-                                  'token'
-                                ]
+                                inputs: ['su', 'su.0', 'su.1', 'block', 'v0']
                               }
                             ]
                           },
                           {
                             type: 'PropertyNode',
                             predicate: 'Equal',
-                            inputs: ['su.0', 'range']
+                            inputs: ['su.0', 'token']
                           },
                           {
                             type: 'PropertyNode',
                             predicate: 'IsContained',
-                            inputs: ['su.1', 'block']
+                            inputs: ['su.1', 'range']
                           }
                         ]
                       }
@@ -220,7 +295,20 @@ describe('QuantifierTranslater', () => {
           }
         }
       ]
-      const output = translateQuantifier(input)
+      const parser = new Parser()
+      const library: PropertyDef[] = parser.parse(`
+@library
+def IsTx(tx, t, r, b) := 
+  Equal(tx.address, $TransactionAddress)
+  and Equal(tx.0, t)
+  and IsContained(tx.1, range)
+  and IsLessThan(tx.2, b)
+        
+@library
+@quantifier("tx.block\${block}.range\${token},RANGE,\${range}")
+def Tx(tx, token, range, block) := IsTx(tx, token, range, block)
+      `).declarations
+      const output = applyLibraries(input, library)
       expect(output).toStrictEqual([
         {
           annotations: [],
@@ -257,7 +345,7 @@ describe('QuantifierTranslater', () => {
                       },
                       {
                         type: 'PropertyNode',
-                        predicate: 'Equal',
+                        predicate: 'IsLessThan',
                         inputs: ['tx.2', 'block']
                       }
                     ]
