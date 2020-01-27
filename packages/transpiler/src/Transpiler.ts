@@ -20,6 +20,7 @@ export function transpile(
   importHandler: ImportHandler
 ): CompiledPredicate[] {
   const importPredicates = createImportPredicates(importHandler)
+  // Compile predicates which isn't library
   return createCompiledPredicates(
     applyLibraries(program.declarations, importPredicates(program)).filter(
       p => !isLibrary(p)
@@ -27,10 +28,14 @@ export function transpile(
   )
 }
 
-function createImportPredicates(handler: ImportHandler) {
+/**
+ * create an import predicates function
+ * @param importHandler
+ */
+function createImportPredicates(importHandler: ImportHandler) {
   const importPredicates = (program: Program): PropertyDef[] =>
     program.imports.reduce<PropertyDef[]>((declarations, i) => {
-      const p = handler(i)
+      const p = importHandler(i)
       return declarations.concat(
         applyLibraries(p.declarations, importPredicates(p))
       )
