@@ -61,6 +61,24 @@ function createPredicatePreset(
   }
 }
 
+const replaceHint = (
+  hint: string,
+  substitutions: { [key: string]: string }
+): string => {
+  const fillTemplate = function(
+    templateString: string,
+    templateVars: string[]
+  ) {
+    return new Function(
+      ...Object.keys(substitutions).concat(['return `' + templateString + '`'])
+    ).call(null, ...templateVars)
+  }
+  return fillTemplate(
+    hint,
+    Object.keys(substitutions).map(k => substitutions[k])
+  )
+}
+
 /**
  * create preset quantifier from property definition
  * @param propertyDefinition
@@ -68,25 +86,6 @@ function createPredicatePreset(
 function createQuantifierPreset(
   propertyDefinition: PropertyDef
 ): QuantifierPreset | null {
-  const replaceHint = (
-    hint: string,
-    substitutions: { [key: string]: string }
-  ): string => {
-    const fillTemplate = function(
-      templateString: string,
-      templateVars: string[]
-    ) {
-      return new Function(
-        ...Object.keys(substitutions).concat([
-          'return `' + templateString + '`'
-        ])
-      ).call(null, ...templateVars)
-    }
-    return fillTemplate(
-      hint,
-      Object.keys(substitutions).map(k => substitutions[k])
-    )
-  }
   const getSubstitutions = (
     callingInputs: string[]
   ): { [key: string]: string } => {
@@ -135,45 +134,48 @@ export function applyLibraries(
   const inlinePredicates = importedPredicates.filter(
     p => !!p.annotations.find(a => a.body.name == 'library')
   )
-  const presetTable = inlinePredicates.reduce<{
-    [key: string]: PredicatePreset
-  }>((presetTable, importedPredicate) => {
-    const preset = createPredicatePreset(importedPredicate)
-    presetTable[preset.name] = preset
-    return presetTable
+  const predicatePresets = inlinePredicates.map(importedPredicate => {
+    return createPredicatePreset(importedPredicate)
   }, {})
-  const quantifierPresetTable = inlinePredicates.reduce<{
-    [key: string]: QuantifierPreset
-  }>((presetTable, importedPredicate) => {
-    const preset = createQuantifierPreset(importedPredicate)
-    if (preset) {
-      presetTable[preset.name] = preset
-    }
-    return presetTable
+  const quantifierPresets = inlinePredicates.map(importedPredicate => {
+    return createQuantifierPreset(importedPredicate)
   }, {})
   propertyDefinitions.reduce(
-    ({ presetTable, quantifierPresetTable }, propertyDefinition) => {
-      const translator = createTranslator(presetTable, quantifierPresetTable)
-      const translated = translator(propertyDefinition.body)
-      propertyDefinition.body = translated
-      presetTable[propertyDefinition.name] = createPredicatePreset(
-        propertyDefinition
-      )
-      const quantifierPreset = createQuantifierPreset(propertyDefinition)
-      if (quantifierPreset) {
-        quantifierPresetTable[quantifierPreset.name] = quantifierPreset
+    ({ predicatePresets, quantifierPresets }, propertyDefinition) => {
+      const translator = createTranslator(predicatePresets, quantifierPresets)
+      propertyDefinition.body = translator(propertyDefinition.body)
+      return {
+        predicatePresets: predicatePresets.concat([
+          createPredicatePreset(propertyDefinition)
+        ]),
+        quantifierPresets: quantifierPresets.concat([
+          createQuantifierPreset(propertyDefinition)
+        ])
       }
-      return { presetTable, quantifierPresetTable }
     },
-    { presetTable, quantifierPresetTable }
+    { predicatePresets, quantifierPresets }
   )
   return propertyDefinitions
 }
 
 function createTranslator(
-  presetTable: { [key: string]: PredicatePreset },
-  quantifierPresetTable: { [key: string]: QuantifierPreset }
+  predicatePresets: PredicatePreset[],
+  quantifierPresets: (QuantifierPreset | null)[]
 ) {
+  const presetTable: {
+    [key: string]: PredicatePreset
+  } = predicatePresets.reduce<{ [key: string]: PredicatePreset }>((t, p) => {
+    t[p.name] = p
+    return t
+  }, {})
+  const quantifierPresetTable: {
+    [key: string]: QuantifierPreset
+  } = quantifierPresets.reduce<{ [key: string]: QuantifierPreset }>((t, p) => {
+    if (p) {
+      t[p.name] = p
+    }
+    return t
+  }, {})
   const translate = (
     p: PropertyNode,
     variableSuffix: number = 0
