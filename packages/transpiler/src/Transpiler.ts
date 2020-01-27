@@ -6,17 +6,23 @@ import {
   Program,
   PropertyDef
 } from '@cryptoeconomicslab/ovm-parser/lib/PropertyDef'
+import { isLibrary } from './utils'
 
 export type ImportHandler = (_import: Import) => Program
 
+/**
+ * transpile a Program to CompiledPredicate
+ * @param program Original program
+ * @param importHandler A handler to load module
+ */
 export function transpile(
   program: Program,
-  handler: ImportHandler
+  importHandler: ImportHandler
 ): CompiledPredicate[] {
-  const importPredicates = createImportPredicates(handler)
+  const importPredicates = createImportPredicates(importHandler)
   return createCompiledPredicates(
     applyLibraries(program.declarations, importPredicates(program)).filter(
-      p => p.annotations.find(a => a.body.name == 'library') === undefined
+      p => !isLibrary(p)
     )
   )
 }

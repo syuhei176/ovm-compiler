@@ -131,9 +131,7 @@ export function applyLibraries(
   propertyDefinitions: PropertyDef[],
   importedPredicates: PropertyDef[]
 ): PropertyDef[] {
-  const inlinePredicates = importedPredicates.filter(
-    p => !!p.annotations.find(a => a.body.name == 'library')
-  )
+  const inlinePredicates = importedPredicates.filter(p => utils.isLibrary(p))
   const predicatePresets = inlinePredicates.map(importedPredicate => {
     return createPredicatePreset(importedPredicate)
   }, {})
