@@ -1,6 +1,6 @@
-import { createCompiledPredicates } from './ContractCompiler'
+import { createCompiledPredicates } from '../src/ContractCompiler'
 import { PropertyDef } from '@cryptoeconomicslab/ovm-parser'
-import { LogicalConnective } from './CompiledPredicate'
+import { LogicalConnective } from '../src/CompiledPredicate'
 
 describe('ContractCompiler', () => {
   beforeEach(async () => {})

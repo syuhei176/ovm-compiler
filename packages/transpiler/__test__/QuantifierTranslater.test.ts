@@ -1,5 +1,14 @@
-import { applyLibraries } from './QuantifierTranslater'
-import { PropertyDef, Parser } from '@cryptoeconomicslab/ovm-parser'
+import {
+  applyLibraries,
+  createQuantifierPreset,
+  replaceHint,
+  replaceInputs
+} from '../src/QuantifierTranslater'
+import {
+  PropertyDef,
+  PropertyNode,
+  Parser
+} from '@cryptoeconomicslab/ovm-parser'
 import Coder from '@cryptoeconomicslab/coder'
 import { setupContext } from '@cryptoeconomicslab/context'
 setupContext({ coder: Coder })
@@ -357,6 +366,94 @@ def Tx(tx, token, range, block) := IsTx(tx, token, range, block)
           }
         }
       ])
+    })
+  })
+
+  describe('replaceInputs', () => {
+    const node: PropertyNode = {
+      type: 'PropertyNode',
+      predicate: 'ThereExistsSuchThat',
+      inputs: [
+        {
+          type: 'PropertyNode',
+          predicate: 'SignedBy',
+          inputs: ['a', 'b']
+        }
+      ]
+    }
+    test('replace inputs', () => {
+      expect(replaceInputs(node, ['aa', 'bb'], ['a', 'b'])).toStrictEqual({
+        type: 'PropertyNode',
+        predicate: 'ThereExistsSuchThat',
+        inputs: [
+          {
+            type: 'PropertyNode',
+            predicate: 'SignedBy',
+            inputs: ['aa', 'bb']
+          }
+        ]
+      })
+    })
+
+    test('throw error', () => {
+      expect(() => replaceInputs(node, ['aa'], ['a', 'b'])).toThrowError(
+        'The size of inputDefs must be less than or equal the size of callingInputs.'
+      )
+    })
+  })
+
+  describe('replaceHint', () => {
+    test('replace hint', () => {
+      expect(replaceHint('a,b,${param}', { param: 'c' })).toStrictEqual('a,b,c')
+    })
+  })
+
+  describe('createQuantifierPreset', () => {
+    const library: PropertyDef = {
+      annotations: [
+        {
+          type: 'Annotation',
+          body: {
+            name: 'library',
+            args: []
+          }
+        },
+        {
+          type: 'Annotation',
+          body: {
+            name: 'quantifier',
+            args: ['bucket.${a},KEY,${b}']
+          }
+        }
+      ],
+      name: 'FooLib',
+      inputDefs: ['v', 'a', 'b'],
+      body: {
+        type: 'PropertyNode',
+        predicate: 'Foo',
+        inputs: ['a', 'v', 'b']
+      }
+    }
+
+    test('create quantifier preset', () => {
+      const node: PropertyNode = {
+        type: 'PropertyNode',
+        predicate: 'FooLib',
+        inputs: ['aa', 'bb']
+      }
+      const preset = createQuantifierPreset(library)
+      expect(preset).not.toBeNull()
+      if (preset !== null) {
+        expect(preset.name).toStrictEqual('FooLib')
+        expect(preset.translate(node, 'var_name')).toStrictEqual({
+          hint: 'bucket.${aa},KEY,${bb}',
+          property: {
+            inputs: ['aa', 'var_name', 'bb'],
+            predicate: 'Foo',
+            type: 'PropertyNode'
+          }
+        })
+      }
     })
   })
 })
