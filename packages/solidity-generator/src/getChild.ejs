@@ -41,6 +41,7 @@
       const quantifier = property.inputs[0];
       const innerProperty = property.inputs[2];
 -%>
+        bytes memory challengeInput = challengeInputs[0];
 <%    if(innerProperty.isCompiled) { -%>
         bytes[] memory childInputs = new bytes[](<%= innerProperty.inputs.length %>);
 <%- include('constructInputs', {property: innerProperty, valName: 'childInputs', witnessName: 'challengeInputs[0]'}) -%>
