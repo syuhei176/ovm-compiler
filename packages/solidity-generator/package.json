@@ -53,6 +53,7 @@
     "@cryptoeconomicslab/ovm-generator": "^0.2.4",
     "@cryptoeconomicslab/ovm-parser": "^0.2.3",
     "@cryptoeconomicslab/ovm-transpiler": "^0.2.4",
+    "@cryptoeconomicslab/primitives": "^0.0.10",
     "ejs": "^3.0.1",
     "tslib": "^1.10.0"
   }
