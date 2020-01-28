@@ -26,9 +26,9 @@ export const replaceInputs = (
   callingInputs: string[],
   inputDefs: string[]
 ): PropertyNode => {
-  if (callingInputs.length > inputDefs.length) {
+  if (callingInputs.length < inputDefs.length) {
     throw new Error(
-      'The size of callingInputs must be less than or equal the size of inputDefs.'
+      'The size of inputDefs must be less than or equal the size of callingInputs.'
     )
   }
   return {
@@ -66,7 +66,7 @@ function createPredicatePreset(
   }
 }
 
-const replaceHint = (
+export const replaceHint = (
   hint: string,
   substitutions: { [key: string]: string }
 ): string => {
@@ -88,7 +88,7 @@ const replaceHint = (
  * create preset quantifier from property definition
  * @param propertyDefinition
  */
-function createQuantifierPreset(
+export function createQuantifierPreset(
   propertyDefinition: PropertyDef
 ): QuantifierPreset | null {
   const getSubstitutions = (
