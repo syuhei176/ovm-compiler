@@ -26,8 +26,9 @@
     "build:check": "tsc --noEmit",
     "test": "jest --passWithNoTests",
     "lint": "eslint --ext ts,tsx src",
-    "doc": "typedoc --out docs src",
-    "clean": "rm -rf lib docs"
+    "doc": "typedoc --out dosrc",
+    "clean": "rm -rf lib docs",
+    "examples": "node lib/example"
   },
   "jest": {
     "transform": {

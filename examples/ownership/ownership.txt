@@ -1,1 +1,4 @@
-def ownership(owner, tx) := SignedBy(tx, owner)
+@quantifier("signatures,KEY,${m}")
+def SignedBy(sig, m, signer) := IsValidSignature(m, signer, sig)
+
+def ownership(owner, tx) := SignedBy(tx, owner).any()
