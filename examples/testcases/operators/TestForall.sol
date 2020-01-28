@@ -122,6 +122,7 @@ contract ForallTest {
      * Gets child of ForallTestF(ForallTestF,a).
      */
     function getChildForallTestF(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
+        bytes memory challengeInput = challengeInputs[0];
         bytes[] memory notInputs = new bytes[](1);
         bytes[] memory childInputsOf = new bytes[](1);
         childInputsOf[0] = challengeInputs[0];
