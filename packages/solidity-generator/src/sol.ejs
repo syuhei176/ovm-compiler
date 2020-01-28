@@ -31,8 +31,8 @@ contract <%= claimDef.name %> {
     address IsValidSignature = address(<%= getAddress('IsValidSignature') %>);
     address IsContained = address(<%= getAddress('IsContained') %>);
     address VerifyInclusion = address(<%= getAddress('VerifyInclusion') %>);
-    address VerifyRoot = address(<%= getAddress('VerifyRoot') %>);
-    address VerifyConcatenate = address(<%= getAddress('VerifyConcatenate') %>);
+    address IsStored = address(<%= getAddress('IsStored') %>);
+    address IsConcatenatedWith = address(<%= getAddress('IsConcatenatedWith') %>);
     address IsSameAmount = address(<%= getAddress('IsSameAmount') %>);
     address notAddress = address(<%= getAddress('Not') %>);
     address andAddress = address(<%= getAddress('And') %>);
@@ -69,8 +69,8 @@ contract <%= claimDef.name %> {
         address _isValidSignature,
         address _isContained,
         address _verifyInclusion,
-        address _verifyRoot,
-        address _verifyConcatenate,
+        address _isStored,
+        address _isConcatenatedWith,
         address _isSameAmount,
         address _payoutContractAddress
     ) public {
@@ -80,8 +80,8 @@ contract <%= claimDef.name %> {
         IsValidSignature = _isValidSignature;
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
-        VerifyRoot = _verifyRoot;
-        VerifyConcatenate = _verifyConcatenate;
+        IsStored = _isStored;
+        IsConcatenatedWith = _isConcatenatedWith;
         IsSameAmount = _isSameAmount;
         payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
