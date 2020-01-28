@@ -1,4 +1,4 @@
-import { applyLibraries } from './QuantifierTranslater'
+import { applyLibraries } from '../src/QuantifierTranslater'
 import { PropertyDef, Parser } from '@cryptoeconomicslab/ovm-parser'
 import Coder from '@cryptoeconomicslab/coder'
 import { setupContext } from '@cryptoeconomicslab/context'
