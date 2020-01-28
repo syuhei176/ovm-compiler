@@ -1,5 +1,9 @@
-import { applyLibraries } from '../src/QuantifierTranslater'
-import { PropertyDef, Parser } from '@cryptoeconomicslab/ovm-parser'
+import { applyLibraries, replaceInputs } from '../src/QuantifierTranslater'
+import {
+  PropertyDef,
+  PropertyNode,
+  Parser
+} from '@cryptoeconomicslab/ovm-parser'
 import Coder from '@cryptoeconomicslab/coder'
 import { setupContext } from '@cryptoeconomicslab/context'
 setupContext({ coder: Coder })
@@ -357,6 +361,39 @@ def Tx(tx, token, range, block) := IsTx(tx, token, range, block)
           }
         }
       ])
+    })
+  })
+
+  describe('replaceInputs', () => {
+    const node: PropertyNode = {
+      type: 'PropertyNode',
+      predicate: 'ThereExistsSuchThat',
+      inputs: [
+        {
+          type: 'PropertyNode',
+          predicate: 'SignedBy',
+          inputs: ['a', 'b']
+        }
+      ]
+    }
+    test('replace inputs', () => {
+      expect(replaceInputs(node, ['aa', 'bb'], ['a', 'b'])).toStrictEqual({
+        type: 'PropertyNode',
+        predicate: 'ThereExistsSuchThat',
+        inputs: [
+          {
+            type: 'PropertyNode',
+            predicate: 'SignedBy',
+            inputs: ['aa', 'bb']
+          }
+        ]
+      })
+    })
+
+    test('throw error', () => {
+      expect(() => replaceInputs(node, ['aa', 'bb'], ['a'])).toThrowError(
+        'The size of callingInputs must be less than or equal the size of inputDefs.'
+      )
     })
   })
 })

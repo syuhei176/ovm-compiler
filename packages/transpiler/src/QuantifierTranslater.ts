@@ -21,11 +21,16 @@ interface QuantifierPreset {
  * @param callingInputs
  * @param inputDefs
  */
-const replaceInputs = (
+export const replaceInputs = (
   targetNode: PropertyNode,
   callingInputs: string[],
   inputDefs: string[]
 ): PropertyNode => {
+  if (callingInputs.length > inputDefs.length) {
+    throw new Error(
+      'The size of callingInputs must be less than or equal the size of inputDefs.'
+    )
+  }
   return {
     type: 'PropertyNode',
     predicate: targetNode.predicate,
