@@ -48,8 +48,8 @@
     }
   },
   "dependencies": {
-    "@cryptoeconomicslab/coder": "0.0.4",
-    "@cryptoeconomicslab/context": "0.0.4",
+    "@cryptoeconomicslab/coder": "0.0.10",
+    "@cryptoeconomicslab/context": "0.0.10",
     "@cryptoeconomicslab/ovm-generator": "^0.2.4",
     "@cryptoeconomicslab/ovm-parser": "^0.2.3",
     "@cryptoeconomicslab/ovm-solidity-generator": "^0.2.4",
