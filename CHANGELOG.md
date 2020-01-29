@@ -1,5 +1,38 @@
-## <small>0.1.17 (2020-01-22)</small>
+## <small>0.1.17 (2020-01-29)</small>
 
+
+
+
+## <small>0.2.5 (2020-01-29)</small>
+
+* add roadmap ([11caefa](https://github.com/cryptoeconomicslab/ovm-compiler/commit/11caefa))
+* fix example command ([4817ca3](https://github.com/cryptoeconomicslab/ovm-compiler/commit/4817ca3))
+* fix test #60 ([7c26a2b](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7c26a2b)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* library notation #60 ([89c320d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/89c320d)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* remove example solidity ([22a4e80](https://github.com/cryptoeconomicslab/ovm-compiler/commit/22a4e80))
+* remove unnecessary dependencies ([a441951](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a441951))
+* support import #60 ([041ffb5](https://github.com/cryptoeconomicslab/ovm-compiler/commit/041ffb5)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* update changelog ([bd563fb](https://github.com/cryptoeconomicslab/ovm-compiler/commit/bd563fb))
+* update dependencies ([bd2a383](https://github.com/cryptoeconomicslab/ovm-compiler/commit/bd2a383))
+* update examples ([9bda136](https://github.com/cryptoeconomicslab/ovm-compiler/commit/9bda136))
+* update roadmap ([448ed98](https://github.com/cryptoeconomicslab/ovm-compiler/commit/448ed98))
+* v0.2.5 ([0be216f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0be216f))
+* clean: clean example ([df18713](https://github.com/cryptoeconomicslab/ovm-compiler/commit/df18713))
+* clean: rename IsTx ([abe7978](https://github.com/cryptoeconomicslab/ovm-compiler/commit/abe7978))
+* clean(transpiler): add isLibrary utility #60 ([855b889](https://github.com/cryptoeconomicslab/ovm-compiler/commit/855b889)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* clean(transpiler): clean applyLibraries #60 ([edb569b](https://github.com/cryptoeconomicslab/ovm-compiler/commit/edb569b)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* fix(ethereum-generator): fix error filtering ([1731877](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1731877))
+* fix(examples): remove subrange from StateUpdate ([8510c6b](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8510c6b))
+* fix(solidity-generator): fix DeclarationError ([210ddd1](https://github.com/cryptoeconomicslab/ovm-compiler/commit/210ddd1))
+* fix(transpiler): throw an exception when the size of callingInputs is greater than the size of input ([6bdeb25](https://github.com/cryptoeconomicslab/ovm-compiler/commit/6bdeb25))
+* test: add test for createQuantifierPreset ([8405dd8](https://github.com/cryptoeconomicslab/ovm-compiler/commit/8405dd8))
+* test(solidity-generator): fix test ([ebddc2d](https://github.com/cryptoeconomicslab/ovm-compiler/commit/ebddc2d))
+* test(transpiler): add test code for isLibrary ([c7230be](https://github.com/cryptoeconomicslab/ovm-compiler/commit/c7230be))
+* test(transpiler): fix spec #60 ([bbcc51f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/bbcc51f)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* test(transpiler): move test codes ([769e9ac](https://github.com/cryptoeconomicslab/ovm-compiler/commit/769e9ac))
+* chore(transpiler): add commment #60 ([334ebbe](https://github.com/cryptoeconomicslab/ovm-compiler/commit/334ebbe)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* chore(transpiler): fix comment #60 ([66f561c](https://github.com/cryptoeconomicslab/ovm-compiler/commit/66f561c)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
+* feat: add import and annotation syntax #60 ([9a01be0](https://github.com/cryptoeconomicslab/ovm-compiler/commit/9a01be0)), closes [#60](https://github.com/cryptoeconomicslab/ovm-compiler/issues/60)
 
 
 
