@@ -89,19 +89,18 @@ export const replaceHint = (
  * @param propertyDefinition
  */
 export function createQuantifierPreset(
-  propertyDefinition: PropertyDef
+  propertyDefinition: PropertyDef,
+  constants: { [key: string]: string } = {}
 ): QuantifierPreset | null {
   const getSubstitutions = (
     callingInputs: string[]
   ): { [key: string]: string } => {
-    const substitutions: { [key: string]: string } = {}
+    const substitutions: { [key: string]: string } = constants
     // skip variable
     // When we parse predicate as quantifier, the first input is variable.
     propertyDefinition.inputDefs.slice(1).forEach((inputName, index) => {
       substitutions[inputName] = '${' + callingInputs[index] + '}'
     })
-    const encodedZero = ovmContext.coder.encode(BigNumber.from(0)).toHexString()
-    substitutions['zero'] = encodedZero
     return substitutions
   }
   const quantifierAnnotation = propertyDefinition.annotations.find(
@@ -134,14 +133,15 @@ export function createQuantifierPreset(
  */
 export function applyLibraries(
   propertyDefinitions: PropertyDef[],
-  importedPredicates: PropertyDef[]
+  importedPredicates: PropertyDef[],
+  constants: { [key: string]: string } = {}
 ): PropertyDef[] {
   const inlinePredicates = importedPredicates.filter(p => utils.isLibrary(p))
   const predicatePresets = inlinePredicates.map(importedPredicate => {
     return createPredicatePreset(importedPredicate)
   }, {})
   const quantifierPresets = inlinePredicates.map(importedPredicate => {
-    return createQuantifierPreset(importedPredicate)
+    return createQuantifierPreset(importedPredicate, constants)
   }, {})
   propertyDefinitions.reduce(
     ({ predicatePresets, quantifierPresets }, propertyDefinition) => {
@@ -152,7 +152,7 @@ export function applyLibraries(
           createPredicatePreset(propertyDefinition)
         ]),
         quantifierPresets: quantifierPresets.concat([
-          createQuantifierPreset(propertyDefinition)
+          createQuantifierPreset(propertyDefinition, constants)
         ])
       }
     },

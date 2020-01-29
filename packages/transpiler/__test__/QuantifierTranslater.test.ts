@@ -138,7 +138,7 @@ describe('QuantifierTranslater', () => {
         }
       ]
 
-      const output = applyLibraries(input, library)
+      const output = applyLibraries(input, library, { zero: '0' })
       expect(output).toStrictEqual([
         {
           annotations: [],
@@ -148,7 +148,7 @@ describe('QuantifierTranslater', () => {
             type: 'PropertyNode',
             predicate: 'ForAllSuchThat',
             inputs: [
-              'range,NUMBER,0x223022-${b}',
+              'range,NUMBER,0-${b}',
               'bb',
               {
                 type: 'PropertyNode',

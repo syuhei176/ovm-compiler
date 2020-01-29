@@ -6,6 +6,7 @@
   "scripts": {
     "build": "lerna run build",
     "build:check": "lerna run build:check",
+    "examples": "node lib/example",
     "test": "npm run build && lerna run test",
     "lint": "lerna run lint",
     "lint:fix": "lerna run lint:fix",
