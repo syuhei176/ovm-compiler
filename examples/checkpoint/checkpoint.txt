@@ -1,4 +1,23 @@
-def checkpoint(su) := 
-IsLessThan(su.2).all(b -> 
-  SU(b, su.0, su.1).all(old_su -> old_su())
-)
+@library
+@quantifier("proof.block${b}.range${token},RANGE,${range}")
+def IncludedAt(proof, leaf, token, range, b) :=
+  VerifyInclusion(leaf, x, token, range, proof, b)
+
+@library
+def IncludedWithin(su, token, range, b) :=
+  IncludedAt(su, su.0, su.1, b).any()
+  and Equal(su.0, token)
+  and IsContained(su.1, range)
+  and IsLessThan(block_number, su.2)
+
+@library
+@quantifier("su.block${b}.range${token},RANGE,${range}")
+def SU(su, token, range, b) :=
+  IncludedWithin(su, token, range, b)
+
+def checkpoint(su, subrange) := 
+  IsContained(subrange, su.1)
+  and IsLessThan(su.2).all(b -> 
+    SU(su.0, subrange, b).all(old_su -> old_su())
+  )
+
