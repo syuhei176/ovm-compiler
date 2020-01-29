@@ -11,6 +11,7 @@ async function compileAllExamples() {
   await generate('order')
   await generate('ownership')
   await generate('su')
+  await generate('swap')
   return 'all examples compiled'
 }
 
@@ -19,16 +20,20 @@ async function generate(name) {
   const source = fs.readFileSync(
     path.join(__dirname, `./examples/${name}/${name}.txt`)
   )
-  const output = await generateSolidityCode(source.toString())
-  fs.writeFileSync(
-    path.join(__dirname, `./examples/${name}/${getContractName(name)}.sol`),
-    output
-  )
-  const evmOutput = await generateEVMByteCode(source.toString())
-  fs.writeFileSync(
-    path.join(__dirname, `./examples/${name}/${getContractName(name)}.json`),
-    evmOutput
-  )
+  try {
+    const output = await generateSolidityCode(source.toString())
+    fs.writeFileSync(
+      path.join(__dirname, `./examples/${name}/${getContractName(name)}.sol`),
+      output
+    )
+    const evmOutput = await generateEVMByteCode(source.toString())
+    fs.writeFileSync(
+      path.join(__dirname, `./examples/${name}/${getContractName(name)}.json`),
+      evmOutput
+    )
+  } catch (e) {
+    console.log(e)
+  }
   console.log(`compiled ${name}`)
 }
 

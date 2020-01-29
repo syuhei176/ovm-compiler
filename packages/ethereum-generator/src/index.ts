@@ -17,7 +17,8 @@ export async function generateEVMByteCode(
     chamberParser.parse(source),
     (_import: Import) => {
       return chamberParser.parse(importHandler(_import))
-    }
+    },
+    {}
   )
   const codeGenerator = new EthereumCodeGenerator(options)
   return codeGenerator.generate(compiledPredicates)
