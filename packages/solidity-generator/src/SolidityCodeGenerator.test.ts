@@ -817,7 +817,7 @@ describe('SolidityCodeGenerator', () => {
         valName: 'inputs'
       })
       expect(output).toBe(
-        `        inputs = challengeInput;
+        `        inputs = challengeInputs[0];
 `
       )
     })
