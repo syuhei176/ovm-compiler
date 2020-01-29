@@ -16,6 +16,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@cryptoeconomicslab/ovm-ethereum-generator": "file:packages/ethereum-generator",
     "@types/ejs": "^2.7.0",
     "@types/jest": "^24.0.20",
     "@types/node": "^12.12.14",
@@ -33,6 +34,5 @@
     "ts-node": "^8.4.1",
     "typedoc": "^0.15.0",
     "typescript": "^3.6.4"
-  },
-  "dependencies": {}
+  }
 }
