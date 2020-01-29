@@ -10,8 +10,7 @@
  def Tx(tx, token, range, b) :=
    IsTx(tx, token, range, b)
 
-def stateUpdate(token, range, block_number, so, subrange) :=
-  IsContained(subrange, range)
-  and Tx(token, subrange, block_number).any(tx ->
+def stateUpdate(token, range, block_number, so) :=
+  Tx(token, range, block_number).any(tx ->
     so(tx)
   )
