@@ -1,4 +1,5 @@
-const { generateSolidityCode, generateEVMByteCode } = require('./')
+const { generateEVMByteCode } = require('./packages/ethereum-generator')
+const { generateSolidityCode } = require('./packages/solidity-generator')
 const fs = require('fs')
 const path = require('path')
 
