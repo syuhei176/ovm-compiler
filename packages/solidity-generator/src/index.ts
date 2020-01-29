@@ -4,9 +4,6 @@ import {
 } from './SolidityCodeGenerator'
 import { Parser, Import } from '@cryptoeconomicslab/ovm-parser'
 import { transpile } from '@cryptoeconomicslab/ovm-transpiler'
-import Coder from '@cryptoeconomicslab/coder'
-import { setupContext } from '@cryptoeconomicslab/context'
-setupContext({ coder: Coder })
 
 export async function generateSolidityCode(
   source: string,

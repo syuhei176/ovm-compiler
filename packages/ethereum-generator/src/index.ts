@@ -2,10 +2,6 @@ import { Parser, Import } from '@cryptoeconomicslab/ovm-parser'
 import { EthereumCodeGenerator } from './EthereumCodeGenerator'
 import { transpile, ImportHandler } from '@cryptoeconomicslab/ovm-transpiler'
 import { SolidityCodeGeneratorOptions } from '@cryptoeconomicslab/ovm-solidity-generator'
-import Coder from '@cryptoeconomicslab/coder'
-import { setupContext } from '@cryptoeconomicslab/context'
-// Set default JSON coder because code generator doesn't use hint data.
-setupContext({ coder: Coder })
 
 export async function generateEVMByteCode(
   source: string,
