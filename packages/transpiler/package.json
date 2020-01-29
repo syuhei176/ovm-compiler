@@ -1,6 +1,6 @@
 {
   "name": "@cryptoeconomicslab/ovm-transpiler",
-  "version": "0.2.4",
+  "version": "0.2.5",
   "description": "OVM transpiler",
   "author": {
     "name": "Cryptoeconomics Lab",
@@ -50,7 +50,7 @@
   "dependencies": {
     "@cryptoeconomicslab/coder": "0.0.10",
     "@cryptoeconomicslab/context": "0.0.10",
-    "@cryptoeconomicslab/ovm-parser": "^0.2.3",
+    "@cryptoeconomicslab/ovm-parser": "^0.2.5",
     "@cryptoeconomicslab/primitives": "0.0.10",
     "tslib": "^1.10.0"
   }
