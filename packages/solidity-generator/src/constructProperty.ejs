@@ -15,9 +15,9 @@
 <%    } -%>
 <%  } else if(property.predicate.type == 'VariablePredicateCall') { -%>
 <%    if(property.inputs.length == 0) { -%>
-        <%= valName %> = challengeInput;
+        <%= valName %> = challengeInputs[0];
 <%    } else { -%>
-        types.Property memory inputPredicateProperty = abi.decode(challengeInput, (types.Property));
+        types.Property memory inputPredicateProperty = abi.decode(challengeInputs[0], (types.Property));
         bytes[] memory childInputsOf<%=propIndex %> = new bytes[](inputPredicateProperty.inputs.length + 1);
         for(uint256 i = 0;i < inputPredicateProperty.inputs.length;i++) {
             childInputsOf<%=propIndex %>[i] = inputPredicateProperty.inputs[i];

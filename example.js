@@ -3,6 +3,8 @@ const { generateSolidityCode } = require('./packages/solidity-generator')
 const fs = require('fs')
 const path = require('path')
 
+const examplesPath = './examples'
+const libraryPath = path.join(__dirname, examplesPath, 'lib')
 compileAllExamples().then(console.log)
 
 async function compileAllExamples() {
@@ -16,17 +18,24 @@ async function compileAllExamples() {
 
 async function generate(name) {
   console.log(`compiling ${name}`)
+  const importHandler = _import =>
+    fs
+      .readFileSync(
+        path.join(libraryPath, _import.path, _import.module + '.ovm')
+      )
+      .toString()
+
   const source = fs.readFileSync(
-    path.join(__dirname, `./examples/${name}/${name}.txt`)
+    path.join(__dirname, examplesPath, name, `${name}.txt`)
   )
-  const output = await generateSolidityCode(source.toString())
+  const output = await generateSolidityCode(source.toString(), importHandler)
   fs.writeFileSync(
-    path.join(__dirname, `./examples/${name}/${getContractName(name)}.sol`),
+    path.join(__dirname, examplesPath, name, `${getContractName(name)}.sol`),
     output
   )
-  const evmOutput = await generateEVMByteCode(source.toString())
+  const evmOutput = await generateEVMByteCode(source.toString(), importHandler)
   fs.writeFileSync(
-    path.join(__dirname, `./examples/${name}/${getContractName(name)}.json`),
+    path.join(__dirname, examplesPath, name, `${getContractName(name)}.json`),
     evmOutput
   )
   console.log(`compiled ${name}`)
