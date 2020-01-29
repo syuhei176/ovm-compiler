@@ -3,6 +3,14 @@
 
 
 
+## <small>0.2.6 (2020-01-29)</small>
+
+* update changelog ([a6fe87e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a6fe87e))
+* v0.2.6 ([6fa6061](https://github.com/cryptoeconomicslab/ovm-compiler/commit/6fa6061))
+* fix: fix generating ([a40a707](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a40a707))
+
+
+
 ## <small>0.2.5 (2020-01-29)</small>
 
 * add roadmap ([11caefa](https://github.com/cryptoeconomicslab/ovm-compiler/commit/11caefa))
