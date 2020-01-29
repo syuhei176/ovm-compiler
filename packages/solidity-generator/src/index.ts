@@ -16,7 +16,7 @@ export async function generateSolidityCode(
     (_import: Import) => {
       return chamberParser.parse(importHandler(_import))
     },
-    {}
+    { zero: '0' }
   )
   const codeGenerator = new SolidityCodeGenerator(options)
   return codeGenerator.generate(compiledPredicates)
