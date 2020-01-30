@@ -46,7 +46,7 @@ const innerProperty = property.inputs[2]
         return true;
 <% } else if(property.connective == 'Or') { -%>
         // check Or
-        uint256 orIndex = utils.bytesToUint(_witness[0]);
+        uint256 orIndex = abi.decode(_witness[0], (uint256));
 <%
         property.inputs.forEach((item, index) => {
 -%>

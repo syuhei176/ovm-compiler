@@ -154,7 +154,7 @@ contract OrTest {
      */
     function decideOrTestO(bytes[] memory _inputs, bytes[] memory _witness) public view returns (bool) {
         // check Or
-        uint256 orIndex = utils.bytesToUint(_witness[0]);
+        uint256 orIndex = abi.decode(_witness[0], (uint256));
         if(orIndex == 0) {
 
             bytes[] memory childInputs0 = new bytes[](1);

@@ -563,7 +563,7 @@ describe('SolidityCodeGenerator', () => {
         index: 1
       })
       expect(output).toBe(
-        '        items[1] = abi.encodePacked(inputProperty0.predicateAddress);\n'
+        '        items[1] = abi.encode(inputProperty0.predicateAddress);\n'
       )
     })
 
@@ -595,7 +595,7 @@ describe('SolidityCodeGenerator', () => {
         index: 1
       })
       expect(output).toBe(
-        '        items[1] = abi.encodePacked(inputProperty0Child1.predicateAddress);\n'
+        '        items[1] = abi.encode(inputProperty0Child1.predicateAddress);\n'
       )
     })
 
