@@ -1,6 +1,6 @@
 {
   "name": "@cryptoeconomicslab/ovm-transpiler",
-  "version": "0.2.5",
+  "version": "0.2.7",
   "description": "OVM transpiler",
   "author": {
     "name": "Cryptoeconomics Lab",
