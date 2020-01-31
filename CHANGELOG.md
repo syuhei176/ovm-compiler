@@ -1,5 +1,15 @@
-## <small>0.1.17 (2020-01-29)</small>
+## <small>0.1.17 (2020-01-31)</small>
 
+
+
+
+## <small>0.2.7 (2020-01-31)</small>
+
+* update changelog ([5393fb7](https://github.com/cryptoeconomicslab/ovm-compiler/commit/5393fb7))
+* v0.2.7 ([e024d26](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e024d26))
+* fix(ethereum-generator): update Util contract ([7df6271](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7df6271))
+* fix(solidity-generator): fix primitive encoding ([015d904](https://github.com/cryptoeconomicslab/ovm-compiler/commit/015d904))
+* feat(transpiler): add DefaultImportHandler ([361e8a8](https://github.com/cryptoeconomicslab/ovm-compiler/commit/361e8a8))
 
 
 
