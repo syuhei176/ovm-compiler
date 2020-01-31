@@ -3,12 +3,12 @@
      */
     function getChildBindAddrTestA(bytes[] memory _inputs, bytes[] memory challengeInputs) private returns (types.Property memory) {
         types.Property memory inputProperty1 = abi.decode(_inputs[0], (types.Property));
-        uint256 challengeInput = utils.bytesToUint(challengeInputs[0]);
+        uint256 challengeInput = abi.decode(challengeInputs[0], (uint256));
         bytes[] memory notInputs = new bytes[](1);
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);
-            childInputsOf0[0] = abi.encodePacked(inputProperty1.predicateAddress);
-            childInputsOf0[1] = abi.encodePacked(address(self));
+            childInputsOf0[0] = abi.encode(inputProperty1.predicateAddress);
+            childInputsOf0[1] = abi.encode(address(self));
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Equal,
