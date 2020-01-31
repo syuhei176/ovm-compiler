@@ -10,6 +10,9 @@ import {
 import { isLibrary } from './utils'
 
 export type ImportHandler = (_import: Import) => Program
+const DefaultImportHandler: ImportHandler = () => {
+  throw new Error('import handler is not set')
+}
 
 /**
  * transpile a Program to CompiledPredicate
@@ -18,7 +21,7 @@ export type ImportHandler = (_import: Import) => Program
  */
 export function transpile(
   program: Program,
-  importHandler: ImportHandler,
+  importHandler: ImportHandler = DefaultImportHandler,
   defaultConstantValues?: { [key: string]: string }
 ): CompiledPredicate[] {
   const constantValues = defaultConstantValues || {
