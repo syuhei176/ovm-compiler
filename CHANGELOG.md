@@ -1,5 +1,13 @@
-## <small>0.1.17 (2020-01-31)</small>
+## <small>0.1.17 (2020-02-03)</small>
 
+
+
+
+## <small>0.2.8 (2020-02-03)</small>
+
+* update changelog ([e644c55](https://github.com/cryptoeconomicslab/ovm-compiler/commit/e644c55))
+* v0.2.8 ([a0239a2](https://github.com/cryptoeconomicslab/ovm-compiler/commit/a0239a2))
+* fix: generating decide function ([1f0446f](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1f0446f))
 
 
 
