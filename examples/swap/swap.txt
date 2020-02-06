@@ -7,7 +7,7 @@ def SignedBy(sig, m, signer) := IsValidSignature(m, signer, sig)
 def Concat(c, a, b) := IsConcatenatedWith(c, a, b)
 
 @library
-@quantifier("root,KEY,${key}")
+@quantifier("stored.${bucket},KEY,${key}")
 def Stored(value, bucket, key) := IsStored(bucket, key, value)
 
 @library

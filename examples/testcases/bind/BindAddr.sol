@@ -8,7 +8,7 @@
         if(challengeInput == 0) {
             bytes[] memory childInputsOf0 = new bytes[](2);
             childInputsOf0[0] = abi.encode(inputProperty1.predicateAddress);
-            childInputsOf0[1] = abi.encode(address(self));
+            childInputsOf0[1] = abi.encode(address(this));
 
             notInputs[0] = abi.encode(types.Property({
                 predicateAddress: Equal,

@@ -22,6 +22,9 @@ contract ThereTest {
     address IsContained = address(0x0000000000000000000000000000000000000000);
     address VerifyInclusion = address(0x0000000000000000000000000000000000000000);
     address IsSameAmount = address(0x0000000000000000000000000000000000000000);
+    address IsConcatenatedWith = address(0x0000000000000000000000000000000000000000);
+    address IsValidHash = address(0x0000000000000000000000000000000000000000);
+    address IsStored = address(0x0000000000000000000000000000000000000000);
     address notAddress = address(0x0000000000000000000000000000000000000000);
     address andAddress = address(0x0000000000000000000000000000000000000000);
     address forAllSuchThatAddress = address(0x0000000000000000000000000000000000000000);
@@ -49,6 +52,9 @@ contract ThereTest {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
+        address _isConcatenatedWith,
+        address _isValidHash,
+        address _isStored,
         address _payoutContractAddress
     ) public {
         require(!isInitialized, "isInitialized must be false");
@@ -58,6 +64,9 @@ contract ThereTest {
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
+        IsConcatenatedWith = _isConcatenatedWith;
+        IsValidHash = _isValidHash;
+        IsStored = _isStored;
         payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
     }
