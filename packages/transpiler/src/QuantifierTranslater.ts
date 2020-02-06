@@ -28,7 +28,7 @@ export const replaceInputs = (
 ): PropertyNode => {
   if (callingInputs.length < inputDefs.length) {
     throw new Error(
-      'The size of inputDefs must be less than or equal the size of callingInputs.'
+      `The size of inputDefs must be less than or equal the size of callingInputs at ${targetNode.predicate}`
     )
   }
   return {
