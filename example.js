@@ -13,6 +13,7 @@ async function compileAllExamples() {
   await generate('order')
   await generate('ownership')
   await generate('su')
+  await generate('swap')
   return 'all examples compiled'
 }
 

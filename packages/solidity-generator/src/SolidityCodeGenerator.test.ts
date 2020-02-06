@@ -684,6 +684,7 @@ describe('SolidityCodeGenerator', () => {
         ]
       }
       const output = generator.includeCallback('decideProperty', {
+        propIndex: '',
         property: input,
         valName: 'inputs'
       })
