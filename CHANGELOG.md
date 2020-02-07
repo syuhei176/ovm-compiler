@@ -1,5 +1,18 @@
-## <small>0.1.17 (2020-02-03)</small>
+## <small>0.1.17 (2020-02-07)</small>
 
+
+
+
+## <small>0.2.9 (2020-02-07)</small>
+
+* add IsStored and IsConcatenatedWith ([fb7ba1e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/fb7ba1e))
+* fix generator ([1fd8fd0](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1fd8fd0))
+* fix hint data of Stored ([0a5c859](https://github.com/cryptoeconomicslab/ovm-compiler/commit/0a5c859))
+* fix spec ([7971ab2](https://github.com/cryptoeconomicslab/ovm-compiler/commit/7971ab2))
+* fix swap ([adf309a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/adf309a))
+* update changelog ([f19590e](https://github.com/cryptoeconomicslab/ovm-compiler/commit/f19590e))
+* update order example ([879b472](https://github.com/cryptoeconomicslab/ovm-compiler/commit/879b472))
+* v0.2.9 ([1b4719a](https://github.com/cryptoeconomicslab/ovm-compiler/commit/1b4719a))
 
 
 
