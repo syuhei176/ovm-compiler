@@ -397,7 +397,7 @@ def Tx(tx, token, range, block) := IsTx(tx, token, range, block)
 
     test('throw error', () => {
       expect(() => replaceInputs(node, ['aa'], ['a', 'b'])).toThrowError(
-        'The size of inputDefs must be less than or equal the size of callingInputs.'
+        'The size of inputDefs must be less than or equal the size of callingInputs at ThereExistsSuchThat.'
       )
     })
   })

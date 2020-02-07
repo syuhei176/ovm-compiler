@@ -21,7 +21,7 @@
 <%    } else if(input.type == 'VariableInput') { -%>
         <%= valName %>[<%=index%>] = <%- witnessName %>;
 <%    } else if(input.type == 'SelfInput') { -%>
-        <%= valName %>[<%=index%>] = abi.encode(address(self));
+        <%= valName %>[<%=index%>] = abi.encode(address(this));
 <%    } else { -%>
         // error unknown input type
 <%    } -%>

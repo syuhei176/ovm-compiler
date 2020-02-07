@@ -32,6 +32,9 @@ contract <%= claimDef.name %> {
     address IsContained = address(<%= getAddress('IsContained') %>);
     address VerifyInclusion = address(<%= getAddress('VerifyInclusion') %>);
     address IsSameAmount = address(<%= getAddress('IsSameAmount') %>);
+    address IsConcatenatedWith = address(<%= getAddress('IsConcatenatedWith') %>);
+    address IsValidHash = address(<%= getAddress('IsValidHash') %>);
+    address IsStored = address(<%= getAddress('IsStored') %>);
     address notAddress = address(<%= getAddress('Not') %>);
     address andAddress = address(<%= getAddress('And') %>);
     address forAllSuchThatAddress = address(<%= getAddress('ForAllSuchThat') %>);
@@ -68,6 +71,9 @@ contract <%= claimDef.name %> {
         address _isContained,
         address _verifyInclusion,
         address _isSameAmount,
+        address _isConcatenatedWith,
+        address _isValidHash,
+        address _isStored,
         address _payoutContractAddress
     ) public {
         require(!isInitialized, "isInitialized must be false");
@@ -77,6 +83,9 @@ contract <%= claimDef.name %> {
         IsContained = _isContained;
         VerifyInclusion = _verifyInclusion;
         IsSameAmount = _isSameAmount;
+        IsConcatenatedWith = _isConcatenatedWith;
+        IsValidHash = _isValidHash;
+        IsStored = _isStored;
         payoutContractAddress = _payoutContractAddress;
         isInitialized = true;
     }
